@@ -14,7 +14,10 @@
   <div class="table-of-cards">
     {#each pokerCards as pokerCard}
       <div class="poker-card--selected">
-        <img src="{pokerCard}" alt="">
+        <div class="front">
+          <img src="{pokerCard}" alt="">
+        </div>
+        <div class="back"></div>
       </div>
     {/each}
   </div>
@@ -38,5 +41,6 @@
     flex-basis: 100px;
     flex-shrink: 0;
     cursor: pointer;
+    transform-style: preserve-3d;
   }
 </style>
