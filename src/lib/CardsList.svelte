@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { selectedCards } from "../store";
+
   const svgModules = import.meta.glob("../assets/*.svg");
 
   let pokerCards: string[];
@@ -9,12 +11,17 @@
       pokerCards = [...pokerCards, cardUrl].sort();
     });
   }
+
+  function clickHandler(e: MouseEvent) {
+    const target = e.target as HTMLImageElement;
+    selectedCards.update((value) => [...value, target?.src])
+  }
 </script>
 
 <section class="list-of-cards">
   {#each pokerCards as pokerCard}
     <div class="poker-card">
-      <img src="{pokerCard}" alt="">
+      <img src="{pokerCard}" alt="" on:click={clickHandler}>
     </div>
   {/each}
 </section>

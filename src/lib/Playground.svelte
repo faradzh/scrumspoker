@@ -1,14 +1,13 @@
 <script lang="ts">
-  const svgModules = import.meta.glob("../assets/*.svg");
+  import { selectedCards } from "../store";
 
   let pokerCards: string[];
-  $: pokerCards = [];
 
-  for (const key in svgModules) {
-    svgModules[key]().then(({ default: cardUrl }) => {
-      pokerCards = [...pokerCards, cardUrl].sort();
-    });
-  }
+  selectedCards.subscribe((value) => {
+    console.log('Value', value);
+
+    pokerCards = value
+  });
 </script>
 
 <section class="playground">
