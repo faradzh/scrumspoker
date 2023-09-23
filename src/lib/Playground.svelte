@@ -1,24 +1,16 @@
 <script lang="ts">
   import { selectedCards } from "../store";
+  import Card from "./Card.svelte";
 
   let pokerCards: string[];
 
-  selectedCards.subscribe((value) => {
-    console.log('Value', value);
-
-    pokerCards = value
-  });
+  selectedCards.subscribe((value) => pokerCards = value);
 </script>
 
 <section class="playground">
   <div class="table-of-cards">
     {#each pokerCards as pokerCard}
-      <div class="poker-card--selected">
-        <div class="front">
-          <img src="{pokerCard}" alt="">
-        </div>
-        <div class="back"></div>
-      </div>
+      <Card {pokerCard} />
     {/each}
   </div>
   <div class="action-buttons"></div>
@@ -34,13 +26,5 @@
     display: flex;
     padding: 24px;
     overflow-x: auto;
-  }
-
-  .poker-card--selected {
-    margin-right: 24px;
-    flex-basis: 100px;
-    flex-shrink: 0;
-    cursor: pointer;
-    transform-style: preserve-3d;
   }
 </style>
