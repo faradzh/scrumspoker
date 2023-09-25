@@ -14,7 +14,7 @@
 
   function clickHandler(e: MouseEvent) {
     const target = e.target as HTMLImageElement;
-    selectedCards.update((value) => [...value, target?.src])
+    selectedCards.update((prevCards) => [...prevCards, {id: crypto.randomUUID(), link: target?.src}]);
   }
 </script>
 

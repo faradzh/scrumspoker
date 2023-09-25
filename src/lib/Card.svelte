@@ -1,41 +1,30 @@
 <script lang="ts">
-  import anime from 'animejs/lib/anime.es';
   import cardBack from '../assets/Cover option 2.svg';
+  import { onMount } from 'svelte';
+  import { selectedCards, type SelectedCard } from '../store';
 
-  let playing: boolean = false;
   let cardElement: HTMLDivElement;
 
-  function flip(target: HTMLDivElement) {
-    if(playing)
-      return;
+  onMount(() => {
+    selectedCards.update((prevCards) => {
+      const nextCards = [...prevCards];
+      const cardToUpdateIndex = prevCards.findIndex((prevCard) => prevCard.id == pokerCard.id);
+      nextCards[cardToUpdateIndex].ref = cardElement;
+      console.log('nextCards', nextCards);
 
-    playing = true;
-
-    anime({
-      targets: target,
-      scale: [{value: 1}, {value: 1.4}, {value: 1, delay: 250}],
-      rotateY: {value: '+=180', delay: 200},
-      easing: 'easeInOutSine',
-      duration: 400,
-      complete: function(anim){
-        playing = false;
-      }
+      return nextCards;
     });
-  }
+  });
 
-  function clickHandler() {
-    flip(cardElement);
-  };
-
-  export let pokerCard: string = '';
+  export let pokerCard: SelectedCard;
 </script>
 
-<div class="poker-card--selected" bind:this={cardElement} on:click={clickHandler}>
+<div class="poker-card--selected" bind:this={cardElement}>
   <div class="front">
     <img src={cardBack} alt="">
   </div>
   <div class="back">
-    <img src={pokerCard} alt="">
+    <img src={pokerCard.link} alt="">
   </div>
 </div>
 
