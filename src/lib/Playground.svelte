@@ -4,36 +4,31 @@
   import Card from "./Card.svelte";
 
   let pokerCards: SelectedCard[];
-  // let playing: boolean = false;
+  let playing: boolean = false;
 
   selectedCards.subscribe((value) => pokerCards = value);
 
-  function flip(target: HTMLDivElement) {
-    // if(playing)
-    //   return;
+  function flip(targets: HTMLDivElement[]) {
+    if(playing)
+      return;
 
-    // playing = true;
+    playing = true;
 
     anime({
-      targets: target,
+      targets,
       scale: [{value: 1}, {value: 1.4}, {value: 1, delay: 250}],
       rotateY: {value: '+=180', delay: 200},
       easing: 'easeInOutSine',
       duration: 400,
       complete: function(anim){
-        // playing = false;
+        playing = false;
       }
     });
   }
 
   function clickHandler() {
-    for (let pokerCard of pokerCards){
-      if (pokerCard.ref){
-        console.log("flipping");
-
-        flip(pokerCard.ref);
-      }
-    }
+    const refList = pokerCards.map((pokerCard) => pokerCard.ref!);
+    flip(refList);
   };
 
 </script>
