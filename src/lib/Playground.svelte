@@ -31,6 +31,10 @@
     flip(refList);
   };
 
+  function handleReestimate() {
+    selectedCards.update(() => []);
+  }
+
 </script>
 
 <section class="playground">
@@ -42,6 +46,7 @@
   <div class="action-buttons">
     {#if pokerCards.length > 0}
       <button class="reveal" on:click={clickHandler}>Reveal</button>
+      <button class="reestimate" on:click={handleReestimate}>Re-estimate</button>
     {/if}
   </div>
 </section>
@@ -65,6 +70,13 @@
 
   button.reveal {
     background-color: orange;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button.reestimate {
+    background-color:cadetblue;
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
