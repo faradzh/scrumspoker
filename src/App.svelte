@@ -37,6 +37,6 @@
     grid-template-areas:
       "header header header"
       "integration active-board list-of-cards"
-      "playground playground playground";
+      "playground playground list-of-cards";
   }
 </style>
