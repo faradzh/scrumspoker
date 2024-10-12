@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "server",
   "version": "1.0.0",
   "description": "The backbone of the sockets-based complexity estimation tool",
   "main": "index.js",
