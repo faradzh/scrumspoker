@@ -1,23 +1,12 @@
-const express = require("express");
+const http = require("http");
+const app = require("./app");
 
-const app = express();
+require("dotenv").config();
 
-const PORT = 3000;
-
-const messages = [
-  { id: 1, text: "whatsssap" },
-  { id: 2, text: "another message" },
-];
-
-app.get("/", (req, res) => {
-  res.send("Helloooo!");
-});
-
-app.get("/messages", (req, res) => {
-  res.json(messages);
-});
+const PORT = process.env.PORT;
+const server = http.createServer(app);
 
 // app.use(express.static());
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}...`);
 });
