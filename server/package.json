@@ -4,6 +4,7 @@
   "description": "The backbone of the sockets-based complexity estimation tool",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "watch": "nodemon server.js",
     "test": "test"
   },
