@@ -8,8 +8,8 @@ require("dotenv").config();
 const PORT = 443;
 
 const options = {
-  cert: fs.readFileSync("/etc/letsencrypt/live/scrumspoker.com/fullchain.pem"),
-  key: fs.readFileSync("/etc/letsencrypt/live/scrumspoker.com/privkey.pem"),
+  cert: fs.readFileSync("/certs/fullchain.pem"),
+  key: fs.readFileSync("/certs/privkey.pem"),
 };
 
 const server = https.createServer(options, app);
