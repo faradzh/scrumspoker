@@ -8,7 +8,7 @@ require("dotenv").config();
 const PORT = 443;
 
 const options = {
-  cert: fs.readFileSync("/certs/fullchain.pem"),
+  cert: fs.readFileSync("/certs/fullchain1.pem"),
   key: fs.readFileSync("/certs/privkey.pem"),
 };
 
