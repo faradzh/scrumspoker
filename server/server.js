@@ -5,11 +5,11 @@ const app = require("./app");
 
 require("dotenv").config();
 
-const PORT = 443;
+const PORT = process.env.PORT;
 
 const options = {
-  cert: fs.readFileSync("/certs/fullchain1.pem"),
-  key: fs.readFileSync("/certs/privkey1.pem"),
+  cert: fs.readFileSync(process.env.CERT_PATH),
+  key: fs.readFileSync(process.env.KEY_PATH),
 };
 
 const server = https.createServer(options, app);
