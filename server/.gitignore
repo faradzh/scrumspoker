@@ -3,3 +3,5 @@ public
 
 cert.pem
 key.pem
+
+.env
