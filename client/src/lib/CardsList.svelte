@@ -18,29 +18,10 @@
   }
 </script>
 
-<section class="list-of-cards">
+<div class="p-[16px] grid grid-cols-3 gap-4 overflow-y-auto overflow-x-hidden">
   {#each pokerCards as pokerCard}
-    <div class="poker-card">
+    <div class="poker-card cursor-pointer w-full">
       <img src="{pokerCard}" alt="" on:click={clickHandler}>
     </div>
   {/each}
-</section>
-
-<style>
-  .list-of-cards {
-    grid-area: list-of-cards;
-    display: grid;
-    grid-template-columns: auto auto auto;
-    background-color: rgb(46, 137, 98);
-    padding: 16px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    column-gap: 16px;
-  }
-
-  .poker-card {
-    cursor: pointer;
-    width: 100px;
-    margin-bottom: 8px;
-  }
-</style>
+</div>
