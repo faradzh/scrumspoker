@@ -23,6 +23,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "animejs": "^3.2.1"
+    "animejs": "^3.2.1",
+    "socket.io-client": "^4.8.0"
   }
 }
