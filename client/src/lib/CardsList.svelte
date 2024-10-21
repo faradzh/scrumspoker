@@ -1,10 +1,20 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { socket } from "../sockets";
 
-  import { selectedCards, type SelectedCard } from "../store";
+  import { selectedCards, type SelectedCard, userStore } from "../store";
 
   socket.on('estimation', (data) => {
-    selectedCards.update((prevCards) => [...prevCards, data]);
+    selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
+  });
+
+  onMount(() => {
+    socket.emit('ready');
+
+    socket.on("ready", (data) => {
+      const isModerator = data.moderatorId === socket.id;
+      userStore.update(() => ({id: socket.id!, isModerator}))
+    })
   });
 
   const svgModules = import.meta.glob("../assets/*.svg");
@@ -20,7 +30,7 @@
 
   function clickHandler(pokerCard: SelectedCard) {
     selectedCards.update((prevCards) => [...prevCards, pokerCard]);
-    socket.emit('estimation', {userId: socket.id, selectedCard: pokerCard.link});
+    socket.emit('estimation', {userId: socket.id, selectedCard: pokerCard});
   }
 </script>
 

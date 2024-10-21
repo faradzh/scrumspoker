@@ -5,4 +5,12 @@ export type SelectedCard = {
   link: string;
   ref?: HTMLDivElement;
 };
+
+export type User = {
+  id: string;
+  isModerator: boolean;
+};
+
 export const selectedCards = writable<SelectedCard[]>([]);
+
+export const userStore = writable<User>();
