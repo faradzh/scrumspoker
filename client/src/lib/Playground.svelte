@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { selectedCards, type SelectedCard } from "../store";
+  import { selectedCards } from "../store";
   import Card from "./Card.svelte";
+  import type { SelectedCard } from "./types";
 
   let pokerCards: SelectedCard[];
 

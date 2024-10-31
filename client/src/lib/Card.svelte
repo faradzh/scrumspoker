@@ -1,9 +1,14 @@
 <script lang="ts">
-  import cardBack from '../assets/Cover option 2.svg';
   import { onMount } from 'svelte';
-  import { selectedCards, type SelectedCard } from '../store';
+
+  import cardBack from '../assets/card-cover.svg';
+  import { selectedCards, userStore } from '../store';
+  import type { SelectedCard, User } from './types';
 
   let cardElement: HTMLDivElement;
+  $: currentUser = {} as User;
+
+  userStore.subscribe((user) => currentUser = user);
 
   onMount(() => {
     selectedCards.update((prevCards) => {
@@ -19,7 +24,7 @@
 
 <div class="poker-card--selected mr-4 basis-[100px] shrink-0 cursor-pointer" bind:this={cardElement}>
   <div class="front w-full h-full">
-    <img src={cardBack} alt="">
+    <img src={currentUser.id === pokerCard.userId ? pokerCard.link : cardBack} alt="">
   </div>
   <div class="back absolute top-0 left-0 w-full h-full">
     <img src={pokerCard.link} alt="">

@@ -2,7 +2,8 @@
   import anime from 'animejs/lib/anime.es';
 
   import { socket } from "../sockets";
-  import { selectedCards, type SelectedCard, userStore, type User } from "../store";
+  import { selectedCards, userStore} from "../store";
+  import type { SelectedCard, User } from './types';
 
   let pokerCards: SelectedCard[];
   let user: User;
