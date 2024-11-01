@@ -1,8 +1,25 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   import CardsList from "./lib/CardsList.svelte";
   import Navbar from "./lib/Navbar.svelte";
   import Playground from "./lib/Playground.svelte";
   import SessionButtons from "./lib/SessionButtons.svelte";
+  import { socket } from "./sockets";
+  import { selectedCards, userStore } from "./store";
+
+  onMount(() => {
+    socket.emit('ready');
+
+    socket.on("ready", (data) => {
+      const isModerator = data.moderatorId === socket.id;
+      userStore.update(() => ({id: socket.id!, isModerator}))
+    })
+
+    socket.on('estimation', (data) => {
+      selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
+    });
+  });
 </script>
 
 <Navbar />

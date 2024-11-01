@@ -1,24 +1,10 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { socket } from "../sockets";
 
   import { selectedCards, userStore } from "../store";
   import { compareLinks } from "./utils";
   import type { Card } from "./types";
   import { get } from "svelte/store";
-
-  socket.on('estimation', (data) => {
-    selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
-  });
-
-  onMount(() => {
-    socket.emit('ready');
-
-    socket.on("ready", (data) => {
-      const isModerator = data.moderatorId === socket.id;
-      userStore.update(() => ({id: socket.id!, isModerator}))
-    })
-  });
 
   const svgModules = import.meta.glob("../assets/cards/*.svg");
 

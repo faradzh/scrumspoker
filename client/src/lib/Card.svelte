@@ -19,12 +19,14 @@
     });
   });
 
+
   export let pokerCard: SelectedCard;
+  const isMyCard = currentUser.id === pokerCard.userId;
 </script>
 
 <div class="poker-card--selected mr-4 basis-[100px] shrink-0 cursor-pointer" bind:this={cardElement}>
   <div class="front w-full h-full">
-    <img src={currentUser.id === pokerCard.userId ? pokerCard.link : cardBack} alt="">
+    <img src={isMyCard ? pokerCard.link : cardBack} alt="">
   </div>
   <div class="back absolute top-0 left-0 w-full h-full">
     <img src={pokerCard.link} alt="">
