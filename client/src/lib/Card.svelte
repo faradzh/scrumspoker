@@ -1,44 +1,30 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { onMount } from 'svelte';
 
   import cardBack from '../assets/card-cover.svg';
-  import { selectedCards, userStore } from '../store';
-  import type { SelectedCard, User } from './types';
+  import { currentUser, addCardRef, selectCard} from '../store';
+  import type { SelectedCard } from './types';
 
   let cardElement: HTMLDivElement = $state();
-  let currentUser;
-  run(() => {
-    currentUser = {} as User;
-  });
-
-  userStore.subscribe((user) => currentUser = user);
+  let { card }: Props = $props();
 
   onMount(() => {
-    selectedCards.update((prevCards) => {
-      const nextCards = [...prevCards];
-      const cardToUpdateIndex = prevCards.findIndex((prevCard) => prevCard.id == pokerCard.id);
-      nextCards[cardToUpdateIndex].ref = cardElement;
-      return nextCards;
-    });
+    addCardRef(card, cardElement);
   });
 
-
   interface Props {
-    pokerCard: SelectedCard;
+    card: SelectedCard;
   }
 
-  let { pokerCard }: Props = $props();
-  const isMyCard = currentUser.id === pokerCard.userId;
+  const isMyCard = $currentUser.id === card.userId;
 </script>
 
 <div class="poker-card--selected mr-4 basis-[100px] shrink-0 cursor-pointer" bind:this={cardElement}>
   <div class="front w-full h-full">
-    <img src={isMyCard ? pokerCard.link : cardBack} alt="">
+    <img src={isMyCard ? card.link : cardBack} alt="">
   </div>
   <div class="back absolute top-0 left-0 w-full h-full">
-    <img src={pokerCard.link} alt="">
+    <img src={card.link} alt="">
   </div>
 </div>
 

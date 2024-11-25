@@ -1,29 +1,26 @@
 <script lang="ts">
   import { socket } from "../sockets";
 
-  import { selectedCards, userStore } from "../store";
+  import { selectCard } from "../store";
   import { compareLinks } from "./utils";
   import type { Card } from "./types";
-  import { get } from "svelte/store";
+  import { onMount } from "svelte";
 
   const svgModules = import.meta.glob("../assets/cards/*.svg");
 
   let pokerCards: Card[] = $state([]);
-  
 
-  for (const key in svgModules) {
-    // @ts-ignore
-    svgModules[key]().then(({ default: cardUrl }) => {
-      pokerCards = [...pokerCards, {id: crypto.randomUUID(), link: cardUrl}].sort(compareLinks);
-    });
-  }
+  onMount(() => {
+    for (const key in svgModules) {
+      // @ts-ignore
+      svgModules[key]().then(({ default: cardUrl }) => {
+        pokerCards = [...pokerCards, {id: crypto.randomUUID(), link: cardUrl}].sort(compareLinks);
+      });
+    }
+  });
 
   function clickHandler(card: Card) {
-    const isAlreadySelected = Array.from(get(selectedCards)).find((selectedCard) => selectedCard.userId === socket.id);
-    if (!isAlreadySelected) {
-      selectedCards.update((prevCards) => [...prevCards, {...card, userId: socket.id!}]);
-      socket.emit('estimation', {userId: socket.id, selectedCard: card});
-    }
+    selectCard(socket, card);
   }
 </script>
 

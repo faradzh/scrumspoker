@@ -6,14 +6,14 @@
   import Playground from "./lib/Playground.svelte";
   import SessionButtons from "./lib/SessionButtons.svelte";
   import { socket } from "./sockets";
-  import { selectedCards, userStore } from "./store";
+  import { selectedCards, currentUser } from "./store";
 
   onMount(() => {
     socket.emit('ready');
 
     socket.on("ready", (data) => {
       const isModerator = data.moderatorId === socket.id;
-      userStore.update(() => ({id: socket.id!, isModerator}))
+      currentUser.update(() => ({id: socket.id!, isModerator}))
     })
 
     socket.on('estimation', (data) => {
