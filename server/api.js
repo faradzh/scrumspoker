@@ -14,8 +14,12 @@ api.get("/messages", (req, res) => {
   res.json(messages);
 });
 
-api.get("/", (req, res) => {
+api.get("/", (_, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+api.get("/admin", (_, res) => {
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
 
 module.exports = api;
