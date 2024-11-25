@@ -4,3 +4,5 @@ import type { SelectedCard, User } from "./lib/types";
 export const selectedCards = writable<SelectedCard[]>([]);
 
 export const userStore = writable<User>();
+
+export const modalStore = writable({ isOpen: false });
