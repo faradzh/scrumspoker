@@ -8,8 +8,8 @@
 
   const svgModules = import.meta.glob("../assets/cards/*.svg");
 
-  let pokerCards: Card[];
-  $: pokerCards = [];
+  let pokerCards: Card[] = $state([]);
+  
 
   for (const key in svgModules) {
     // @ts-ignore
@@ -30,7 +30,7 @@
 <div class="p-[16px] grid grid-cols-3 gap-4 overflow-y-auto overflow-x-hidden">
   {#each pokerCards as pokerCard}
     <div class="poker-card cursor-pointer w-full">
-      <img src="{pokerCard.link}" alt="" on:click={() => clickHandler(pokerCard)}>
+      <img src="{pokerCard.link}" alt="" onclick={() => clickHandler(pokerCard)}>
     </div>
   {/each}
 </div>

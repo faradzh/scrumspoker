@@ -3,7 +3,7 @@
   import Card from "./Card.svelte";
   import type { SelectedCard } from "./types";
 
-  let pokerCards: SelectedCard[];
+  let pokerCards: SelectedCard[] = $state();
 
   selectedCards.subscribe((value) => pokerCards = value);
 </script>

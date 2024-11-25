@@ -1,12 +1,17 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { onMount } from 'svelte';
 
   import cardBack from '../assets/card-cover.svg';
   import { selectedCards, userStore } from '../store';
   import type { SelectedCard, User } from './types';
 
-  let cardElement: HTMLDivElement;
-  $: currentUser = {} as User;
+  let cardElement: HTMLDivElement = $state();
+  let currentUser;
+  run(() => {
+    currentUser = {} as User;
+  });
 
   userStore.subscribe((user) => currentUser = user);
 
@@ -20,7 +25,11 @@
   });
 
 
-  export let pokerCard: SelectedCard;
+  interface Props {
+    pokerCard: SelectedCard;
+  }
+
+  let { pokerCard }: Props = $props();
   const isMyCard = currentUser.id === pokerCard.userId;
 </script>
 
