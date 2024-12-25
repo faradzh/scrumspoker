@@ -1,3 +1,12 @@
+<script lang="ts">
+  import { modalStore } from "../store";
+
+  function openModal() {
+    console.log('Clicking');
+    modalStore.update((store) => ({ ...store, isOpen: true }));
+  }
+
+</script>
 <header>
   <div class="pb-32">
     <div class="pt-20 sm:pt-16 lg:pt-20">
@@ -8,7 +17,7 @@
           </h1>
         </div>
 
-        <button class="btn btn-neutral">
+        <button class="btn btn-neutral" onclick={openModal}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
