@@ -2,7 +2,6 @@
   import { modalStore } from "../store";
 
   function openModal() {
-    console.log('Clicking');
     modalStore.update((store) => ({ ...store, isOpen: true }));
   }
 

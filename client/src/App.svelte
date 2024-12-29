@@ -8,22 +8,30 @@
   import { socket } from "./sockets";
   import { selectedCards, currentUser } from "./store";
 
+  function handleReady(data) {
+    const isModerator = data.moderatorId === socket.id;
+    currentUser.set({ id: socket.id!, isModerator });
+  }
+
+  function handleEstimation(data) {
+    selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
+  }
+
   onMount(() => {
     socket.emit('ready');
 
-    socket.on("ready", (data) => {
-      const isModerator = data.moderatorId === socket.id;
-      currentUser.update(() => ({id: socket.id!, isModerator}))
-    })
+    socket.on("ready", handleReady);
+    socket.on('estimation', handleEstimation);
 
-    socket.on('estimation', (data) => {
-      selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
-    });
+    return () => {
+      socket.off("ready", handleReady);
+      socket.off("estimation", handleEstimation);
+    };
   });
 </script>
 
 <Navbar />
-<main class="bg-gray-50">
+<main class="bg-gray-50 h-full">
   <div class="mx-auto px-8">
     <div class="mt-10 pb-10 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_1fr_364px] lg:grid-rows-[250px_250px_200px]">
       <section class="relative lg:row-span-2">

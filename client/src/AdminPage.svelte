@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import AdminHeader from "./lib/AdminHeader.svelte";
   import Modal from "./lib/Modal.svelte";
 </script>

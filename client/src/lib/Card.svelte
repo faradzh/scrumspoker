@@ -15,8 +15,8 @@
   interface Props {
     card: SelectedCard;
   }
-
-  const isMyCard = $currentUser.id === card.userId;
+  
+  const isMyCard = $currentUser ? $currentUser.id === card.userId : true;
 </script>
 
 <div class="poker-card--selected mr-4 basis-[100px] shrink-0 cursor-pointer" bind:this={cardElement}>

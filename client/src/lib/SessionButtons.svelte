@@ -37,17 +37,17 @@
   };
 
 
-  function reestimeHandler() {
+  function reEstimateeHandler() {
     selectedCards.update(() => []);
   }
 </script>
 
 <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
   <div class="flex justify-between px-8 pt-8 sm:px-10 sm:pt-10">
-    {#if $currentUser?.isModerator}
+    {#if $currentUser ? $currentUser?.isModerator : true}
       <button type="button" onclick={clickHandler} class="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Reveal</button>
     {/if}
-    <button type="button" onclick={reestimeHandler} class="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Re-estimate</button>
+    <button type="button" onclick={reEstimateeHandler} class="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Re-estimate</button>
     <button type="button" class="flex-none rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Save</button>
   </div>
 </div>
