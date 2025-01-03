@@ -1,7 +1,9 @@
-let moderatorId;
+import { Socket } from "socket.io";
 
-function listen(io) {
-  io.on("connection", (socket) => {
+let moderatorId: string | undefined;
+
+export function listen(io: Socket) {
+  io.on("connection", (socket: Socket) => {
     console.log(`A user ${socket.id} connected`);
 
     socket.on("ready", () => {
@@ -27,5 +29,3 @@ function listen(io) {
     });
   });
 }
-
-module.exports = { listen };

@@ -4,8 +4,10 @@
   "description": "The backbone of the sockets-based complexity estimation tool",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "watch": "nodemon server.js",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "watch": "nodemon dist/server.js",
+    "type-check": "tsc --noEmit",
     "test": "test"
   },
   "author": "faradzh",
@@ -16,6 +18,10 @@
     "socket.io": "^4.8.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }

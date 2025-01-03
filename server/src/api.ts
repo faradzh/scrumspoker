@@ -1,5 +1,5 @@
-const express = require("express");
-const path = require("path");
+import express from "express";
+import path from "path";
 
 const api = express();
 
@@ -22,4 +22,4 @@ api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
 
-module.exports = api;
+export default api;
