@@ -1,4 +1,5 @@
-import https  from "https";
+import https from "https";
+import http from "http";
 import fs from "fs";
 
 import api from "./api";
@@ -13,11 +14,20 @@ const options = {
   key: fs.readFileSync(process.env.KEY_PATH ?? "certs/privkey1.pem"),
 };
 
-const server = https.createServer(options, api);
-const io = require("socket.io")(server);
+const isProduction = process.env.NODE_ENV === 'production';
+
+let server;
+
+if (isProduction) {
+  server = https.createServer(options, api);
+} else {
+  server = http.createServer(api);
+}
 
 server.listen(PORT, () => {
-  console.log(`Listening securely on port: ${PORT}...`);
+  console.log(`Listening on port: ${PORT}...`);
 });
+
+const io = require("socket.io")(server);
 
 sockets.listen(io);

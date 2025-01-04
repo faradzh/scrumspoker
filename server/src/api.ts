@@ -8,18 +8,18 @@ const messages = [
   { id: 2, text: "another message" },
 ];
 
-api.use(express.static(path.join(__dirname, "public")));
+api.use(express.static(path.join(__dirname,  "../", "public")));
 
 api.get("/messages", (req, res) => {
   res.json(messages);
 });
 
 api.get("/", (_, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public",  "../", "index.html"));
 });
 
 api.get("/admin", (_, res) => {
-  res.sendFile(path.join(__dirname, "public", "admin.html"));
+  res.sendFile(path.join(__dirname, "public",  "../", "admin.html"));
 });
 
 export default api;
