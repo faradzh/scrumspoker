@@ -11,6 +11,7 @@
     /* Type Checking */
     "strict": true,                                      /* Enable all strict type-checking options. */
     "skipLibCheck": true,
+    "types": ["vitest/globals"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
