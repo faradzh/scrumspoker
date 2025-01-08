@@ -1,6 +1,8 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import Room from "../entities/Room";
 import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
-import { Data } from "../interfaceAdapters/repositories/types";
+import { RoomData } from '../interfaceAdapters/repositories/types';
 
 class CreateRoom {
     private roomRepository;
@@ -9,14 +11,10 @@ class CreateRoom {
         this.roomRepository = roomRepository;
     }
 
-    public async execute(roomId: string, initialData: Data): Promise<Room> {
-        const existingRoom = await this.roomRepository.findRoomById(roomId);
+    public async execute(initialData: RoomData): Promise<Room> {
+        const roomId = uuidv4();
 
-        if (existingRoom) {
-            throw new Error('The room already exists!')
-        } 
-
-        const newRoom = new Room(roomId, initialData.name, initialData.estimationMethod, initialData.participants);
+        const newRoom = new Room(roomId, initialData.name, initialData.estimationMethod);
 
         await this.roomRepository.saveRoom(newRoom);
 

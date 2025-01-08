@@ -1,0 +1,26 @@
+import { describe, it, expect } from 'vitest';
+
+import ApiRoomPresenter from './ApiRoomPresenter';
+import Room from '../../entities/Room';
+
+describe('ApiRoomPresenter', () => {
+    it('should present room data in API format', () => {
+        const roomData = {
+            id: 'room#1',
+            name: 'RE room#1',
+            participants: [],
+            estimationMethod: 'fibbonachi'
+        } as const;
+
+        const room = new Room(roomData.id, roomData.name, roomData.estimationMethod);
+
+        const roomResponse = new ApiRoomPresenter().presentRoom(room);
+
+        expect(roomResponse).toEqual({
+            id: 'room#1',
+            name: 'RE room#1',
+            estimationMethod: 'fibbonachi',
+            participants: 0
+        });
+    });
+});

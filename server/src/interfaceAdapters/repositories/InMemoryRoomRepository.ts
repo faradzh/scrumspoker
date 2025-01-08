@@ -1,7 +1,7 @@
 import Room from "../../entities/Room";
-import { EstimationMethod, User } from "../../entities/types";
+import {  User } from "../../entities/types";
 import { RoomRepository } from "./RoomRepository";
-import { Data } from "./types";
+import { RoomData } from "./types";
 
 class InMemoryRoomRepository implements RoomRepository {
     private client = new Map();
@@ -26,7 +26,7 @@ class InMemoryRoomRepository implements RoomRepository {
         room.participants.push(participant);
     }
 
-    public async findRoomById(roomId: string): Promise<Data> {
+    public async findRoomById(roomId: string): Promise<RoomData> {
         return this.client.get(roomId);
     }
 }

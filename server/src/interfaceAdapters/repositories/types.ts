@@ -1,3 +1,5 @@
-import { EstimationMethod } from "../../entities/types";
+import { z } from 'zod';
 
-export type Data = {roomId: string, name: string, estimationMethod: EstimationMethod, participants: any[]};
+import { CreateRoomSchema } from '../../middleware/validationMiddleware';
+
+export type RoomData = z.infer<typeof CreateRoomSchema>;

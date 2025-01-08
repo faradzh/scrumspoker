@@ -1,18 +1,14 @@
 import express from "express";
 import path from "path";
 
+import roomsRouter from "./routes/RoomsRouter";
+
 const api = express();
 
-const messages = [
-  { id: 1, text: "whatsssap" },
-  { id: 2, text: "another message" },
-];
-
 api.use(express.static(path.join(__dirname,  "../", "public")));
+api.use(express.json());
 
-api.get("/messages", (req, res) => {
-  res.json(messages);
-});
+api.use('/rooms', roomsRouter);
 
 api.get("/", (_, res) => {
   res.sendFile(path.join(__dirname, "public",  "../", "index.html"));
@@ -21,5 +17,6 @@ api.get("/", (_, res) => {
 api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "public",  "../", "admin.html"));
 });
+
 
 export default api;
