@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 
-
-export const EstimationMethodEnum = z.enum(['fibbonachi', 'powerOfTwo', 'tshirtSizes']);
+import { EstimationMethodEnum, RoomData } from '../types';
 
 export interface CreateRoomRequest extends Request {
-    validatedBody?: z.infer<typeof CreateRoomSchema>;
+    validatedBody?: RoomData;
 }
 
 export const CreateRoomSchema = z.object({ 
     name: z.string().min(1, "Room name is required."),
     estimationMethod: EstimationMethodEnum.default('fibbonachi'),
 });
+
 
 export const validateRoom = (schema: typeof CreateRoomSchema) => (req: CreateRoomRequest, res: Response, next: NextFunction) => {
     try {
