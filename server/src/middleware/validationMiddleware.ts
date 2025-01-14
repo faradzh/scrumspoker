@@ -22,3 +22,13 @@ export const validateRoom = (schema: typeof CreateRoomSchema) => (req: CreateRoo
         res.status(400).json({message: error.errors});
     }
 }
+
+export const checkLoggedIn = (req: Request, res: Response, next: NextFunction) => {
+    const isLoggedIn = req.isAuthenticated() && req.user;
+
+    if (!isLoggedIn) {
+        return res.redirect('/auth/google');
+    }
+
+    next();
+};

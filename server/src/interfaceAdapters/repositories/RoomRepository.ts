@@ -1,5 +1,5 @@
 import { User } from "../../entities/types";
-import { RoomData } from "./types";
+import { RoomData } from "../../types";
 
 export interface RoomRepository {
     saveRoom(data: unknown): Promise<void>;

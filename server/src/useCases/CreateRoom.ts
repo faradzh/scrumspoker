@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import Room from "../entities/Room";
 import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
-import { RoomData } from '../interfaceAdapters/repositories/types';
+import { RoomData } from '../types';
 
 class CreateRoom {
     private roomRepository;

@@ -2,10 +2,11 @@ import https from "https";
 import http from "http";
 import fs from "fs";
 
+require("dotenv").config();
+
 import api from "./api";
 import * as sockets from "./sockets";
 
-require("dotenv").config();
 
 const PORT = process.env.PORT;
 

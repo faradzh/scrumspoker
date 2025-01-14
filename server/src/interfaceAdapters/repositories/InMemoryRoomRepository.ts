@@ -1,7 +1,7 @@
 import Room from "../../entities/Room";
 import {  User } from "../../entities/types";
+import { RoomData } from "../../types";
 import { RoomRepository } from "./RoomRepository";
-import { RoomData } from "./types";
 
 class InMemoryRoomRepository implements RoomRepository {
     private client = new Map();
