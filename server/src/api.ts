@@ -27,18 +27,17 @@ api.use((req: Request, res: Response, next: NextFunction) => {
   checkLoggedIn(req, res, next);
 });
 
-api.use(express.static(path.join(__dirname,  "../", "public")));
+api.use(express.static(path.join(__dirname,  "..", "public")));
 api.use(express.json());
 
 api.use('/rooms', roomsRouter);
 
 api.get("/", (_, res) => {
-  res.sendFile(path.join(__dirname, "public",  "../", "index.html"));
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
 api.get("/admin", (_, res) => {
-  res.sendFile(path.join(__dirname, "public",  "../", "admin.html"));
+  res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
 });
-
 
 export default api;
