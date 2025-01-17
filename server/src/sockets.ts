@@ -27,5 +27,9 @@ export function listen(io: Socket) {
         moderatorId = undefined;
       }
     });
+
+    io.on('error', (err) => {
+      console.error('Socket.IO error:', err);
+    });
   });
 }
