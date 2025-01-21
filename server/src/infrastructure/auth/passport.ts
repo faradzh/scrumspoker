@@ -1,15 +1,15 @@
 import passport from "passport";
 import googleStrategy from "./googleStrategy";
 
-// Configure Passport strategies
+// configure Passport strategy
 passport.use(googleStrategy);
 
-// Serialize user
+// serialize user
 passport.serializeUser((user: any, done) => {
   done(null, { id: user.id, email: user.email });
 });
 
-// Deserialize user
+// deserialize user
 passport.deserializeUser((obj: any, done) => {
   done(null, obj);
 });

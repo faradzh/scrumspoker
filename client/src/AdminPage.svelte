@@ -1,6 +1,33 @@
 <script lang="ts">
+  import AdminForm from "./lib/AdminForm.svelte";
   import AdminHeader from "./lib/AdminHeader.svelte";
   import Modal from "./lib/Modal.svelte";
+
+  const formData = $state({
+    name: '',
+    estimationMethod: ''
+  });
+
+  let formRef: HTMLFormElement | null = $state(null);
+
+  const triggerFormSubmit = () => {
+    if (formRef) {
+      formRef.requestSubmit(); // Triggers the form's submit event
+    }
+  };
+
+  function onSubmit(event: Event) {
+    event?.preventDefault();
+    console.log(JSON.stringify(formData));
+
+    fetch('http://localhost:3000/rooms', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+  };
 </script>
 
 <div class="min-h-full">
@@ -55,4 +82,6 @@
   </nav>
   <AdminHeader />
 </div>
-<Modal />
+<Modal onClose={triggerFormSubmit}>
+  <AdminForm bind:formRef values={formData} onSubmit={onSubmit}/>
+</Modal>
