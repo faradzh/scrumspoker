@@ -1,8 +1,8 @@
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 
 let moderatorId: string | undefined;
 
-export function listen(io: Socket) {
+export function listen(io: Server) {
   io.on("connection", (socket: Socket) => {
     console.log(`A user ${socket.id} connected`);
 

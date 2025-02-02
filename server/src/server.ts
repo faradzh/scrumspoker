@@ -1,6 +1,7 @@
 import https from "https";
 import http from "http";
 import fs from "fs";
+import {Server} from "socket.io";
 
 require("dotenv").config();
 
@@ -28,6 +29,6 @@ server.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}...`);
 });
 
-const io = require("socket.io")(server, {transports: ['websocket']});
+const io = new Server(server, {transports: ['websocket']});
 
 sockets.listen(io);
