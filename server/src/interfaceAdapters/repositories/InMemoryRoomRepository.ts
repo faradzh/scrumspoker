@@ -1,6 +1,5 @@
 import Room from "../../entities/Room";
 import {  User } from "../../entities/types";
-import { RoomData } from "../../types";
 import { RoomRepository } from "./RoomRepository";
 
 class InMemoryRoomRepository implements RoomRepository {
@@ -18,15 +17,15 @@ class InMemoryRoomRepository implements RoomRepository {
         this.client.delete(roomId);
     }
 
-    public async joinRoom(roomId: string, participant: User): Promise<void> {
-        if (!this.client.get(roomId)) {
-            throw new Error("The room doesn't exists!");
-        } 
-        const room = this.client.get(roomId);
-        room.participants.push(participant);
-    }
+    // public async joinRoom(data: Room): Promise<void> {
+    //     if (!this.client.get(data.id)) {
+    //         throw new Error("The room doesn't exists!");
+    //     } 
+    //     const room = this.client.get(data.id);
+    //     room.participants.push(participant);
+    // }
 
-    public async findRoomById(roomId: string): Promise<RoomData> {
+    public async findRoomById(roomId: string): Promise<Room> {
         return this.client.get(roomId);
     }
 }

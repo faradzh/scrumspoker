@@ -1,3 +1,4 @@
+import { Profile } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -8,7 +9,7 @@ const AUTH_OPTIONS = {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!
 }
   
-function verifyCallback(accessToken: string, refreshToken: string, profile: any, done: any) {
+function verifyCallback(accessToken: string, refreshToken: string, profile: Profile, done: any) {
     console.log("Google Profile", profile);
     done(null, profile);
 };

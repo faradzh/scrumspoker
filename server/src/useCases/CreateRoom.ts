@@ -16,7 +16,7 @@ class CreateRoom {
 
         const newRoom = new Room(roomId, initialData.name, initialData.estimationMethod);
 
-        await this.roomRepository.saveRoom(newRoom);
+        await this.roomRepository.saveRoom?.(newRoom);
 
         return newRoom;
     }

@@ -28,6 +28,16 @@ class Room {
         }
         this.participants = this.participants?.filter((p) => p.id != participant.id);;
     }
+
+    public addEstimate(participant: User, estimate: number): void {
+        if (!this.participants?.includes(participant)) {
+            throw new Error('The participant is NOT in the room!')
+        }
+        const targetParticipant = this.participants.find((p) => p.id === participant.id);
+        if (targetParticipant){
+            targetParticipant.estimate = estimate;
+        }
+    }
 }
 
 export default Room;
