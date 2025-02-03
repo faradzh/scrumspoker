@@ -9,7 +9,7 @@ roomsRouter.post("/", validateRoom(CreateRoomSchema), async (req, res) => {
     createRoomController.createRoomHandler(req, res);
 });
 
-roomsRouter.post("/:id", async (req, res) => {
+roomsRouter.get("/:id", async (req, res) => {
     joinRoomController.joinRoomHandler(req, res);
 });
 
