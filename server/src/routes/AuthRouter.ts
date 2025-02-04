@@ -8,9 +8,12 @@ const authRouter = express.Router();
 authRouter.get("/google", passport.authenticate("google", {scope: ["email"]}));
 
 authRouter.get("/google/callback", passport.authenticate("google", {
-    failureRedirect: "/failure",
-    successRedirect: "/"
-}));
+    failureRedirect: "/failure"
+}), (req, res) => {
+    const redirectUrl = req.session!.returnTo || "/";
+    delete req.session!.returnTo;
+    res.redirect(redirectUrl);
+});
 
 authRouter.get("/failure", failureHandler);
 
