@@ -28,6 +28,10 @@ class InMemoryRoomRepository implements RoomRepository {
     public async findRoomById(roomId: string): Promise<Room> {
         return this.client.get(roomId);
     }
+    
+    public async getAllRooms(): Promise<Room[]> {
+        return Array.from(this.client.values());
+    }
 }
 
 export default InMemoryRoomRepository;

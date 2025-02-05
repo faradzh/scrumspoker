@@ -12,3 +12,9 @@ export type User = {
   id: string;
   isModerator: boolean;
 };
+
+export type Room = {
+  name: string;
+  estimationMethod: string;
+  link: string;
+}

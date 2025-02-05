@@ -6,5 +6,5 @@ export interface RoomRepository {
     joinRoom?(room: Room): Promise<void>;
     findRoomById?(roomId: string): Promise<RoomData | undefined>;
     deleteRoom?(roomId: string): Promise<void>;
-    getAllRooms?(): Promise<[]>;
+    getAllRooms?(): Promise<Room[]>;
 } 

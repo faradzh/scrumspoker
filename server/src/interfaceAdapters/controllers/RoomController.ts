@@ -10,6 +10,7 @@ import RedisRoomRepository from "../repositories/RedisRoomRepository";
 import JoinRoom from "../../useCases/JoinRoom";
 import { RoomUseCase } from "../../types";
 import RedisClient from "../../infrastructure/redis/RedisClient";
+import GetAllRooms from "../../useCases/GetAllRooms";
 
 class RoomController {
     public useCase;
@@ -32,6 +33,17 @@ class RoomController {
         }
     }
 
+    public async getAllRoomsHandler(_: Request, res: Response): Promise<void> {
+        try {
+            const allRooms = await (this.useCase as GetAllRooms).execute();
+            const response = allRooms.map(room => this.roomPresenter.presentRoom(room));
+            res.status(200).json(response);
+        } catch (error) {
+            // @ts-ignore
+            res.status(400).json({message: error.message});
+        }
+    } 
+
     public async joinRoomHandler(req: Request, res: Response): Promise<void> {
         const roomId = req.params.id;
         const participant = req.user as Profile;
@@ -49,6 +61,7 @@ class RoomController {
 const inMemoryRoomRepository = new InMemoryRoomRepository();
 
 export const createRoomController = new RoomController(new CreateRoom(inMemoryRoomRepository), new ApiRoomPresenter());
+export const getAllRoomsController = new RoomController(new GetAllRooms(inMemoryRoomRepository), new ApiRoomPresenter());
 export const joinRoomController = new RoomController(new JoinRoom(inMemoryRoomRepository, new RedisRoomRepository(RedisClient)), new ApiRoomPresenter());
 
 export default RoomController;

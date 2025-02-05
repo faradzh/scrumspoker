@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import type { Card, SelectedCard, User } from "./lib/types";
+import type { Card, Room, SelectedCard, User } from "./lib/types";
 import type { Socket } from "socket.io-client";
 
 export const selectedCards = writable<SelectedCard[]>([]);
@@ -7,6 +7,8 @@ export const selectedCards = writable<SelectedCard[]>([]);
 export const currentUser = writable<User>();
 
 export const modalStore = writable({ isOpen: false });
+
+export const rooms = writable<Room[]>([]);
 
 export const addCardRef = (card: SelectedCard, cardRef: HTMLDivElement) => {
   selectedCards.update((currentCards) => {

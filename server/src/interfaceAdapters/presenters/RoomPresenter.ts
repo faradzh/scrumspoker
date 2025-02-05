@@ -7,6 +7,7 @@ export type RoomResponse = {
     name: string;
     estimationMethod: string;
     participants: number;
+    link: string;
 };
 
 export default RoomPresenter;

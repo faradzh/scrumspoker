@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import AdminForm from "./lib/AdminForm.svelte";
   import AdminHeader from "./lib/AdminHeader.svelte";
   import Modal from "./lib/Modal.svelte";
+  import RoomsList from "./lib/RoomsList.svelte";
+  import { rooms } from "./store";
 
   const formData = $state({
     name: '',
@@ -16,18 +19,38 @@
     }
   };
 
-  function onSubmit(event: Event) {
+  async function onSubmit(event: Event) {
     event?.preventDefault();
     console.log(JSON.stringify(formData));
 
-    fetch('http://localhost:3000/rooms', {
+    const response = await fetch('http://localhost:3000/rooms', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(formData)
-    })
+    });
+
+    const room = await response.json();
+    rooms.update((prevRooms) => [...prevRooms, room]);
   };
+
+  async function fetchRooms() {
+    try {
+      const response =  await fetch('/rooms');
+      if (!response.ok) {
+        throw new Error('Failed to fetch rooms');
+      }
+      const data = await response.json();
+      rooms.set(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  onMount(() => {
+      fetchRooms();
+  });
 </script>
 
 <div class="min-h-full">
@@ -81,6 +104,7 @@
     </div>
   </nav>
   <AdminHeader />
+  <RoomsList />
 </div>
 <Modal onClose={triggerFormSubmit}>
   <AdminForm bind:formRef values={formData} onSubmit={onSubmit}/>
