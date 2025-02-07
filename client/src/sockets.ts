@@ -1,3 +1,4 @@
 import { io } from "socket.io-client";
 
-export const socket = io({transports: ['websocket']});
+const roomId = window.location.pathname.split("/").pop();
+export const socket = io({transports: ['websocket'], query: { roomId }});

@@ -8,23 +8,52 @@
   import { socket } from "./sockets";
   import { selectedCards, currentUser } from "./store";
 
-  function handleReady(data) {
-    const isModerator = data.moderatorId === socket.id;
-    currentUser.set({ id: socket.id!, isModerator });
-  }
+  // function handleReady(data) {
+  //   const isModerator = data.moderatorId === socket.id;
+  //   currentUser.set({ id: socket.id!, isModerator });
+  // }
 
   function handleEstimation(data) {
     selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
   }
 
-  onMount(() => {
-    socket.emit('ready');
+  function fetchCurrentUser() {
+    fetch("/api/current-user", {headers: { 'Accept': 'application/json' }})
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
 
-    socket.on("ready", handleReady);
+        currentUser.set(data);
+      });
+  }
+
+  function fetchRoomData() {
+    const roomId = location.pathname.split("/").pop();
+    
+    fetch(`/rooms/${roomId}`, {headers: { 'Accept': 'application/json' }})
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
+        currentUser.update((prevUser) => ({ ...prevUser, isModerator: $currentUser.id === data.moderatorId}));
+      });
+  }
+
+  onMount(() => {
+    Promise.all([fetchCurrentUser(), fetchRoomData()]);
+
+    // socket.emit('ready');
+
+    // socket.on("ready", handleReady);
     socket.on('estimation', handleEstimation);
 
     return () => {
-      socket.off("ready", handleReady);
+      // socket.off("ready", handleReady);
       socket.off("estimation", handleEstimation);
     };
   });

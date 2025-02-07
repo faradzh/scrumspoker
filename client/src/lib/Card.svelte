@@ -1,22 +1,22 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import cardBack from '../assets/card-cover.svg';
+  import cardBack from '../../public/card-cover.svg';
   import { currentUser, addCardRef, selectCard} from '../store';
   import type { SelectedCard } from './types';
 
-  let cardElement: HTMLDivElement = $state();
+  let cardElement: HTMLDivElement | undefined = $state();
   let { card }: Props = $props();
 
   onMount(() => {
-    addCardRef(card, cardElement);
+    addCardRef(card, cardElement!);
   });
 
   interface Props {
     card: SelectedCard;
   }
   
-  const isMyCard = $currentUser ? $currentUser.id === card.userId : true;
+  const isMyCard = $currentUser.id === card.userId;
 </script>
 
 <div class="poker-card--selected mr-4 basis-[100px] shrink-0 cursor-pointer" bind:this={cardElement}>

@@ -23,13 +23,13 @@ export const addCardRef = (card: SelectedCard, cardRef: HTMLDivElement) => {
 
 export const selectCard = (socket: Socket, card: Card) => {
   const isAlreadySelected = Array.from(get(selectedCards)).find(
-    (selectedCard) => selectedCard.userId === socket.id
+    (selectedCard) => selectedCard.userId === get(currentUser)?.id
   );
   if (!isAlreadySelected) {
     selectedCards.update((currentCards) => [
       ...currentCards,
-      { ...card, userId: socket.id! },
+      { ...card, userId: get(currentUser)?.id },
     ]);
-    socket.emit("estimation", { userId: socket.id, selectedCard: card });
+    socket.emit("estimation", { userId: get(currentUser)?.id, selectedCard: card });
   }
 };

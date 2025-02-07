@@ -36,4 +36,12 @@ api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
 });
 
+api.get("/api/current-user", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json(req.user); // Passport attaches the user object to req.user
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+});
+
 export default api;
