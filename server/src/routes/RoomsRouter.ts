@@ -19,7 +19,7 @@ roomsRouter.get("/:id", async (req, res) => {
     if (acceptHeader && acceptHeader.includes("application/json")) {
         joinRoomController.joinRoomHandler(req, res);
     } else {
-        res.sendFile(path.join(__dirname, "..", "..", "public", "index.html"));
+        res.sendFile(path.join(__dirname, "..", "..", "public", "room.html"));
     }
 });
 

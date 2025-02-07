@@ -1,6 +1,7 @@
 export type Card = {
-  id: string;
+  id: number;
   link: string;
+  value: number;
   ref?: HTMLDivElement;
 };
 

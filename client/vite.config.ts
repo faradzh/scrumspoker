@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        client: "./index.html",
+        client: "./room.html",
         admin: "./admin.html",
       },
     },
