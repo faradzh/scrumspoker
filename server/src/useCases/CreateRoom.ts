@@ -14,7 +14,7 @@ class CreateRoom {
     public async execute(initialData: RoomData): Promise<Room> {
         const roomId = uuidv4();
 
-        const newRoom = new Room(roomId, initialData.name, initialData.estimationMethod);
+        const newRoom = new Room(roomId, initialData.name, initialData.estimationMethod, [], initialData.moderator);
 
         await this.roomRepository.saveRoom?.(newRoom);
 

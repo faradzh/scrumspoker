@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
+import { Profile } from "passport";
 
-import { EstimationMethodEnum, RoomData } from '../types';
+import { EstimationMethodEnum, RoomData, ProfileSchema } from '../types';
 
 export interface CreateRoomRequest extends Request {
     validatedBody?: RoomData;
@@ -10,8 +11,8 @@ export interface CreateRoomRequest extends Request {
 export const CreateRoomSchema = z.object({ 
     name: z.string().min(1, "Room name is required."),
     estimationMethod: EstimationMethodEnum.default('fibbonachi'),
+    moderator: ProfileSchema.optional()
 });
-
 
 export const validateRoom = (schema: typeof CreateRoomSchema) => (req: CreateRoomRequest, res: Response, next: NextFunction) => {
     try {

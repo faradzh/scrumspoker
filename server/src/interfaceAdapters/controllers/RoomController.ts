@@ -23,8 +23,9 @@ class RoomController {
 
     public async createRoomHandler(req: CreateRoomRequest, res: Response): Promise<void> {
         const initialData = req.validatedBody!;
+        const moderator = req.user as Profile;
         try {
-            const room = await (this.useCase as CreateRoom).execute(initialData);
+            const room = await (this.useCase as CreateRoom).execute({...initialData, moderator});
             const roomResponse = this.roomPresenter.presentRoom(room);
             res.status(201).json(roomResponse);
         } catch (error) {
