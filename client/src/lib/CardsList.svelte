@@ -2,30 +2,17 @@
   import { socket } from "../sockets";
 
   import { selectCard } from "../store";
-  import { compareLinks } from "./utils";
   import type { Card } from "./types";
-  import { onMount } from "svelte";
-
-  const svgModules = import.meta.glob("../assets/cards/*.svg");
-
-  let pokerCards: Card[] = $state([]);
-
-  onMount(() => {
-    for (const key in svgModules) {
-      // @ts-ignore
-      svgModules[key]().then(({ default: cardUrl }) => {
-        pokerCards = [...pokerCards, {id: crypto.randomUUID(), link: cardUrl}].sort(compareLinks);
-      });
-    }
-  });
+  import { POKER_CARDS } from "../constants";
 
   function clickHandler(card: Card) {
     selectCard(socket, card);
   }
+  
 </script>
 
 <div class="p-[16px] grid grid-cols-3 gap-4 overflow-y-auto overflow-x-hidden">
-  {#each pokerCards as pokerCard}
+  {#each POKER_CARDS as pokerCard}
     <div class="poker-card cursor-pointer w-full">
       <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
       <img src="{pokerCard.link}" alt="" onclick={() => clickHandler(pokerCard)}>
