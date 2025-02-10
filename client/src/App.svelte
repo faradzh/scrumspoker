@@ -6,8 +6,7 @@
   import Playground from "./lib/Playground.svelte";
   import SessionButtons from "./lib/SessionButtons.svelte";
   import { socket } from "./sockets";
-  import { selectedCards, currentUser } from "./store";
-  import { get } from "animejs";
+  import { selectedCards, currentUser, session } from "./store";
   import { getCardByValue } from "./utils";
 
   function handleEstimation(data) {
@@ -46,6 +45,7 @@
           }
         });
         selectedCards.set(initialSelectedCards);
+        session.update((prevSession) => ({ ...prevSession, estimationIsRevealed: data.estimationIsRevealed }));
       });
   }
 

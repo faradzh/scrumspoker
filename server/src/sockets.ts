@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { estimateTask } from "./interfaceAdapters/controllers/RoomController";
+import { estimateTask, revealEstimation } from "./interfaceAdapters/controllers/RoomController";
 
 export function listen(io: Server) {
   io.on("connection", (socket: Socket) => {
@@ -19,6 +19,7 @@ export function listen(io: Server) {
     });
 
     socket.on("reveal", () => {
+      revealEstimation.execute(roomId);
       socket.to(roomId).emit("reveal");
     });
 

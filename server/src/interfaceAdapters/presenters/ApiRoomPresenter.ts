@@ -10,7 +10,8 @@ class ApiRoomPresenter implements RoomPresenter {
             participants: room?.participants?.length ?? 0,
             link: `/rooms/${room?.id}`,
             moderatorId: room?.moderator?.id ?? '',
-            estimates: room.estimates ?? []
+            estimates: room.estimates ?? [],
+            estimationIsRevealed: room.estimationIsRevealed
         }
     }
 }

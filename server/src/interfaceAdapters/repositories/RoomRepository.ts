@@ -9,4 +9,5 @@ export interface RoomRepository {
     deleteRoom?(roomId: string): Promise<void>;
     getAllRooms?(): Promise<Room[]>;
     addEstimate?(roomId: string, estimation: Estimation): Promise<void>;
+    revealEstimation?(roomId: string): Promise<void>;
 } 

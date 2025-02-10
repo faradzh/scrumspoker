@@ -10,6 +10,8 @@ export const modalStore = writable({ isOpen: false });
 
 export const rooms = writable<Room[]>([]);
 
+export const session = writable<any>();
+
 export const addCardRef = (card: SelectedCard, cardRef: HTMLDivElement) => {
   selectedCards.update((currentCards) => {
     const nextCards = [...currentCards];

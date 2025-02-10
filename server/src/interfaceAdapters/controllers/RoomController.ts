@@ -12,6 +12,7 @@ import { RoomUseCase } from "../../types";
 import RedisClient from "../../infrastructure/redis/RedisClient";
 import GetAllRooms from "../../useCases/GetAllRooms";
 import EstimateTask from "../../useCases/EstimateTask";
+import RevealEstimation from "../../useCases/RevealEstimation";
 
 class RoomController {
     public useCase;
@@ -67,5 +68,6 @@ export const getAllRoomsController = new RoomController(new GetAllRooms(inMemory
 export const joinRoomController = new RoomController(new JoinRoom(inMemoryRoomRepository, new RedisRoomRepository(RedisClient)), new ApiRoomPresenter());
 
 export const estimateTask = new EstimateTask(new RedisRoomRepository(RedisClient));
+export const revealEstimation = new RevealEstimation(new RedisRoomRepository(RedisClient));
 
 export default RoomController;

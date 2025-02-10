@@ -8,14 +8,16 @@ class Room {
     public participants;
     public moderator;
     public estimates: Array<Estimation>;
+    public estimationIsRevealed: boolean;
 
-    constructor(id: string, name: string, estimationMethod: EstimationMethod, participants: User[] = [], moderator?: User){
+    constructor(id: string, name: string, estimationMethod: EstimationMethod, participants: User[] = [], moderator?: User, estimationIsRevealed: boolean = false) {
         this.id = id;
         this.name = name;
         this.estimationMethod = estimationMethod;
         this.participants = participants;
         this.moderator = moderator;
         this.estimates = [];
+        this.estimationIsRevealed = estimationIsRevealed;
     }
 
     public addParticipant(participant: User): void {
