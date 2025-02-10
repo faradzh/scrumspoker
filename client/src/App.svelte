@@ -7,11 +7,8 @@
   import SessionButtons from "./lib/SessionButtons.svelte";
   import { socket } from "./sockets";
   import { selectedCards, currentUser } from "./store";
-
-  // function handleReady(data) {
-  //   const isModerator = data.moderatorId === socket.id;
-  //   currentUser.set({ id: socket.id!, isModerator });
-  // }
+  import { get } from "animejs";
+  import { getCardByValue } from "./utils";
 
   function handleEstimation(data) {
     selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
@@ -41,19 +38,23 @@
           return;
         }
         currentUser.update((prevUser) => ({ ...prevUser, isModerator: $currentUser.id === data.moderatorId}));
+        const initialSelectedCards = data.estimates.map((estimate) => {
+          const card = getCardByValue(estimate.value);
+          return {
+            ...card,
+            userId: estimate.userId,
+          }
+        });
+        selectedCards.set(initialSelectedCards);
       });
   }
 
   onMount(() => {
     Promise.all([fetchCurrentUser(), fetchRoomData()]);
 
-    // socket.emit('ready');
-
-    // socket.on("ready", handleReady);
     socket.on('estimation', handleEstimation);
 
     return () => {
-      // socket.off("ready", handleReady);
       socket.off("estimation", handleEstimation);
     };
   });

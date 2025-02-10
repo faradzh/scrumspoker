@@ -1,29 +1,27 @@
 import { Profile } from "passport";
 
-import InMemoryRoomRepository from "../interfaceAdapters/repositories/InMemoryRoomRepository";
-import RedisRoomRepository from "../interfaceAdapters/repositories/RedisRoomRepository";
 import Room from "../entities/Room";
+import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
 
 class JoinRoom {
-    private inMemoryRoomRepository: InMemoryRoomRepository;
-    private redisRoomRepository: RedisRoomRepository;
+    private persistedRepository: RoomRepository;
+    private temporaryRepository: RoomRepository;
 
-    constructor(inMemoryRoomRepository: InMemoryRoomRepository, redisRoomRepository: RedisRoomRepository) {
-        this.inMemoryRoomRepository = inMemoryRoomRepository;
-        this.redisRoomRepository = redisRoomRepository;
+    constructor(persistedRepository: RoomRepository, temporaryRepository: RoomRepository) {
+        this.persistedRepository = persistedRepository;
+        this.temporaryRepository = temporaryRepository;
     }
 
-    async execute(roomId: string, participant: Profile): Promise<Room> {
-        const baseRoom = await this.inMemoryRoomRepository.findRoomById?.(roomId);
-        if (!baseRoom) {
+    async execute(roomId: string, participant: Profile): Promise<Room | undefined> {
+        const roomSettings = await this.persistedRepository.findRoomById?.(roomId);
+        if (!roomSettings) {
             throw new Error("Room settings not found");
         }
-        baseRoom.addParticipant(participant);
 
         // add participant to redis
-        this.redisRoomRepository.joinRoom?.(baseRoom);
+        const room = this.temporaryRepository.joinRoom?.(roomSettings, participant);
 
-        return baseRoom;
+        return room;
     }
 }
 

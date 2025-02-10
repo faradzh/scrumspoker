@@ -2,6 +2,9 @@ import RedisClient from "ioredis";
 
 import { RoomRepository } from "./RoomRepository";
 import Room from "../../entities/Room";
+import { EstimationMethod, User } from "../../entities/types";
+import { getSortedSetAsArrayOfObjects } from "./utils";
+import { Estimation } from "../../types";
 
 class RedisRoomRepository implements RoomRepository {
   private readonly client: RedisClient.Redis;
@@ -10,7 +13,7 @@ class RedisRoomRepository implements RoomRepository {
     this.client = client;
   }
 
-  async saveRoom(room: Room): Promise<void> {
+  async saveRoom(room: Room): Promise<Room> {
     const pipeline = this.client.pipeline();
 
     pipeline.hmset(`room:${room.id}`, {
@@ -20,38 +23,50 @@ class RedisRoomRepository implements RoomRepository {
     });
 
     room.participants.forEach((participant) => {
-      pipeline.sadd(`room:${room.id}:participants`, participant.id);
+      pipeline.sadd(`room:${room.id}:participants`, JSON.stringify(participant));
     });
     
-    // pipeline.rpush(`room:${room.id}:estimates`, JSON.stringify(estimate));
-
     pipeline.exec();
+
+    return room;
   }
 
   async findRoomById(id: string): Promise<Room | undefined> {
     const metadata = await this.client.hgetall(`room:${id}`);
+    const participants = (await this.client.smembers(`room:${id}:participants`)).map((participant) => JSON.parse(participant));
+    const estimates = await this.client.zrange(`room:${id}:estimation`, 0, -1, "WITHSCORES");
 
-      // Room does not exist
-      if (!metadata || !Object.keys(metadata).length) {
-        return undefined;
-      }
+    // Room does not exist
+    if (!metadata || !Object.keys(metadata).length) {
+      return undefined;
+    }
     
-      return {
-        id,
-        name: metadata.name,
-      } as Room;
-  }
-
-  async joinRoom(room: Room): Promise<void> {
-    const existingRoom = await this.findRoomById(room.id);
-
-    if (!existingRoom) {
-      this.saveRoom(room);
+    const room = new Room(id, metadata.name, metadata.estimationMethod as EstimationMethod, participants, {id: metadata.moderatorId} as User);
+    
+    if (estimates.length > 0) {
+      getSortedSetAsArrayOfObjects(estimates).forEach((estimate) => {
+        estimate && room.addEstimate(estimate);
+      });
     }
 
-    room.participants.forEach((participant) => {
-      this.client.sadd(`room:${room.id}:participants`, participant.id);
-    });
+    return room;
+  }
+
+  async joinRoom(room: Room, participant: User): Promise<Room| undefined> {
+    let existingRoom = await this.findRoomById(room.id);
+
+    if (!existingRoom) {
+      existingRoom = await this.saveRoom(room);
+    }
+
+    this.client.sadd(`room:${room.id}:participants`, JSON.stringify(participant));
+
+    return existingRoom;
+  }
+
+  async addEstimate(roomId: string, estimation: Estimation): Promise<void> {
+    const timestamp = new Date();
+    await this.client.zadd(`room:${roomId}:estimation`, estimation.value, estimation.userId);
   }
 }
 

@@ -1,3 +1,4 @@
+import { Estimation } from "../types";
 import { EstimationMethod, User } from "./types";
 
 class Room {
@@ -6,6 +7,7 @@ class Room {
     public estimationMethod;
     public participants;
     public moderator;
+    public estimates: Array<Estimation>;
 
     constructor(id: string, name: string, estimationMethod: EstimationMethod, participants: User[] = [], moderator?: User){
         this.id = id;
@@ -13,6 +15,7 @@ class Room {
         this.estimationMethod = estimationMethod;
         this.participants = participants;
         this.moderator = moderator;
+        this.estimates = [];
     }
 
     public addParticipant(participant: User): void {
@@ -30,14 +33,12 @@ class Room {
         this.participants = this.participants?.filter((p) => p.id != participant.id);;
     }
 
-    public addEstimate(participant: User, estimate: number): void {
-        const targetParticipant = this.participants.find((p) => p.id === participant.id);
+    public addEstimate(estimation: Estimation): void {
+        const targetParticipant = this.participants.find((p) => p.id === estimation.userId);
         if (!targetParticipant) {
             throw new Error('The participant is NOT in the room!')
         }
-        if (targetParticipant){
-            targetParticipant.estimate = estimate;
-        }
+        this.estimates.push(estimation);
     }
 }
 

@@ -9,6 +9,7 @@ export type RoomResponse = {
     participants: number;
     link: string;
     moderatorId: string;
+    estimates?: Array<{userId: string, value: string}>;
 };
 
 export default RoomPresenter;

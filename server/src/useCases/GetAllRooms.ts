@@ -2,16 +2,20 @@ import { Profile } from "passport";
 
 import InMemoryRoomRepository from "../interfaceAdapters/repositories/InMemoryRoomRepository";
 import Room from "../entities/Room";
+import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
 
 class GetAllRooms {
-    private inMemoryRoomRepository: InMemoryRoomRepository;
+    private roomRepository: RoomRepository;
 
-    constructor(inMemoryRoomRepository: InMemoryRoomRepository) {
-        this.inMemoryRoomRepository = inMemoryRoomRepository;
+    constructor(roomRepository: RoomRepository) {
+        this.roomRepository = roomRepository;
     }
 
-    async execute(moderator?: Profile): Promise<Room[]> {
-        return await this.inMemoryRoomRepository.getAllRooms();
+    async execute(moderator?: Profile): Promise<Room[] | undefined> {
+        if (this.roomRepository.getAllRooms === undefined) {
+            return;
+        }
+        return await this.roomRepository.getAllRooms();
     }
 }
 
