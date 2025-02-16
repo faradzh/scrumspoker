@@ -11,6 +11,7 @@ export interface SelectedCard extends Card {
 
 export type User = {
   id: string;
+  picture: string;
   isModerator: boolean;
 };
 
