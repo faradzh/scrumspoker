@@ -9,7 +9,7 @@
   import { getCardByValue } from "./utils";
   import Stories from "./lib/Stories.svelte";
   import Session from "./lib/Session.svelte";
-  import type { SelectedCard } from "./lib/types";
+  import type { SelectedCard, User } from "./lib/types";
 
   function handleEstimation(data: {selectedCard: SelectedCard}) {
     selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
@@ -43,7 +43,7 @@
           const card = getCardByValue(estimate.value);
           return {
             ...card,
-            userId: estimate.userId,
+            user: estimate.user,
           }
         });
         selectedCards.set(initialSelectedCards);

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { socket } from "../sockets";
 
-  import { selectCard } from "../store";
   import type { Card } from "./types";
   import { POKER_CARDS } from "../constants";
+  import { selectCard } from "./utils";
 
   function clickHandler(card: Card) {
     selectCard(socket, card);

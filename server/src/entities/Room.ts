@@ -36,7 +36,7 @@ class Room {
     }
 
     public addEstimate(estimation: Estimation): void {
-        const targetParticipant = this.participants.find((p) => p.id === estimation.userId);
+        const targetParticipant = this.participants.find((p) => p.id === estimation.user.id);
         if (!targetParticipant) {
             throw new Error('The participant is NOT in the room!')
         }

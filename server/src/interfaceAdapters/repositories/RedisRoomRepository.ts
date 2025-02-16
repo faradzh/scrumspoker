@@ -47,9 +47,10 @@ class RedisRoomRepository implements RoomRepository {
     const room = new Room(id, metadata.name, metadata.estimationMethod as EstimationMethod, participants, {id: metadata.moderatorId} as User, estimationIsRevealed === "1");
     
     if (estimates.length > 0) {
-      getSortedSetAsArrayOfObjects(estimates).forEach((estimate) => {
-        estimate && room.addEstimate(estimate);
-      });
+      for (const estimate of getSortedSetAsArrayOfObjects(estimates)){
+        const userPicture = await this.client.hget(`room:${id}:user:${estimate.user.id}`, 'profilePicture');
+        room.addEstimate({...estimate, user: {...estimate.user, picture: userPicture} as User});
+      };
     }
 
     return room;
@@ -69,7 +70,8 @@ class RedisRoomRepository implements RoomRepository {
 
   async addEstimate(roomId: string, estimation: Estimation): Promise<void> {
     const timestamp = new Date();
-    await this.client.zadd(`room:${roomId}:estimation`, estimation.value, estimation.userId);
+    await this.client.zadd(`room:${roomId}:estimation`, estimation.value, estimation.user.id);
+    await this.client.hset(`room:${roomId}:user:${estimation.user.id}`, 'profilePicture', estimation.user.picture ?? '');
   }
 
   async revealEstimation(roomId: string): Promise<void> {

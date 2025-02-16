@@ -2,8 +2,9 @@
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
 
-  import { addCardRef, currentUser, sessionInfo } from '../store';
+  import { currentUser, sessionInfo } from '../store';
   import type { SelectedCard } from './types';
+  import { addCardRef } from './utils';
 
   let cardElement: HTMLDivElement | undefined = $state();
   let { card }: Props = $props();
@@ -17,12 +18,12 @@
   }
 
   function isMyCard() {
-    if (get(currentUser).id === card.userId) {
+    if (get(currentUser).id === card.user.id) {
       return true;
     }
     return get(sessionInfo).estimationIsRevealed;
   }
-  const userPicture = get(currentUser).picture;
+  const userPicture = card.user.picture;
 </script>
 
 <div class="relative mr-4 basis-[100px] shrink-0 cursor-pointer">

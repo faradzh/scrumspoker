@@ -11,9 +11,9 @@ export function listen(io: Server) {
     }
     
     socket.on("estimation", (data) => {
-      const {userId, selectedCard} = data;
+      const {selectedCard} = data;
 
-      estimateTask.execute(roomId, {userId, value: selectedCard.value});
+      estimateTask.execute(roomId, {user: selectedCard.user, value: selectedCard.value});
       
       socket.to(roomId).emit("estimation", data);
     });

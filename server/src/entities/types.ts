@@ -6,4 +6,5 @@ import { Profile } from 'passport';
 export type EstimationMethod = z.infer<typeof EstimationMethodEnum>;
 export interface User extends Profile {
     estimate?: number;
+    picture?: string;
 }

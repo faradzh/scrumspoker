@@ -5,6 +5,7 @@ import { CreateRoomSchema } from './middleware/validationMiddleware';
 import CreateRoom from './useCases/CreateRoom';
 import JoinRoom from './useCases/JoinRoom';
 import GetAllRooms from './useCases/GetAllRooms';
+import { User } from './entities/types';
 
 export type RoomData = z.infer<typeof CreateRoomSchema>;
 
@@ -19,6 +20,6 @@ export const ProfileSchema: z.ZodType<Profile> = z.object({
 });
 
 export type Estimation = {
-    userId: string;
+    user: User;
     value: string;
 };
