@@ -6,7 +6,7 @@ passport.use(googleStrategy);
 
 // serialize user
 passport.serializeUser((user: any, done) => {
-  done(null, { id: user.id, email: user.email });
+  done(null, { id: user.id, picture: user._json.picture });
 });
 
 // deserialize user

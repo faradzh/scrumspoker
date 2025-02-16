@@ -26,7 +26,7 @@ export const validateRoom = (schema: typeof CreateRoomSchema) => (req: CreateRoo
 
 export const checkLoggedIn = (req: Request, res: Response, next: NextFunction) => {
     const isLoggedIn = req.isAuthenticated() && req.user;
-
+    
     if (!isLoggedIn) {
         req.session!.returnTo = req.originalUrl;
         return res.redirect('/auth/google');
