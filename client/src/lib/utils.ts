@@ -2,9 +2,10 @@ import anime from "animejs";
 import { get } from "svelte/store";
 
 import type { Card, SelectedCard } from "./types";
-import { currentUser, selectedCards, totalEstimate } from "../store";
+import { currentUser, selectedCards, timer, totalEstimate } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
+import { TIMER_INIT } from "../constants";
 
 export function compareLinks(a: Card, b: Card): number {
   if (a.link < b.link) {
@@ -31,12 +32,28 @@ export function reEstimateHandler() {
   selectedCards.update(() => []);
 }
 
+function resetTimer() {
+  timer.update(t => {
+    t.value = TIMER_INIT;
+    return t;
+  });
+  timer.update(t => {
+    clearInterval(t.interval);
+    return t;
+  });
+
+}
+
 export function revealCards() {
   const refList = get(selectedCards).map((pokerCard) => pokerCard.ref!);
-  
+
+  resetTimer();
+
   flipHandler(refList, () => {
-    const total = calculateAverage();
-    totalEstimate.set(total);
+    if (get(selectedCards).length !== 0) {
+      const total = calculateAverage();
+      totalEstimate.set(total);
+    }
   });
 
   socket.emit('reveal');
@@ -62,9 +79,10 @@ export const addCardRef = (card: SelectedCard, cardRef: HTMLDivElement) => {
 
 export const selectCard = (socket: Socket, card: Card) => {
   const isAlreadySelected = Array.from(get(selectedCards)).find(
-    (selectedCard) => selectedCard.user.id === get(currentUser)?.id
+    (selectedCard) => selectedCard.user?.id === get(currentUser)?.id
   );
   if (!isAlreadySelected) {
+    console.log("selected card", card);
     selectedCards.update((currentCards) => [
       ...currentCards,
       { ...card, user: get(currentUser)},

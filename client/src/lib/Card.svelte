@@ -18,20 +18,26 @@
   }
 
   function isMyCard() {
-    if (get(currentUser).id === card.user.id) {
-      return true;
-    }
-    return get(sessionInfo).estimationIsRevealed;
+    // if (get(currentUser).id === card.user?.id) {
+    //   return true;
+    // }
+    // return get(sessionInfo).estimationIsRevealed;
+    return true;
   }
-  const userPicture = card.user.picture;
+  const userPicture = card.user?.picture ?? '';
 </script>
 
-<div class="relative mr-4 basis-[100px] shrink-0 cursor-pointer">
+<div class="relative mr-8 basis-[100px] shrink-0 cursor-pointer">
   <div class="avatar placeholder absolute top-[-16px] right-[-16px] z-[1]">
-    <div class="ring-primary ring-offset-base-100 ring ring-offset-2 w-12 rounded-full">
-      <!-- <span class="text-xl">AI</span> -->
-      <img src={userPicture} alt="User avatar"/>
-    </div>
+    {#if userPicture}
+      <div class="ring-primary ring-offset-base-100 ring ring-offset-2 w-12 rounded-full">
+        <img src={userPicture} alt="User avatar"/>
+      </div>
+    {:else}
+      <div class="bg-neutral text-neutral-content w-12 rounded-full">
+        <span class="text-xl">RJ</span>
+      </div>
+    {/if}
   </div>
   <div class="poker-card--selected " bind:this={cardElement}>
     <div class="front w-full h-full">

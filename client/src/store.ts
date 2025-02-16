@@ -1,7 +1,7 @@
-import { get, writable } from "svelte/store";
-import type { Socket } from "socket.io-client";
+import { writable } from "svelte/store";
 
-import type { Card, Room, SelectedCard, User } from "./lib/types";
+import type { Room, SelectedCard, User } from "./lib/types";
+import { TIMER_INIT } from "./constants";
 
 export const selectedCards = writable<SelectedCard[]>([]);
 
@@ -13,4 +13,6 @@ export const rooms = writable<Room[]>([]);
 
 export const sessionInfo = writable<any>();
 
-export let totalEstimate = writable<number>(0);
+export const totalEstimate = writable<number>(0);
+
+export const timer = writable<{value: number, interval: number | undefined}>({value: TIMER_INIT, interval: undefined});

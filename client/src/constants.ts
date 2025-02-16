@@ -1,5 +1,7 @@
 import type { Card } from "./lib/types";
 
+export const TIMER_INIT = 10;
+
 export const POKER_CARDS: Card[]  = [
     {
         id : 1,
