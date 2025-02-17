@@ -18,9 +18,15 @@ export function listen(io: Server) {
       socket.to(roomId).emit("estimation", data);
     });
 
-    socket.on("reveal", () => {
-      revealEstimation.execute(roomId);
-      socket.to(roomId).emit("reveal");
+    socket.on("reveal", (callback) => {
+      try {
+        revealEstimation.execute(roomId);
+        socket.to(roomId).emit("reveal");
+        callback({status: "success", message: "The estimation was revealed"});
+      } catch (error: unknown) {
+        // @ts-ignore
+        callback({status: "error", message: error.message});
+      }
     });
 
     io.on('error', (err) => {

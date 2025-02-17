@@ -2,7 +2,7 @@ import anime from "animejs";
 import { get } from "svelte/store";
 
 import type { Card, SelectedCard } from "./types";
-import { cardRefsStore, currentUser, selectedCards, timer, totalEstimate } from "../store";
+import { cardRefsStore, currentUser, selectedCards, sessionInfo, timer, totalEstimate } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
 import { TIMER_INIT } from "../constants";
@@ -47,22 +47,33 @@ function resetTimer() {
 }
 
 export function revealCards() {
+  if (get(selectedCards).length === 0) {
+    return;
+  }
+
   revealHandler();
-  socket.emit('reveal');
+
+  socket.emit('reveal', ({status}: any) => {
+    if (status === 'success') {
+      console.log('The estimation was revealed');
+      sessionInfo.update((info) => {
+        info.estimationIsRevealed = true;
+        return info;
+      });
+    }
+  });
 }
 
 export function revealHandler() {
-  resetTimer();
-
   const cardRefs = get(cardRefsStore);
-
-  console.log('Card refs', cardRefs);
+  
+  if (get(selectedCards).length === 0 || cardRefs.length === 0) {
+    return;
+  }
 
   flipHandler(cardRefs, () => {
-    if (cardRefs.length !== 0) {
-      const total = calculateAverage();
-      totalEstimate.set(total);
-    }
+    const total = calculateAverage();
+    totalEstimate.set(total);
   });
 };
 

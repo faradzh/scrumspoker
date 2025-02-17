@@ -1,8 +1,16 @@
 <script lang="ts">
+  import { selectedCards, sessionInfo } from "../store";
   import Participants from "./Participants.svelte";
   import Timer from "./Timer.svelte";
   import TotalEstimate from "./TotalEstimate.svelte";
   import { reEstimateHandler, revealCards } from "./utils";
+
+  function revealIsDisabled() {
+    if ($selectedCards.length === 0) {
+        return true;
+    }
+    return $sessionInfo?.estimationIsRevealed;
+  }
 </script>
 
 <section class="relative lg:row-span-2 text-black">
@@ -22,7 +30,7 @@
                 <TotalEstimate />
             </div>
             <div class="flex justify-between">
-                <button onclick={revealCards} class="btn btn-sm">Reveal</button>
+                <button onclick={revealCards} class={`btn btn-sm ${revealIsDisabled() ? 'btn-disabled' : ''}`}>Reveal</button>
                 <button onclick={reEstimateHandler} class="btn btn-sm">Re-estimate</button>
                 <button class="btn btn-accent btn-sm">Save</button>
             </div>
