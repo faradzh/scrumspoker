@@ -9,11 +9,7 @@
   import { getCardByValue } from "./utils";
   import Stories from "./lib/Stories.svelte";
   import Session from "./lib/Session.svelte";
-  import type { SelectedCard, User } from "./lib/types";
-
-  function handleEstimation(data: {selectedCard: SelectedCard}) {
-    selectedCards.update((prevCards) => [...prevCards, data.selectedCard]);
-  }
+  import { estimationHandler } from "./lib/utils";
 
   function fetchCurrentUser() {
     fetch("/api/current-user", {headers: { 'Accept': 'application/json' }})
@@ -23,7 +19,6 @@
           console.error(data.error);
           return;
         }
-
         currentUser.set(data);
       });
   }
@@ -54,10 +49,10 @@
   onMount(() => {
     Promise.all([fetchCurrentUser(), fetchRoomData()]);
 
-    socket.on('estimation', handleEstimation);
+    socket.on('estimation', estimationHandler);
 
     return () => {
-      socket.off("estimation", handleEstimation);
+      socket.off("estimation", estimationHandler);
     };
   });
 </script>

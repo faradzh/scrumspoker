@@ -5,6 +5,8 @@ import { TIMER_INIT } from "./constants";
 
 export const selectedCards = writable<SelectedCard[]>([]);
 
+export const cardRefsStore = writable<HTMLDivElement[]>([]);
+
 export const currentUser = writable<User>();
 
 export const modalStore = writable({ isOpen: false });

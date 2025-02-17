@@ -2,7 +2,7 @@ import anime from "animejs";
 import { get } from "svelte/store";
 
 import type { Card, SelectedCard } from "./types";
-import { currentUser, selectedCards, timer, totalEstimate } from "../store";
+import { cardRefsStore, currentUser, selectedCards, timer, totalEstimate } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
 import { TIMER_INIT } from "../constants";
@@ -30,6 +30,9 @@ export function flipHandler(targets: HTMLDivElement[], onComplete: () => void) {
 
 export function reEstimateHandler() {
   selectedCards.update(() => []);
+  cardRefsStore.update(() => []);
+  resetTimer();
+  totalEstimate.set(0);
 }
 
 function resetTimer() {
@@ -41,23 +44,27 @@ function resetTimer() {
     clearInterval(t.interval);
     return t;
   });
-
 }
 
 export function revealCards() {
-  const refList = get(selectedCards).map((pokerCard) => pokerCard.ref!);
+  revealHandler();
+  socket.emit('reveal');
+}
 
+export function revealHandler() {
   resetTimer();
 
-  flipHandler(refList, () => {
-    if (get(selectedCards).length !== 0) {
+  const cardRefs = get(cardRefsStore);
+
+  console.log('Card refs', cardRefs);
+
+  flipHandler(cardRefs, () => {
+    if (cardRefs.length !== 0) {
       const total = calculateAverage();
       totalEstimate.set(total);
     }
   });
-
-  socket.emit('reveal');
-}
+};
 
 export function calculateAverage(): number {
   const cards = get(selectedCards);
@@ -66,29 +73,42 @@ export function calculateAverage(): number {
   return sum / cards.length;
 }
 
-export const addCardRef = (card: SelectedCard, cardRef: HTMLDivElement) => {
-  selectedCards.update((currentCards) => {
-    const nextCards = [...currentCards];
-    const updateCardIdx = currentCards.findIndex(
-      (currentCard) => currentCard.id == card.id
-    );
-    nextCards[updateCardIdx].ref = cardRef;
-    return nextCards;
-  });
+export const addCardRef = (cardRef: HTMLDivElement) => {
+  const cardRefIndex = get(cardRefsStore).findIndex(
+    (currentRef) => currentRef === cardRef
+  );
+
+  const updatedCardRefs = [...get(cardRefsStore)];
+  
+  if (cardRefIndex === -1) {
+    updatedCardRefs.push(cardRef);
+  } else {
+    updatedCardRefs[cardRefIndex] = cardRef;
+  }
+
+  cardRefsStore.set(updatedCardRefs);
 };
 
 export const selectCard = (socket: Socket, card: Card) => {
-  const isAlreadySelected = Array.from(get(selectedCards)).find(
-    (selectedCard) => selectedCard.user?.id === get(currentUser)?.id
+  estimationHandler({selectedCard: { ...card, user: get(currentUser)}});
+
+  socket.emit("estimation", {
+    selectedCard: {...card, user: get(currentUser)}
+  });
+};
+
+export const estimationHandler = ({selectedCard}: {selectedCard: SelectedCard}) => {
+  const myCardIndex = get(selectedCards).findIndex(
+    (currentCard) => currentCard.user?.id === selectedCard.user?.id
   );
-  if (!isAlreadySelected) {
-    console.log("selected card", card);
-    selectedCards.update((currentCards) => [
-      ...currentCards,
-      { ...card, user: get(currentUser)},
-    ]);
-    socket.emit("estimation", {
-      selectedCard: {...card, user: get(currentUser)}
-    });
+
+  const updatedCards = [...get(selectedCards)];
+  
+  if (myCardIndex === -1) {
+    updatedCards.push(selectedCard);
+  } else {
+    updatedCards[myCardIndex] = selectedCard;
   }
+
+  selectedCards.set(updatedCards);
 };

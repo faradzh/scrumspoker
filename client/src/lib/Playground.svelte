@@ -1,13 +1,18 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { socket } from "../sockets";
   import { selectedCards } from "../store";
   import Card from "./Card.svelte";
-  import { flipHandler } from "./utils";
+  import { revealHandler } from "./utils";
 
-  socket.on('reveal', () => {
-    const refList = $selectedCards.map((pokerCard) => pokerCard.ref!);
-    flipHandler(refList, () => {});
-  });
+  onMount(() => {
+    socket.on('reveal', revealHandler);
+
+    return () => {
+      socket.off('reveal', revealHandler);
+    }
+  })
+
 </script>
 
 <div class="flex p-6 overflow-x-auto">

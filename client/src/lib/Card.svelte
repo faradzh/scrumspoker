@@ -1,29 +1,29 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { get } from 'svelte/store';
-
-  import { currentUser, sessionInfo } from '../store';
   import type { SelectedCard } from './types';
   import { addCardRef } from './utils';
+  import { currentUser, sessionInfo } from '../store';
 
   let cardElement: HTMLDivElement | undefined = $state();
   let { card }: Props = $props();
 
-  onMount(() => {
-    addCardRef(card, cardElement!);
+  $effect(() => {
+    console.log('In effect');
+    if (!isMyCard()) {
+      addCardRef(cardElement!);
+    }
   });
-
+    
   interface Props {
     card: SelectedCard;
   }
 
   function isMyCard() {
-    // if (get(currentUser).id === card.user?.id) {
-    //   return true;
-    // }
-    // return get(sessionInfo).estimationIsRevealed;
-    return true;
+    if ($currentUser.id === card.user?.id) {
+      return true;
+    }
+    return $sessionInfo.estimationIsRevealed;
   }
+
   const userPicture = card.user?.picture ?? '';
 </script>
 
