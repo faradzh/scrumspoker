@@ -47,7 +47,9 @@ function resetTimer() {
 }
 
 export function revealCards() {
-  if (get(selectedCards).length === 0) {
+  const cardRefs = get(cardRefsStore);
+  
+  if (cardRefs.length === 0) {
     return;
   }
 
@@ -67,7 +69,7 @@ export function revealCards() {
 export function revealHandler() {
   const cardRefs = get(cardRefsStore);
   
-  if (get(selectedCards).length === 0 || cardRefs.length === 0) {
+  if (cardRefs.length === 0) {
     return;
   }
 

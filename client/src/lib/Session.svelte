@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { selectedCards, sessionInfo } from "../store";
+  import { cardRefsStore, selectedCards, sessionInfo } from "../store";
   import Participants from "./Participants.svelte";
   import Timer from "./Timer.svelte";
   import TotalEstimate from "./TotalEstimate.svelte";
   import { reEstimateHandler, revealCards } from "./utils";
 
   function revealIsDisabled() {
-    if ($selectedCards.length === 0) {
+    if ($cardRefsStore.length === 0) {
         return true;
     }
     return $sessionInfo?.estimationIsRevealed;
