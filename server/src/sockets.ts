@@ -13,6 +13,9 @@ export function listen(io: Server) {
       }
     });
 
+    socket.on("leaveRoom", ({user}) => {
+      socket.to(roomId).emit("leaveRoom", {user});
+    });
     
     socket.on("estimation", (data) => {
       const {selectedCard} = data;

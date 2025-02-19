@@ -59,8 +59,28 @@
 
     socket.on('estimation', estimationHandler);
 
+    socket.on("leaveRoom", ({user}) => {
+      participants.update((prevParticipants) => prevParticipants.filter((participant) => participant.id !== user.id));
+    });
+
     return () => {
       socket.off("estimation", estimationHandler);
+      socket.off("leaveRoom");
+      socket.off("joinRoom");
+    };
+  });
+
+  onMount(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+        event.preventDefault();
+        socket.emit('leaveRoom', {user: get(currentUser)});
+    };
+
+    // fires when the user closes the tab
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   });
 </script>
