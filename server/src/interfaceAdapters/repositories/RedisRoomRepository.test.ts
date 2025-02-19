@@ -6,16 +6,18 @@ import Room from '../../entities/Room';
 import { EstimationMethod, User } from '../../entities/types';
 
 describe('RedisRoomRepository', () => {
-    function setUp() {
-        const redis = new Redis();
-        const redisRoomRepository = new RedisRoomRepository(redis);
+    const redis = new Redis();
+    const redisRoomRepository = new RedisRoomRepository(redis);
 
-        return { redis, redisRoomRepository };
-    };
+    beforeEach(() => {
+        redis.flushall();
+    });
+
+    afterEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('should save room', () => {
-        const {redis, redisRoomRepository} = setUp();
-
         const room = new Room('1', 'Room 1', 'fibonacci' as EstimationMethod, [{ id: '1' } as User, {id: '2'} as User], { id: '1' } as User);
         redisRoomRepository.saveRoom(room);
 
@@ -37,8 +39,6 @@ describe('RedisRoomRepository', () => {
     });
 
     it('should find room by id', () => {
-        const {redisRoomRepository} = setUp();
-
         const room = new Room('1', 'Room 1', 'fibonacci' as EstimationMethod, [{ id: '1' } as User, {id: '2'} as User], { id: '1' } as User);
         redisRoomRepository.saveRoom(room);
 
@@ -48,8 +48,6 @@ describe('RedisRoomRepository', () => {
     });
 
     it('should join room for the first time', async () => {
-        const {redis, redisRoomRepository} = setUp();
-
         const roomEntity = new Room('1', 'Room 1', 'fibonacci' as EstimationMethod, [{ id: '1' } as User, {id: '2'} as User], { id: '1' } as User);
 
         const foundRoom = await redisRoomRepository.joinRoom(roomEntity);
