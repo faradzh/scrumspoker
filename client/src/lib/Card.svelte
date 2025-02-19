@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { SelectedCard } from './types';
   import { addCardRef } from './utils';
-  import { currentUser, sessionInfo } from '../store';
+  import { currentUser, participants, sessionInfo } from '../store';
+  import { get } from 'svelte/store';
 
   let cardElement: HTMLDivElement | undefined = $state();
   let { card }: Props = $props();
 
   $effect(() => {
-    console.log('In effect');
     if (!isMyCard()) {
       addCardRef(cardElement!);
     }
@@ -18,13 +18,16 @@
   }
 
   function isMyCard() {
-    if ($currentUser.id === card.user?.id) {
+    if ($currentUser.id === card.userId) {
       return true;
     }
-    return $sessionInfo.estimationIsRevealed;
+    return get(sessionInfo).estimationIsRevealed;
   }
+  
+  const userPicture = get(participants).find((participant) => {
+    return participant.id === card.userId;
+  })?.picture ?? '';
 
-  const userPicture = card.user?.picture ?? '';
 </script>
 
 <div class="relative mr-8 basis-[100px] shrink-0 cursor-pointer">

@@ -30,7 +30,7 @@
                 <TotalEstimate />
             </div>
             <div class="flex justify-between">
-                <button onclick={revealCards} class={`btn btn-sm ${revealIsDisabled() ? 'btn-disabled' : ''}`}>Reveal</button>
+                <button onclick={revealCards} class={`btn btn-sm`}>Reveal</button>
                 <button onclick={reEstimateHandler} class="btn btn-sm">Re-estimate</button>
                 <button class="btn btn-accent btn-sm">Save</button>
             </div>
