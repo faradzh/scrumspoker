@@ -10,17 +10,11 @@
   import Stories from "./lib/Stories.svelte";
   import Session from "./lib/Session.svelte";
   import { estimationHandler } from "./lib/utils";
+  import { get } from "svelte/store";
 
-  function fetchCurrentUser() {
-    fetch("/api/current-user", {headers: { 'Accept': 'application/json' }})
+  async function fetchCurrentUser() {
+    return fetch("/api/current-user", {headers: { 'Accept': 'application/json' }})
       .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          console.error(data.error);
-          return;
-        }
-        currentUser.set(data);
-      });
   }
 
   function fetchRoomData() {
@@ -49,7 +43,19 @@
   }
 
   onMount(() => {
-    Promise.all([fetchCurrentUser(), fetchRoomData()]);
+    Promise.all([fetchCurrentUser(), fetchRoomData()]).then((values) => {
+      const [user] = values;
+      currentUser.set(user);
+
+      socket.emit('joinRoom', {user});
+
+      socket.on('joinRoom', ({user}) => {
+        if (get(participants).find((participant) => participant.id === user.id)) {
+          return;
+        }
+        participants.update((prevParticipants) => [...prevParticipants, user]);
+      });
+    });
 
     socket.on('estimation', estimationHandler);
 

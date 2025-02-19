@@ -6,9 +6,13 @@ export function listen(io: Server) {
     const roomId = socket.handshake.query.roomId as string;
     console.log('The user joined the room:', roomId);
 
-    if (roomId) {
-      socket.join(roomId);
-    }
+    socket.on("joinRoom", ({user}) => {
+      if (roomId) {
+        socket.join(roomId);
+        socket.to(roomId).emit("joinRoom", {user});
+      }
+    });
+
     
     socket.on("estimation", (data) => {
       const {selectedCard} = data;
