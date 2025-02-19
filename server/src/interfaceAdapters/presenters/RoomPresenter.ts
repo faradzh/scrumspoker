@@ -1,3 +1,4 @@
+import { User } from "../../entities/types";
 import { Estimation } from "../../types";
 
 interface RoomPresenter {
@@ -8,7 +9,7 @@ export type RoomResponse = {
     id: string;
     name: string;
     estimationMethod: string;
-    participants: number;
+    participants: Array<User>;
     link: string;
     moderatorId: string;
     estimates?: Array<Estimation>;

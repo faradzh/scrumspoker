@@ -4,7 +4,8 @@ import { Estimation } from "../../types";
 
 export interface RoomRepository {
     saveRoom?(data: unknown): Promise<Room | void>;
-    joinRoom?(room: Room, participant: User): Promise<Room | undefined>;
+    saveParticipant?(roomId: string, participant: User): Promise<void>;
+    joinRoom?(room: Room): Promise<Room>;
     findRoomById?(roomId: string): Promise<Room | undefined>;
     deleteRoom?(roomId: string): Promise<void>;
     getAllRooms?(): Promise<Room[]>;

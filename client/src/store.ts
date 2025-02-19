@@ -18,3 +18,5 @@ export const sessionInfo = writable<any>();
 export const totalEstimate = writable<number>(0);
 
 export const timer = writable<{value: number, interval: number | undefined}>({value: TIMER_INIT, interval: undefined});
+
+export const participants = writable<User[]>([]);

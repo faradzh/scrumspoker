@@ -5,7 +5,7 @@
   import Navbar from "./lib/Navbar.svelte";
   import Playground from "./lib/Playground.svelte";
   import { socket } from "./sockets";
-  import { selectedCards, currentUser, sessionInfo } from "./store";
+  import { selectedCards, currentUser, sessionInfo, participants } from "./store";
   import { getCardByValue } from "./utils";
   import Stories from "./lib/Stories.svelte";
   import Session from "./lib/Session.svelte";
@@ -29,6 +29,7 @@
     fetch(`/rooms/${roomId}`, {headers: { 'Accept': 'application/json' }})
       .then((res) => res.json())
       .then((data) => {
+        console.log("Data", data);
         if (data.error) {
           console.error(data.error);
           return;
@@ -43,6 +44,7 @@
         });
         selectedCards.set(initialSelectedCards);
         sessionInfo.update((prevSession) => ({ ...prevSession, estimationIsRevealed: data.estimationIsRevealed }));
+        participants.set(data.participants);
       });
   }
 

@@ -35,6 +35,10 @@ class Room {
         this.participants = this.participants?.filter((p) => p.id != participant.id);;
     }
 
+    public hasParticipant(participant: User): boolean {
+        return !!this.participants.find((p) => p.id === participant.id);
+    }
+
     public addEstimate(estimation: Estimation): void {
         const targetParticipant = this.participants.find((p) => p.id === estimation.user.id);
         if (!targetParticipant) {
