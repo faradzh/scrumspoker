@@ -39,7 +39,7 @@
           const card = getCardByValue(estimate.value);
           return {
             ...card,
-            user: estimate.user,
+            userId: estimate.userId,
           }
         });
         selectedCards.set(initialSelectedCards);

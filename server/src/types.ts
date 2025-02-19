@@ -20,6 +20,6 @@ export const ProfileSchema: z.ZodType<Profile> = z.object({
 });
 
 export type Estimation = {
-    user: User;
+    userId: string;
     value: string;
 };

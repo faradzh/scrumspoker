@@ -38,7 +38,7 @@ class RedisRoomRepository implements RoomRepository {
   async findRoomById(id: string): Promise<Room | undefined> {
     const metadata = await this.client.hgetall(`room:${id}`);
     const participants = (await this.client.lrange(`room:${id}:participants`, 0, -1)).map((participant) => JSON.parse(participant));
-    const estimates = await this.client.zrange(`room:${id}:estimation`, 0, -1, "WITHSCORES");
+    const estimates = (await this.client.lrange(`room:${id}:estimation`, 0, -1)).map((estimate) => JSON.parse(estimate));
     const estimationIsRevealed = await this.client.get(`room:${id}:estimationIsRevealed`);
 
     // Room does not exist
@@ -48,12 +48,9 @@ class RedisRoomRepository implements RoomRepository {
     
     const room = new Room(id, metadata.name, metadata.estimationMethod as EstimationMethod, participants, {id: metadata.moderatorId} as User, estimationIsRevealed === "1");
     
-    if (estimates.length > 0) {
-      for (const estimate of getSortedSetAsArrayOfObjects(estimates)){
-        const userPicture = await this.client.hget(`room:${id}:user:${estimate.user.id}`, 'profilePicture');
-        room.addEstimate({...estimate, user: {...estimate.user, picture: userPicture} as User});
-      };
-    }
+    estimates.forEach((estimate) => {
+      room.addEstimate(estimate);
+    });
 
     return room;
   }
@@ -70,9 +67,7 @@ class RedisRoomRepository implements RoomRepository {
   }
 
   async addEstimate(roomId: string, estimation: Estimation): Promise<void> {
-    const timestamp = new Date();
-    await this.client.zadd(`room:${roomId}:estimation`, estimation.value, estimation.user.id);
-    await this.client.hset(`room:${roomId}:user:${estimation.user.id}`, 'profilePicture', estimation.user.picture ?? '');
+    await this.client.rpush(`room:${roomId}:estimation`, JSON.stringify(estimation));
   }
 
   async revealEstimation(roomId: string): Promise<void> {

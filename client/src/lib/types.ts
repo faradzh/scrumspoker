@@ -6,7 +6,7 @@ export type Card = {
 };
 
 export interface SelectedCard extends Card {
-  user: User;
+  userId: string;
 }
 
 export type User = {

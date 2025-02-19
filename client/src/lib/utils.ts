@@ -103,7 +103,7 @@ export const addCardRef = (cardRef: HTMLDivElement) => {
 };
 
 export const selectCard = (socket: Socket, card: Card) => {
-  estimationHandler({selectedCard: { ...card, user: get(currentUser)}});
+  estimationHandler({selectedCard: { ...card, userId: get(currentUser).id}});
 
   socket.emit("estimation", {
     selectedCard: {...card, user: get(currentUser)}
@@ -112,7 +112,7 @@ export const selectCard = (socket: Socket, card: Card) => {
 
 export const estimationHandler = ({selectedCard}: {selectedCard: SelectedCard}) => {
   const myCardIndex = get(selectedCards).findIndex(
-    (currentCard) => currentCard.user?.id === selectedCard.user?.id
+    (currentCard) => currentCard.userId === selectedCard.userId
   );
 
   const updatedCards = [...get(selectedCards)];
