@@ -39,4 +39,6 @@ jobs:
                 key: ${{ secrets.EC2_KEY }}
                 script: |
                   docker pull faradzh/thescrumpoker:latest
+                  docker stop $(docker ps -q) || true
+                  docker rm $(docker ps -aq) || true
                   docker run --env-file .env -p 443:443 -v /etc/letsencrypt/archive/scrumspoker.com:/etc/letsencrypt/archive/scrumspoker.com/ faradzh/thescrumpoker
