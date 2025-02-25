@@ -17,10 +17,14 @@ describe('ApiRoomPresenter', () => {
         const roomResponse = new ApiRoomPresenter().presentRoom(room);
 
         expect(roomResponse).toEqual({
-            id: 'room#1',
+            id: roomData.id,
+            estimates: [],
+            estimationIsRevealed: false,
             name: 'RE room#1',
             estimationMethod: 'fibbonachi',
-            participants: 0
+            participants: [],
+            moderatorId: '',
+            link: `/rooms/${roomData.id}`
         });
     });
 });
