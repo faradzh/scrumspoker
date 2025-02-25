@@ -2,10 +2,11 @@ import anime from "animejs";
 import { get } from "svelte/store";
 
 import type { Card, SelectedCard } from "./types";
-import { cardRefsStore, currentUser, selectedCards, sessionInfo, timer, totalEstimate } from "../store";
+import { cardRefsStore, currentUser, selectedCards, sessionInfo, totalEstimate } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
 import { TIMER_INIT } from "../constants";
+import { timerState } from "../state.svelte";
 
 export function compareLinks(a: Card, b: Card): number {
   if (a.link < b.link) {
@@ -36,14 +37,8 @@ export function reEstimateHandler() {
 }
 
 function resetTimer() {
-  timer.update(t => {
-    t.value = TIMER_INIT;
-    return t;
-  });
-  timer.update(t => {
-    clearInterval(t.interval);
-    return t;
-  });
+  timerState.value = TIMER_INIT;
+  clearInterval(timerState.interval);
 }
 
 export function revealCards() {
