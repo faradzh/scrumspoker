@@ -1,4 +1,4 @@
 .git
 /server/public
-
+.env
 */node_modules
