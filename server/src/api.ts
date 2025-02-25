@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import path from "path";
 import passport from "passport";
 import cookieSession from "cookie-session";
+import compression from "compression";
 
 import roomsRouter from "./routes/RoomsRouter";
 import authRouter from "./routes/AuthRouter";
@@ -29,6 +30,9 @@ api.use((req: Request, res: Response, next: NextFunction) => {
 
 api.use(express.static(path.join(__dirname,  "..", "public")));
 api.use(express.json());
+
+// compress all responses to improve performance
+api.use(compression());
 
 api.use('/rooms', roomsRouter);
 
