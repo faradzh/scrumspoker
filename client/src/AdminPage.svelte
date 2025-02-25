@@ -23,7 +23,7 @@
     event?.preventDefault();
     console.log(JSON.stringify(formData));
 
-    const response = await fetch('http://localhost:3000/rooms', {
+    const response = await fetch('/rooms', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
