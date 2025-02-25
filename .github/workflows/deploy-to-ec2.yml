@@ -30,16 +30,6 @@ jobs:
               run: | 
                 docker buildx build --platform linux/amd64 --push -t faradzh/thescrumpoker:latest .
             
-            # Copy Docker image to EC2
-            - name: Copy Docker image to EC2
-              uses: appleboy/scp-action@v0.1.7
-              with:
-                host: ${{ secrets.EC2_HOST }}
-                username: ${{ secrets.EC2_USERNAME }}
-                key: ${{ secrets.EC2_KEY }}
-                source: thescrumpoker.tar
-                target: ./thescrumpoker.tar
-
             # Deploy the Docker image on EC2
             - name: Deploy on EC2
               uses: appleboy/ssh-action@v1.2.1
@@ -48,5 +38,5 @@ jobs:
                 username: ${{ secrets.EC2_USERNAME }}
                 key: ${{ secrets.EC2_KEY }}
                 script: |
-                  docker load -i thescrumpoker.tar
+                  docker pull faradzh/thescrumpoker:latest
                   docker run --env-file .env -p 443:443 -v /etc/letsencrypt/archive/scrumspoker.com:/etc/letsencrypt/archive/scrumspoker.com/ faradzh/thescrumpoker
