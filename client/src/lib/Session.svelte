@@ -24,7 +24,7 @@
                 <h2 class="font-bold mb-2 text-sm">Current ticket:</h2>
                 <p class="text-sm">RE-1345: Menu text misaligned...</p>
             </div>
-            <!-- <Participants /> -->
+            <Participants />
            <div class="relative flex justify-around mb-4">
                 <Timer />
                 <TotalEstimate />
