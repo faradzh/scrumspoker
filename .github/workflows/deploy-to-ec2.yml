@@ -42,4 +42,5 @@ jobs:
                   docker pull faradzh/thescrumpoker:latest
                   docker stop $(docker ps -q) || true
                   docker rm $(docker ps -aq) || true
-                  docker run --env-file .env -p 443:443 -v /etc/letsencrypt/archive/scrumspoker.com:/etc/letsencrypt/archive/scrumspoker.com/ faradzh/thescrumpoker
+                  nohup docker run -d --env-file .env -p 443:443 -v /etc/letsencrypt/archive/scrumspoker.com:/etc/letsencrypt/archive/scrumspoker.com/ faradzh/thescrumpoker > /dev/null 2>&1 &
+                  exit
