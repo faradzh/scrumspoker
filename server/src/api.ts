@@ -8,6 +8,7 @@ import roomsRouter from "./routes/RoomsRouter";
 import authRouter from "./routes/AuthRouter";
 import { checkLoggedIn } from "./middleware/validationMiddleware";
 import { patchSession } from "./infrastructure/session/sessionPatcher";
+import integrationRouter from "./routes/IntegrationRouter";
 
 const api = express();
 
@@ -35,6 +36,7 @@ api.use(express.json());
 api.use(compression());
 
 api.use('/rooms', roomsRouter);
+api.use('/integrations', integrationRouter);
 
 api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
