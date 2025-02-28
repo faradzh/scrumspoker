@@ -1,4 +1,4 @@
-import { IntegrationRequestData } from "../entities/Integration";
+import { Integration, IntegrationRequestData } from "../entities/Integration";
 import { IntegrationRepository } from "../interfaceAdapters/repositories/IntegrationRepository";
 import { INTEGRATION_CLASSES, IntegrationTypeEnum } from "./constants";
 
@@ -7,7 +7,7 @@ class AddIntegration {
         this.integrationRepository = integrationRepository;
     }
     
-    public async execute(data: IntegrationRequestData): Promise<void> {
+    public async execute(data: IntegrationRequestData): Promise<Integration> {
         const { id, email, apiToken, projectName, filterLabel } = data;
 
         const integration = new INTEGRATION_CLASSES[id as IntegrationTypeEnum](email, apiToken, projectName, filterLabel);
@@ -15,11 +15,13 @@ class AddIntegration {
         const headers = { Authorization: integration.getAuthorizationHeader(), "Content-Type": "application/json" };
         
         // test if integration setup is a success
-        await fetch(integration.baseUrl, {
+        await fetch(integration.getMyselfUrl(), {
             headers
         });
-
+        
         await this.integrationRepository.saveIntegration(integration);
+
+        return integration
     }
 }
 

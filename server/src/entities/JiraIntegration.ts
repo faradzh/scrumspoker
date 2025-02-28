@@ -22,5 +22,9 @@ class JiraIntegration implements Integration {
         const auth = btoa(this.apiToken);
         return `Basic ${auth}`;
     }
+
+    public getMyselfUrl(): string {
+        return `${this.baseUrl}/myself`;
+    }
 }
 export default JiraIntegration;
