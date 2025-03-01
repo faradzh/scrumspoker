@@ -6,6 +6,7 @@ import CreateRoom from './useCases/CreateRoom';
 import JoinRoom from './useCases/JoinRoom';
 import GetAllRooms from './useCases/GetAllRooms';
 import AddIntegration from './useCases/AddIntegration';
+import GetIntegrationIssues from './useCases/GetAllIssues';
 
 export type RoomData = z.infer<typeof CreateRoomSchema>;
 
@@ -14,6 +15,8 @@ export const EstimationMethodEnum = z.enum(['fibbonachi', 'powerOfTwo', 'tshirtS
 export type RoomUseCase = CreateRoom | JoinRoom | GetAllRooms;
 
 export type IntegrationUseCase = AddIntegration;
+
+export type IssueUseCase = GetAllIssues;
 
 export const ProfileSchema: z.ZodType<Profile> = z.object({
     id: z.string(),

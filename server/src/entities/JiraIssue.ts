@@ -1,6 +1,6 @@
-import { IssueInterface } from "./Issue";
+import { TIssue } from "./Issue";
 
-class JiraIssue implements IssueInterface {
+class JiraIssue implements TIssue {
     public constructor(
         public id: string,
         public key: string,

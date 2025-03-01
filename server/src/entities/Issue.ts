@@ -1,4 +1,4 @@
-export interface IssueInterface {
+export interface TIssue {
     id: string;
     key: string;
     // e.g. "Bug", "Task", "Story"

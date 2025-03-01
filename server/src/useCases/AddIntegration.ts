@@ -7,7 +7,7 @@ class AddIntegration {
         this.integrationRepository = integrationRepository;
     }
     
-    public async execute(data: IntegrationRequestData): Promise<Integration> {
+    public async execute(roomId: string, data: IntegrationRequestData): Promise<Integration> {
         const { id, email, apiToken, projectName, filterLabel } = data;
 
         const integration = new INTEGRATION_CLASSES[id as IntegrationTypeEnum](email, apiToken, projectName, filterLabel);
@@ -19,7 +19,7 @@ class AddIntegration {
             headers
         });
         
-        await this.integrationRepository.saveIntegration(integration);
+        await this.integrationRepository.saveIntegration(roomId, integration);
 
         return integration
     }

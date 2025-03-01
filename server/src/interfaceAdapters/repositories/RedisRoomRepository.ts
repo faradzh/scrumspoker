@@ -5,6 +5,7 @@ import Room from "../../entities/Room";
 import { EstimationMethod, User } from "../../entities/types";
 import { getSortedSetAsArrayOfObjects } from "./utils";
 import { Estimation } from "../../types";
+import { TIssue } from "../../entities/Issue";
 
 class RedisRoomRepository implements RoomRepository {
   private readonly client: Redis;
@@ -72,6 +73,18 @@ class RedisRoomRepository implements RoomRepository {
 
   async revealEstimation(roomId: string): Promise<void> {
     await this.client.set(`room:${roomId}:estimationIsRevealed`, "1");
+  }
+
+  async saveIntegrationIssues(roomId: string, issues: TIssue[]): Promise<void> {
+    for (const issue of issues) {
+      await this.client.rpush(`room:${roomId}:integrationIssues`, JSON.stringify(issue));
+    }
+  }
+
+  async findIntegrationIssues(roomId: string): Promise<TIssue[]> {
+    const issues = await this.client.lrange(`room:${roomId}:integrationIssues`, 0, -1);
+
+    return issues.map((issue) => JSON.parse(issue));
   }
 }
 

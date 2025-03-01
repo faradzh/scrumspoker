@@ -6,20 +6,30 @@ import RoomPresenter from "../presenters/RoomPresenter";
 import InMemoryRoomRepository from "../repositories/InMemoryRoomRepository";
 import ApiRoomPresenter from "../presenters/ApiRoomPresenter";
 import { CreateRoomRequest } from "../../middleware/validationMiddleware";
-import RedisRoomRepository from "../repositories/RedisRoomRepository";
 import JoinRoom from "../../useCases/JoinRoom";
-import { RoomUseCase } from "../../types";
-import RedisClient from "../../infrastructure/redis/RedisClient";
 import GetAllRooms from "../../useCases/GetAllRooms";
 import EstimateTask from "../../useCases/EstimateTask";
 import RevealEstimation from "../../useCases/RevealEstimation";
+import { redisRoomRepository } from "./constants";
+import AddIntegration from "../../useCases/AddIntegration";
+import { RoomRepository } from "../repositories/RoomRepository";
+import { IntegrationRepository } from "../repositories/IntegrationRepository";
+import { IntegrationRequestData } from "../../entities/Integration";
+import RedisRoomRepository from "../repositories/RedisRoomRepository";
+import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
 
 class RoomController {
-    public useCase;
-    public roomPresenter;
+    private createRoomUseCase;
+    private addIntegrationUseCase;
+    private getAllRoomsUseCase;
+    private joinRoomUseCase;
+    private roomPresenter;
 
-    public constructor(useCase: RoomUseCase, roomPresenter: RoomPresenter) {
-        this.useCase = useCase;
+    public constructor(roomRepository: RoomRepository, redisRoomRepository: RedisRoomRepository, integrationRepository: IntegrationRepository, roomPresenter: RoomPresenter) {
+        this.createRoomUseCase = new CreateRoom(roomRepository);
+        this.addIntegrationUseCase = new AddIntegration(integrationRepository);
+        this.getAllRoomsUseCase = new GetAllRooms(roomRepository);
+        this.joinRoomUseCase = new JoinRoom(roomRepository, redisRoomRepository);
         this.roomPresenter = roomPresenter;
     }
 
@@ -27,7 +37,10 @@ class RoomController {
         const initialData = req.validatedBody!;
         const moderator = req.user as Profile;
         try {
-            const room = await (this.useCase as CreateRoom).execute({...initialData, moderator});
+            const room = await this.createRoomUseCase.execute({...initialData, moderator});
+            if (initialData.integration) {
+                await this.addIntegrationUseCase.execute(room.id, initialData.integration as IntegrationRequestData);
+            }
             const roomResponse = this.roomPresenter.presentRoom(room);
             res.status(201).json(roomResponse);
         } catch (error) {
@@ -38,7 +51,7 @@ class RoomController {
 
     public async getAllRoomsHandler(_: Request, res: Response): Promise<void> {
         try {
-            const allRooms = await (this.useCase as GetAllRooms).execute();
+            const allRooms = await this.getAllRoomsUseCase.execute();
             const response = allRooms?.map(room => this.roomPresenter.presentRoom(room));
             res.status(200).json(response);
         } catch (error) {
@@ -51,7 +64,7 @@ class RoomController {
         const roomId = req.params.id;
         const participant = req.user as Profile;
         try {
-            const room = await (this.useCase as JoinRoom).execute(roomId, participant);
+            const room = await this.joinRoomUseCase.execute(roomId, participant);
             const roomResponse = this.roomPresenter.presentRoom(room);
             res.status(200).json(roomResponse);
         } catch (error) {         
@@ -62,12 +75,12 @@ class RoomController {
 }
 
 const inMemoryRoomRepository = new InMemoryRoomRepository();
+const apiRoomPresenter = new ApiRoomPresenter();
+const inMemoryIntegrationRepository = new InMemoryIntegrationRepository();
 
-export const createRoomController = new RoomController(new CreateRoom(inMemoryRoomRepository), new ApiRoomPresenter());
-export const getAllRoomsController = new RoomController(new GetAllRooms(inMemoryRoomRepository), new ApiRoomPresenter());
-export const joinRoomController = new RoomController(new JoinRoom(inMemoryRoomRepository, new RedisRoomRepository(RedisClient)), new ApiRoomPresenter());
+export const roomController = new RoomController(inMemoryRoomRepository, redisRoomRepository, inMemoryIntegrationRepository, apiRoomPresenter);
 
-export const estimateTask = new EstimateTask(new RedisRoomRepository(RedisClient));
-export const revealEstimation = new RevealEstimation(new RedisRoomRepository(RedisClient));
+export const estimateTask = new EstimateTask(redisRoomRepository);
+export const revealEstimation = new RevealEstimation(redisRoomRepository);
 
 export default RoomController;

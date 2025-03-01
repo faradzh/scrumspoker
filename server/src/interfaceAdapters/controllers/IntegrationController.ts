@@ -15,7 +15,6 @@ class IntegrationController {
         try {
             const integrationRequestData = req.body;
 
-            // @ts-ignore until request type is defined
             const integration = await (this.useCase as AddIntegration).execute(integrationRequestData);
             const response = this.integrationPresenter.presentIntegration(integration);
             res.status(201).json({ message: 'Integration added successfully', data: response });
