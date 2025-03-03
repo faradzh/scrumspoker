@@ -13,4 +13,6 @@ export interface Integration extends IntegrationRequestData{
     baseUrl: string;
     // e.g. "ToEstimate", the label of the issue to estimate
     getAuthorizationHeader(): string;
+    getSearchUrl(): string;
+    getSearchBody(): string;
 }

@@ -6,7 +6,7 @@ import CreateRoom from './useCases/CreateRoom';
 import JoinRoom from './useCases/JoinRoom';
 import GetAllRooms from './useCases/GetAllRooms';
 import AddIntegration from './useCases/AddIntegration';
-import GetIntegrationIssues from './useCases/GetAllIssues';
+import GetAllIssues from './useCases/GetAllIssues';
 
 export type RoomData = z.infer<typeof CreateRoomSchema>;
 

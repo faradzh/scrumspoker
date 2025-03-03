@@ -19,12 +19,24 @@ class JiraIntegration implements Integration {
     }
 
     public getAuthorizationHeader(): string {
-        const auth = btoa(this.apiToken);
+        const auth = btoa(`${this.email}:${this.apiToken}`);
         return `Basic ${auth}`;
     }
 
     public getMyselfUrl(): string {
         return `${this.baseUrl}/myself`;
+    }
+
+    public getSearchUrl(): string {
+        return `${this.baseUrl}/search/jql`;
+    }
+
+    public getSearchBody(): string {
+        return JSON.stringify({
+            jql: `labels = ${this.filterLabel}`,
+            maxResults: 10,
+            fields: ["summary", "status", "description", "issueType", "priority", "customfield_10016"]
+        })
     }
 }
 export default JiraIntegration;

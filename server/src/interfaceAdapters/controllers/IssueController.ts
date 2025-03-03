@@ -1,23 +1,37 @@
 import { Request, Response } from "express";
 
-import { IssueUseCase } from "../../types";
-import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
 import GetAllIssues from "../../useCases/GetAllIssues";
 import ApiIssuePresenter from "../presenters/ApiIssuePresenter";
+import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
+import RedisRoomRepository from "../repositories/RedisRoomRepository";
+import IssueTransformer from "../presenters/JiraIssueTransformer";
 import { redisRoomRepository } from "./constants";
+import { inMemoryIntegrationRepository } from "./RoomController";
 
-class IssueController {
-    public constructor(private useCase: IssueUseCase, private issuePresenter: ApiIssuePresenter) {
-        this.useCase = useCase;
-        this.issuePresenter = issuePresenter;
+class IssueController<I> {
+    private getAllIssuesUseCase;
+
+    public constructor(
+        private inMemoryIntegrationRepository: InMemoryIntegrationRepository,
+        private redisRoomRepository: RedisRoomRepository,
+        private apiIssuePresenter: ApiIssuePresenter,
+        private issueTransformer: IssueTransformer
+    ) {
+        this.getAllIssuesUseCase = new GetAllIssues(inMemoryIntegrationRepository, redisRoomRepository, issueTransformer);
+        this.apiIssuePresenter = apiIssuePresenter;
     }
     
     public async getIssuesHandler(req: Request, res: Response) {
         try {
-            const roomId = req.params.id;
+            const roomId = req.query.roomId!.toString();
+            const integration = await this.inMemoryIntegrationRepository.findIntegrationById(roomId);
 
-            const issues = await (this.useCase as GetAllIssues).execute(roomId);
-            const response = issues.map((issue) => this.issuePresenter.presentIssue(issue));
+            if (!integration) {
+                throw new Error("Integration not found");
+            }
+
+            const issues = await this.getAllIssuesUseCase.execute(roomId);
+            const response = issues.map((issue) => this.apiIssuePresenter.presentIssue(issue));
             
             res.status(200).json(response);
         } catch (error) {
@@ -27,6 +41,6 @@ class IssueController {
     }
 }
 
-export const issueController = new IssueController(new GetAllIssues(new InMemoryIntegrationRepository(), redisRoomRepository), new ApiIssuePresenter());
+export const issueController = new IssueController(inMemoryIntegrationRepository, redisRoomRepository, new ApiIssuePresenter(), new IssueTransformer);
 
 export default IssueController;

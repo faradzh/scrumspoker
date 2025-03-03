@@ -1,7 +1,7 @@
-import { TIssue } from "../../entities/Issue";
+import { Issue } from "../../entities/types";
 
 class ApiIssuePresenter {
-    public presentIssue(issue: TIssue): TIssue {
+    public presentIssue(issue: Issue): Issue {
         return {
             ...issue
         };

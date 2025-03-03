@@ -1,45 +1,70 @@
+import { Integration } from "../entities/Integration";
+import { Issue, IssueResponse, JiraIssueResponse } from "../entities/types";
+import JiraIssueTransformer from "../interfaceAdapters/presenters/JiraIssueTransformer";
+import IssueTransformer from "../interfaceAdapters/presenters/JiraIssueTransformer";
 import InMemoryIntegrationRepository from "../interfaceAdapters/repositories/InMemoryIntegrationRepository";
 import RedisRoomRepository from "../interfaceAdapters/repositories/RedisRoomRepository";
-import { TIssue } from "../entities/Issue";
+import { ISSUE_TRANSFORMERS } from "./constants";
 
 class GetIntegrationIssues {
-    constructor(private inMemoryIntegrationRepository: InMemoryIntegrationRepository, private redisRoomRepository: RedisRoomRepository) {
+    constructor(
+        private inMemoryIntegrationRepository: InMemoryIntegrationRepository,
+        private redisRoomRepository: RedisRoomRepository,
+        private issueTransformer: IssueTransformer
+    ) {
+        this.issueTransformer = issueTransformer;
         this.inMemoryIntegrationRepository = inMemoryIntegrationRepository;
         this.redisRoomRepository = redisRoomRepository;
     }
 
-    private async fetchIssues(roomId: string): Promise<TIssue[]> {
+    private async fetchIssues<T extends keyof IssueResponse>(integration: Integration | undefined): Promise<IssueResponse[T]> {
+        if (!integration) {
+            throw new Error("Integration not found");
+        }
+
+        const headers = { 
+            Authorization: integration.getAuthorizationHeader(),
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        };
+
+        const response = await fetch(`${integration.getSearchUrl()}`, {
+            method: "POST",
+            headers,
+            body: integration.getSearchBody()
+        });
+
+        return await response.json();
+    }
+    
+    public async execute(roomId: string): Promise<Issue[]> {
         const integration = await this.inMemoryIntegrationRepository.findIntegrationById(roomId);
 
         if (!integration) {
             throw new Error("Integration not found");
         }
 
-        const headers = { Authorization: integration.getAuthorizationHeader(), "Content-Type": "application/json" };
-        
-        const response = await fetch(`${integration.baseUrl}/search`, {
-            method: "POST",
-            headers,
-            body: JSON.stringify({
-                jql: `project = ${integration.projectName} and labels = ${integration.filterLabel}`,
-                maxResults: 10,
-                fields: ["summary", "description", "issuetype", "priority", "customfield_10016"],
-            })
-        });
-
-        return await response.json();
-    }
-    
-    public async execute(roomId: string): Promise<TIssue[]> {
         const cachedIssues = await this.redisRoomRepository.findIntegrationIssues(roomId);
 
-        if (cachedIssues) {
+        if (cachedIssues.length > 0) {
             return cachedIssues;
         }
+        
+        const fetchedData = await this.fetchIssues<typeof integration.id>(integration) as JiraIssueResponse;
 
-        const fetchedIssues = await this.fetchIssues(roomId);
-        this.redisRoomRepository.saveIntegrationIssues(roomId, fetchedIssues);
-        return fetchedIssues;
+        const TransformerClass = ISSUE_TRANSFORMERS[integration.id];
+
+        if (!TransformerClass) {
+            throw new Error("Issue transformer not found");
+        }
+
+        const issueTransformer = new TransformerClass() as JiraIssueTransformer;
+        
+        const issues = issueTransformer.transform(fetchedData);
+
+        this.redisRoomRepository.saveIntegrationIssues(roomId, issues);
+
+        return issues;
     }
 }
 
