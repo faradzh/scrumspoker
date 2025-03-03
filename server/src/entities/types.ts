@@ -13,7 +13,7 @@ export interface Issue {
     id: string;
     key: string;
     // e.g. "Bug", "Task", "Story"
-    issueType: {
+    issueType?: {
         name: string;
         iconUrl: string;
     },
@@ -26,6 +26,7 @@ export interface Issue {
     storyPoints: number;
     summary: string;
     description: string;
+    status: string;
 }
 
 export interface JiraIssue {
@@ -34,7 +35,7 @@ export interface JiraIssue {
     key: string;
     fields: {
         // e.g. "Bug", "Task", "Story"
-        issueType: {
+        issueType?: {
             name: string;
             iconUrl: string;
         },
@@ -47,6 +48,9 @@ export interface JiraIssue {
         customfield_10016: number;
         summary: string;
         description: string;
+        status: {
+            name: string;
+        };
     }
 }
 

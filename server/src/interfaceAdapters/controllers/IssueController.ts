@@ -24,11 +24,6 @@ class IssueController<I> {
     public async getIssuesHandler(req: Request, res: Response) {
         try {
             const roomId = req.query.roomId!.toString();
-            const integration = await this.inMemoryIntegrationRepository.findIntegrationById(roomId);
-
-            if (!integration) {
-                throw new Error("Integration not found");
-            }
 
             const issues = await this.getAllIssuesUseCase.execute(roomId);
             const response = issues.map((issue) => this.apiIssuePresenter.presentIssue(issue));

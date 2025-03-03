@@ -10,10 +10,7 @@ class JiraIssueTransformer {
         return {
             id: issue.id,
             key: issue.key,
-            issueType: {
-                name: issue.fields.issueType?.name,
-                iconUrl: issue.fields.issueType?.iconUrl
-            },
+            status: issue.fields.status.name,
             priority: {
                 name: issue.fields.priority.name,
                 iconUrl: issue.fields.priority.iconUrl

@@ -35,7 +35,7 @@ class JiraIntegration implements Integration {
         return JSON.stringify({
             jql: `labels = ${this.filterLabel}`,
             maxResults: 10,
-            fields: ["summary", "status", "description", "issueType", "priority", "customfield_10016"]
+            fields: ["summary", "status", "description", "status", "priority", "customfield_10016"]
         })
     }
 }

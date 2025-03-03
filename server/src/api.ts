@@ -8,7 +8,8 @@ import roomsRouter from "./routes/RoomsRouter";
 import authRouter from "./routes/AuthRouter";
 import { checkLoggedIn } from "./middleware/validationMiddleware";
 import { patchSession } from "./infrastructure/session/sessionPatcher";
-import integrationRouter from "./routes/IntegrationRouter";
+// import integrationRouter from "./routes/IntegrationRouter";
+import issuesRouter from "./routes/IssuesRouter";
 
 const api = express();
 
@@ -36,7 +37,8 @@ api.use(express.json());
 api.use(compression());
 
 api.use('/rooms', roomsRouter);
-api.use('/integrations', integrationRouter);
+// api.use('/integrations', integrationRouter);
+api.use('/issues', issuesRouter);
 
 api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
