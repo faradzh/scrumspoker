@@ -20,6 +20,11 @@
   resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.21.5.tgz"
   integrity sha512-DwqXqZyuk5AiWWf3UfLiRDJ5EDd49zg6O9wclZ7kUMv2WRFr4HKjXp/5t8JZ11QbQfUS6/cRCKGwYhtNAY88kQ==
 
+"@fontsource/dm-sans@^5.2.5":
+  version "5.2.5"
+  resolved "https://registry.npmjs.org/@fontsource/dm-sans/-/dm-sans-5.2.5.tgz"
+  integrity sha512-P+RiK+bvyvBqfUZjFqhntCFvKlrH1rm42ME7wpYXwFpmpr9jWD/FP6vnp0iCbP3cYeqDyML1KcwIspiHy1rHmA==
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.npmjs.org/@isaacs/cliui/-/cliui-8.0.2.tgz"
