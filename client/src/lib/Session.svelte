@@ -36,4 +36,5 @@
             </div>
         </div>
     </div>
+    <div class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5"></div>
 </section>
