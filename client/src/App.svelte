@@ -1,31 +1,35 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { get } from "svelte/store";
   
+  import { selectedCards, currentUser, sessionInfo, participants } from "./store";
   import Navbar from "./lib/Navbar.svelte";
   import CardsDeck from "./lib/CardsDeck.svelte";
   import { socket } from "./sockets";
-  import { selectedCards, currentUser, sessionInfo, participants } from "./store";
   import { getCardByValue } from "./utils";
   import Stories from "./lib/Stories.svelte";
   import Session from "./lib/Session.svelte";
   import { estimationHandler } from "./lib/utils";
-  import { get } from "svelte/store";
   import { getCurrentUser } from "./services/userService";
   import { getRoomData } from "./services/roomService";
+  import type { Estimate, SelectedCard, SelectedCards } from "./lib/types";
 
+  
   async function fetchRoomData() {
     getRoomData().then((data) => {
       currentUser.update((prevUser) => ({ ...prevUser, isModerator: $currentUser.id === data.moderatorId}));
-        const initialSelectedCards = data.estimates.map((estimate) => {
-          const card = getCardByValue(estimate.value);
-          return {
-            ...card,
-            userId: estimate.userId,
-          }
-        });
-        selectedCards.set(initialSelectedCards);
-        sessionInfo.update((prevSession) => ({ ...prevSession, estimationIsRevealed: data.estimationIsRevealed }));
-        participants.set(data.participants);
+      const initialSelectedCards = data.estimates.reduce((acc: SelectedCards, estimate: Estimate) => {
+        const card = getCardByValue(estimate.value);
+        acc[estimate.userId] = {
+          ...card,
+          userId: estimate.userId,
+        } as SelectedCard;
+        return acc;
+      }, {});
+
+      selectedCards.set(initialSelectedCards);
+      sessionInfo.update((prevSession) => ({ ...prevSession, estimationIsRevealed: data.estimationIsRevealed }));
+      participants.set(data.participants);
     })
   }
 

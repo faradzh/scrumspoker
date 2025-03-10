@@ -17,10 +17,11 @@ class EstimateTask {
             throw new Error("Room was not found");
         }
         
-        if (!room.userHasEstimated(estimation.userId)) {
-            room.addEstimate(estimation);
-            await this.temporaryRepository.addEstimate?.(room.id, estimation);
-        }
+        // if (!room.userHasEstimated(estimation.userId)) {
+        room.addEstimate(estimation);
+        console.log('The estimation was added');
+        await this.temporaryRepository.addEstimate?.(room.id, estimation);
+        // }
         
         return room;
     }

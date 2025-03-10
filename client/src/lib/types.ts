@@ -5,8 +5,11 @@ export type Card = {
   ref?: HTMLDivElement;
 };
 
+export interface SelectedCard extends Card {
+  userId: string;
+};
 export interface SelectedCards {
-  [userId: string]: Card;
+  [userId: string]: SelectedCard;
 }
 
 export type User = {
@@ -20,3 +23,8 @@ export type Room = {
   estimationMethod: string;
   link: string;
 }
+
+export type Estimate = {
+  userId: string;
+  value: number;
+};

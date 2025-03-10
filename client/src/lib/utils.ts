@@ -1,7 +1,7 @@
 import anime from "animejs";
 import { get } from "svelte/store";
 
-import type { Card, SelectedCard } from "./types";
+import type { Card, SelectedCard, SelectedCards } from "./types";
 import { cardRefsStore, currentUser, selectedCards, sessionInfo, totalEstimate } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
@@ -30,10 +30,10 @@ export function flipHandler(targets: HTMLDivElement[], onComplete: () => void) {
 }
 
 export function reEstimateHandler() {
-  selectedCards.update(() => []);
-  cardRefsStore.update(() => []);
-  resetTimer();
-  totalEstimate.set(0);
+  // selectedCards.update(() => []);
+  // cardRefsStore.update(() => []);
+  // resetTimer();
+  // totalEstimate.set(0);
 }
 
 function resetTimer() {
@@ -77,8 +77,8 @@ export function revealHandler() {
 export function calculateAverage(): number {
   const cards = get(selectedCards);
 
-  const sum = cards.reduce((acc, card) => acc + card.value, 0);
-  return sum / cards.length;
+  // const sum = cards.reduce((acc, card) => acc + card.value, 0);
+  // return sum / cards.length;
 }
 
 export const addCardRef = (cardRef: HTMLDivElement) => {
@@ -101,22 +101,15 @@ export const selectCard = (socket: Socket, card: Card) => {
   estimationHandler({selectedCard: { ...card, userId: get(currentUser).id}});
 
   socket.emit("estimation", {
-    selectedCard: {...card, user: get(currentUser)}
+    selectedCard: {...card, userId: get(currentUser).id}
   });
 };
 
 export const estimationHandler = ({selectedCard}: {selectedCard: SelectedCard}) => {
-  const myCardIndex = get(selectedCards).findIndex(
-    (currentCard) => currentCard.userId === selectedCard.userId
-  );
+  const userId = selectedCard.userId;
+  const updatedCards = {...get(selectedCards)};
 
-  const updatedCards = [...get(selectedCards)];
-  
-  if (myCardIndex === -1) {
-    updatedCards.push(selectedCard);
-  } else {
-    updatedCards[myCardIndex] = selectedCard;
-  }
+  updatedCards[userId] = selectedCard;
 
   selectedCards.set(updatedCards);
 };

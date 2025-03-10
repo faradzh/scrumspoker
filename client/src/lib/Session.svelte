@@ -1,7 +1,7 @@
 <script lang="ts">
   import { storiesState } from "../state.svelte";
   import { cardRefsStore, selectedCards, sessionInfo } from "../store";
-  import Participants from "./Participants.svelte";
+  import CurrentEstimates from "./CurrentEstimates.svelte";
   import Timer from "./Timer.svelte";
   import TotalEstimate from "./TotalEstimate.svelte";
   import { reEstimateHandler, revealCards } from "./utils";
@@ -25,7 +25,7 @@
                 <p class="text-gray-600 dark:text-gray-300">{currentStoryText}</p>
             </div>
             <!-- <div class=""> -->
-            <Participants />
+            <CurrentEstimates />
                 <!-- <div class="relative flex justify-around mb-4">
                     <Timer />
                     <TotalEstimate />

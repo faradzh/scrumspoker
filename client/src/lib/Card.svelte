@@ -1,8 +1,9 @@
 <script lang="ts">
-  import type { SelectedCard } from './types';
+  import { get } from 'svelte/store';
+
   import { addCardRef } from './utils';
   import { currentUser, participants, sessionInfo } from '../store';
-  import { get } from 'svelte/store';
+  import type { SelectedCard } from './types';
 
   let cardElement: HTMLDivElement | undefined = $state();
   let { card }: Props = $props();
