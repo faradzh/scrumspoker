@@ -3,6 +3,7 @@ import path from "path";
 import passport from "passport";
 import cookieSession from "cookie-session";
 import compression from "compression";
+import cors from 'cors';
 
 import roomsRouter from "./routes/RoomsRouter";
 import authRouter from "./routes/AuthRouter";
@@ -12,6 +13,21 @@ import { patchSession } from "./infrastructure/session/sessionPatcher";
 import issuesRouter from "./routes/IssuesRouter";
 
 const api = express();
+
+api.use(express.json());
+
+const corsOptions = {
+  origin: "http://localhost:5173", // Change this to your frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
+  credentials: true, // Allow cookies (if needed)
+  allowedHeaders: ["Content-Type", "Authorization"] // Allowed headers
+};
+
+// Allow specific frontend origin
+api.use(cors(corsOptions));
+
+// ✅ Manually handle preflight requests (important)
+api.options("*", cors(corsOptions));
 
 api.use(cookieSession({
   name: 'session',
@@ -31,7 +47,6 @@ api.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 api.use(express.static(path.join(__dirname,  "..", "public")));
-api.use(express.json());
 
 // compress all responses to improve performance
 api.use(compression());

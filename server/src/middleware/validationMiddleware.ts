@@ -37,6 +37,5 @@ export const checkLoggedIn = (req: Request, res: Response, next: NextFunction) =
         req.session!.returnTo = req.originalUrl;
         return res.redirect('/auth/google');
     }
-
     next();
 };
