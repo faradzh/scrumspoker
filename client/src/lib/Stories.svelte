@@ -1,31 +1,24 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Story from "./Story.svelte";
+  import { storiesState } from "../state.svelte";
+  import { fetchIssues } from "../services/roomService";
 
   let stories: Array<{id: string}> = $state([]);
-  let selectedStory: {id: string} | undefined = $state();
 
-  function fetchStories() {
-    const roomId = location.pathname.split("/").pop();
+  const storiesNum = $derived(stories.length);
 
-    fetch(`/issues?roomId=${roomId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Data", data);
-        if (data.error) {
-          console.error(data.error);
-          return;
-        }
-        stories = data;
-        selectedStory = data?.[0];
-      });
+  async function fetchStories() {
+    const data = await fetchIssues();
+    stories = data;
+    storiesState.selectedStory = data?.[0];
   }
 
-  function selectStory(story: {id: string}) {
-    if (story.id === selectedStory?.id) {
+  function selectStory(story: {id: string, summary: string, key: string}) {
+    if (story.id === storiesState.selectedStory?.id) {
         return;
     }
-    selectedStory = story;
+    storiesState.selectedStory = story;
   }
 
   onMount(() => {
@@ -40,11 +33,11 @@
         <div class="p-4 h-full">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-950">User Stories</h2>
-                <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md text-sm">8 stories</span>
+                <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md text-sm">{storiesNum} stories</span>
             </div>
             <div class="space-y-2 max-h-[655px] pr-2 scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                 {#each stories as story}
-                    <Story {story} onSelect={selectStory} isSelected={story.id === selectedStory?.id} />
+                    <Story {story} onSelect={selectStory} isSelected={story.id === storiesState.selectedStory?.id} />
                 {/each}
             </div>
         </div>

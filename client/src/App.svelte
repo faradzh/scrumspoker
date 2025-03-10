@@ -1,9 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   
-  import CardsList from "./lib/CardsList.svelte";
   import Navbar from "./lib/Navbar.svelte";
-  import Playground from "./lib/Playground.svelte";
+  import CardsDeck from "./lib/CardsDeck.svelte";
   import { socket } from "./sockets";
   import { selectedCards, currentUser, sessionInfo, participants } from "./store";
   import { getCardByValue } from "./utils";
@@ -11,24 +10,12 @@
   import Session from "./lib/Session.svelte";
   import { estimationHandler } from "./lib/utils";
   import { get } from "svelte/store";
+  import { getCurrentUser } from "./services/userService";
+  import { getRoomData } from "./services/roomService";
 
-  async function fetchCurrentUser() {
-    return fetch("/api/current-user", {headers: { 'Accept': 'application/json' }})
-      .then((res) => res.json())
-  }
-
-  function fetchRoomData() {
-    const roomId = location.pathname.split("/").pop();
-    
-    fetch(`/rooms/${roomId}`, {headers: { 'Accept': 'application/json' }})
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Data", data);
-        if (data.error) {
-          console.error(data.error);
-          return;
-        }
-        currentUser.update((prevUser) => ({ ...prevUser, isModerator: $currentUser.id === data.moderatorId}));
+  async function fetchRoomData() {
+    getRoomData().then((data) => {
+      currentUser.update((prevUser) => ({ ...prevUser, isModerator: $currentUser.id === data.moderatorId}));
         const initialSelectedCards = data.estimates.map((estimate) => {
           const card = getCardByValue(estimate.value);
           return {
@@ -39,11 +26,11 @@
         selectedCards.set(initialSelectedCards);
         sessionInfo.update((prevSession) => ({ ...prevSession, estimationIsRevealed: data.estimationIsRevealed }));
         participants.set(data.participants);
-      });
+    })
   }
 
   onMount(() => {
-    Promise.all([fetchCurrentUser(), fetchRoomData()]).then((values) => {
+    Promise.all([getCurrentUser(), fetchRoomData()]).then((values) => {
       const [user] = values;
       currentUser.set(user);
 
@@ -88,11 +75,10 @@
 <Navbar />
 <main class="bg-gray-50 h-full overflow-y-hidden">
   <div class="mx-auto px-8 max-w-screen-2xl">
-    <div class="mt-10 pb-10 grid gap-4 sm:mt-16 lg:grid-cols-[280px_1fr_364px] lg:grid-rows-[250px_250px_200px]">
+    <div class="mt-10 pb-10 grid gap-4 sm:mt-16 lg:grid-cols-[280px_1fr] lg:grid-rows-[235px_240px]">
       <Stories />
       <Session />
-      <CardsList />
-      <Playground />
+      <CardsDeck />
     </div>
   </div>
 </main>
