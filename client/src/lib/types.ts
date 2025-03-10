@@ -5,8 +5,8 @@ export type Card = {
   ref?: HTMLDivElement;
 };
 
-export interface SelectedCard extends Card {
-  userId: string;
+export interface SelectedCards {
+  [userId: string]: Card;
 }
 
 export type User = {

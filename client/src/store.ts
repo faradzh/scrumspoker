@@ -1,9 +1,9 @@
 import { writable } from "svelte/store";
 
-import type { Room, SelectedCard, User } from "./lib/types";
+import type { Room, SelectedCards, User } from "./lib/types";
 import { TIMER_INIT } from "./constants";
 
-export const selectedCards = writable<SelectedCard[]>([]);
+export const selectedCards = writable<SelectedCards>({});
 
 export const cardRefsStore = writable<HTMLDivElement[]>([]);
 

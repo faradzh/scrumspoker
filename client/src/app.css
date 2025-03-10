@@ -18,6 +18,23 @@
   -webkit-text-size-adjust: 100%;
 }
 
-body {
-  overflow-x: hidden;
+@layer base {
+  body {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .scrollbar-visible::-webkit-scrollbar {
+    width: 8px; /* Adjust width */
+  }
+
+  .scrollbar-visible::-webkit-scrollbar-thumb {
+    background: gray; /* Scrollbar color */
+    border-radius: 4px;
+  }
+
+  .scrollbar-visible::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Track color */
+  }
 }

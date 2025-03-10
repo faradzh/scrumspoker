@@ -30,8 +30,8 @@
 
 </script>
 
-<div class="relative mr-8 basis-[100px] shrink-0 cursor-pointer">
-  <div class="avatar placeholder absolute top-[-16px] right-[-16px] z-[1]">
+<div class="relative basis-[200px] shrink-0 cursor-pointer min-w-[80px]">
+  <!-- <div class="avatar placeholder absolute top-[-16px] right-[-16px] z-[1]">
     {#if userPicture}
       <div class="ring-primary ring-offset-base-100 ring ring-offset-2 w-12 rounded-full">
         <img src={userPicture} alt="User avatar"/>
@@ -41,10 +41,10 @@
         <span class="text-xl">RJ</span>
       </div>
     {/if}
-  </div>
+  </div> -->
   <div class="poker-card--selected " bind:this={cardElement}>
     <div class="front w-full h-full">
-      <img src={isMyCard() ? card.link : "/card-cover.svg"} alt="">
+      <img class="rounded-lg" src={isMyCard() ? card.link : "/card-cover.svg"} alt="">
     </div>
     <div class="back absolute top-0 left-0 w-full h-full">
       <img src={card.link} alt="">

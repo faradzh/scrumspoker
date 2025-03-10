@@ -17,7 +17,7 @@ class JiraIssueTransformer {
             },
             storyPoints: issue.fields.customfield_10016,
             summary: issue.fields.summary,
-            description: issue.fields.description
+            description: issue.fields.description?.content[0].content[0].text ?? null,
         };
     }
 }

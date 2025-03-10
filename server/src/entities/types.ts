@@ -47,7 +47,13 @@ export interface JiraIssue {
         // story points custom field, e.g. 1, 2, 3, 5, 8, 13
         customfield_10016: number;
         summary: string;
-        description: string;
+        description: {
+            content: {
+                content: {
+                    text: string;
+                }[];
+            }[];
+        };
         status: {
             name: string;
         };
