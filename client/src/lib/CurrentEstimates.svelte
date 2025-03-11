@@ -1,9 +1,21 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   import { participants, selectedCards } from "../store";
   import Card from "./Card.svelte";
+  import { socket } from "../sockets";
+  import { revealHandler } from "./utils";
+
+    onMount(() => {
+        socket.on('reveal', revealHandler);
+
+        return () => {
+            socket.off('reveal', revealHandler);
+        }
+    });
 </script>
 
-<div class="mb-12">
+<div class="mb-12 min-h-[199.3px]">
     <div class="flex">
         {#each $participants as participant, index}
             <div class="mr-6 text-center min-w-[80px]">

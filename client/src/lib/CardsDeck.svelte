@@ -4,16 +4,7 @@
   import { selectCard } from "./utils";
   import { POKER_CARDS } from "../constants";
 
-  // onMount(() => {
-  //   socket.on('reveal', revealHandler);
-
-  //   return () => {
-  //     socket.off('reveal', revealHandler);
-  //   }
-  // })
-
   function clickHandler(card: Card) {
-    console.log("Card", card);
     selectCard(socket, card);
   }
 

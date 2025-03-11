@@ -36,11 +36,6 @@ export function reEstimateHandler() {
   // totalEstimate.set(0);
 }
 
-function resetTimer() {
-  timerState.value = TIMER_INIT;
-  clearInterval(timerState.interval);
-}
-
 export function revealCards() {
   const cardRefs = get(cardRefsStore);
   
@@ -69,16 +64,16 @@ export function revealHandler() {
   }
 
   flipHandler(cardRefs, () => {
-    const total = calculateAverage();
+    const total = calculateAverage(get(selectedCards));
     totalEstimate.set(total);
   });
 };
 
-export function calculateAverage(): number {
-  const cards = get(selectedCards);
+export function calculateAverage(selectedCards: SelectedCards): number {
+  const cards = Object.values(selectedCards);
 
-  // const sum = cards.reduce((acc, card) => acc + card.value, 0);
-  // return sum / cards.length;
+  const sum = cards.reduce((acc, card) => acc + card.value, 0);
+  return sum / cards.length;
 }
 
 export const addCardRef = (cardRef: HTMLDivElement) => {

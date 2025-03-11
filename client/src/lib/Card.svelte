@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { get } from 'svelte/store';
-
   import { addCardRef } from './utils';
   import { currentUser, participants, sessionInfo } from '../store';
   import type { SelectedCard } from './types';
@@ -22,10 +20,10 @@
     if ($currentUser.id === card.userId) {
       return true;
     }
-    return get(sessionInfo).estimationIsRevealed;
+    return $sessionInfo.estimationIsRevealed;
   }
   
-  const userPicture = get(participants).find((participant) => {
+  const userPicture = $participants.find((participant) => {
     return participant.id === card.userId;
   })?.picture ?? '';
 
@@ -48,7 +46,7 @@
       <img class="rounded-lg" src={isMyCard() ? card.link : "/card-cover.svg"} alt="">
     </div>
     <div class="back absolute top-0 left-0 w-full h-full">
-      <img src={card.link} alt="">
+      <img class="rounded-lg" src={card.link} alt="">
     </div>
   </div>
 </div>
