@@ -17,7 +17,7 @@ const api = express();
 api.use(express.json());
 
 const corsOptions = {
-  origin: "http://localhost:5173", // Change this to your frontend URL
+  origin: ["http://localhost:5173", "https://scrumspoker.com"], // Change this to your frontend URL
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
   credentials: true, // Allow cookies (if needed)
   allowedHeaders: ["Content-Type", "Authorization"] // Allowed headers
