@@ -1,16 +1,18 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { storiesState } from "../state.svelte";
-  import { cardRefsStore, sessionInfo, totalEstimate } from "../store";
+  import { cardRefsStore, selectedCards, sessionInfo, totalEstimate } from "../store";
   import ActionButtons from "./ActionButtons.svelte";
   import CurrentEstimates from "./CurrentEstimates.svelte";
   import Timer from "./Timer.svelte";
   import TotalEstimate from "./TotalEstimate.svelte";
-
+  import { calculateAverage } from "./utils";
+  import { get } from "svelte/store";
+  
   const isEnabled = $derived.by(() => {
-    if ($cardRefsStore.length === 0 || $totalEstimate === 0) {
-      return false;
-    }
-    return $sessionInfo?.estimationIsRevealed;
+    const total = calculateAverage($selectedCards) || 0;
+    totalEstimate.set(total);
+    return total > 0 && $sessionInfo.estimationIsRevealed && $sessionInfo.cardsAreFlipped;
   });
 
   const currentStoryText = $derived(storiesState.selectedStory ? (storiesState.selectedStory?.key + ": " + storiesState.selectedStory?.summary) : '');

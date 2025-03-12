@@ -2,12 +2,13 @@
   import { addCardRef } from './utils';
   import { currentUser, participants, sessionInfo } from '../store';
   import type { SelectedCard } from './types';
+  import { get } from 'svelte/store';
 
   let cardElement: HTMLDivElement | undefined = $state();
   let { card }: Props = $props();
 
   $effect(() => {
-    if (!isMyCard()) {
+    if (!shouldAddRef()) {
       addCardRef(cardElement!);
     }
   });
@@ -16,11 +17,11 @@
     card: SelectedCard;
   }
 
-  function isMyCard() {
-    if ($currentUser.id === card.userId) {
+  function shouldAddRef() {
+    if (get(currentUser).id === card.userId) {
       return true;
     }
-    return $sessionInfo.estimationIsRevealed;
+    return get(sessionInfo).estimationIsRevealed;
   }
   
   const userPicture = $participants.find((participant) => {
@@ -43,7 +44,7 @@
   </div> -->
   <div class="poker-card--selected " bind:this={cardElement}>
     <div class="front w-full h-full">
-      <img class="rounded-lg" src={isMyCard() ? card.link : "/card-cover.svg"} alt="">
+      <img class="rounded-lg" src={shouldAddRef() ? card.link : "/card-cover.svg"} alt="">
     </div>
     <div class="back absolute top-0 left-0 w-full h-full">
       <img class="rounded-lg" src={card.link} alt="">

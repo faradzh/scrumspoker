@@ -5,8 +5,6 @@ import type { Card, SelectedCard, SelectedCards } from "./types";
 import { cardRefsStore, currentUser, selectedCards, sessionInfo, totalEstimate } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
-import { TIMER_INIT } from "../constants";
-import { timerState } from "../state.svelte";
 
 export function compareLinks(a: Card, b: Card): number {
   if (a.link < b.link) {
@@ -44,7 +42,10 @@ export function revealCards() {
   }
 
   revealHandler();
+  emitRevealEvent();
+}
 
+function emitRevealEvent() {
   socket.emit('reveal', ({status}: any) => {
     if (status === 'success') {
       console.log('The estimation was revealed');
@@ -64,7 +65,12 @@ export function revealHandler() {
   }
 
   flipHandler(cardRefs, () => {
-    const total = calculateAverage(get(selectedCards));
+    sessionInfo.update((info) => {
+      info.cardsAreFlipped = true;
+      return info;
+    });
+
+    const total = calculateAverage(get(selectedCards)) || 0;
     totalEstimate.set(total);
   });
 };
@@ -93,6 +99,11 @@ export const addCardRef = (cardRef: HTMLDivElement) => {
 };
 
 export const selectCard = (socket: Socket, card: Card) => {
+  const session = get(sessionInfo);
+  if (session.estimationIsRevealed || session.cardsAreFlipped) {
+    return;
+  }
+
   estimationHandler({selectedCard: { ...card, userId: get(currentUser).id}});
 
   socket.emit("estimation", {

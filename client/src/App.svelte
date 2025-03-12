@@ -29,6 +29,9 @@
 
       selectedCards.set(initialSelectedCards);
       sessionInfo.update((prevSession) => ({ ...prevSession, estimationIsRevealed: data.estimationIsRevealed }));
+      if (data.estimationIsRevealed) {
+        sessionInfo.update((prevSession) => ({ ...prevSession, cardsAreFlipped: true }));
+      }
       participants.set(data.participants);
     })
   }

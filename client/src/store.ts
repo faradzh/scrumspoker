@@ -1,7 +1,6 @@
 import { writable } from "svelte/store";
 
 import type { Room, SelectedCards, User } from "./lib/types";
-import { TIMER_INIT } from "./constants";
 
 export const selectedCards = writable<SelectedCards>({});
 

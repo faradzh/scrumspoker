@@ -1,11 +1,5 @@
 <script lang="ts">
-  import { selectedCards, totalEstimate } from "../store";
-  import { calculateAverage } from "./utils";
-
-  $effect(() => {
-    const total = calculateAverage($selectedCards) || 0;
-    totalEstimate.set(total);
-  });
+  import { totalEstimate } from "../store";
 </script>
 
 <div class="flex justify-center space-x-2">

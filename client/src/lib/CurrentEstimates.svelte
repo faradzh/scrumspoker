@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import { participants, selectedCards } from "../store";
+  import { participants, selectedCards, totalEstimate } from "../store";
   import Card from "./Card.svelte";
   import { socket } from "../sockets";
   import { revealHandler } from "./utils";
