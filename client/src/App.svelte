@@ -14,7 +14,6 @@
   import { getRoomData } from "./services/roomService";
   import type { Estimate, SelectedCard, SelectedCards } from "./lib/types";
   import ToastWrapper from "./lib/ToastWrapper.svelte";
-  import ToastService from "./services/toastService";
   
 
   async function fetchRoomData() {
@@ -82,9 +81,9 @@
 </script>
 
 <Navbar />
-<main class="bg-gray-50 h-full overflow-y-hidden">
-  <div class="mx-auto px-8 max-w-screen-2xl">
-    <div class="mt-10 pb-10 grid gap-4 sm:mt-16 lg:grid-cols-[280px_1fr] lg:grid-rows-[235px_240px]">
+<main class="bg-gray-50 h-screen overflow-y-hidden">
+  <div class="mx-auto px-8 max-w-screen-2xl h-screen">
+    <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[2fr_1fr] h-screen">
       <Stories />
       <Session />
       <CardsDeck />

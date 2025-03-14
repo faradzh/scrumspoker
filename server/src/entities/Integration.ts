@@ -8,13 +8,13 @@ export interface IntegrationRequestData {
     filterLabel: string;
 }
 
-export interface Integration extends IntegrationRequestData{
+export interface Integration extends IntegrationRequestData {
     name: string;
     baseUrl: string;
     // e.g. "ToEstimate", the label of the issue to estimate
     getAuthorizationHeader(): string;
     getSearchUrl(): string;
     getSearchBody(): string;
-    getUpdateIssueUrl(): string;
+    getUpdateIssueUrl(id: string): string;
     getUpdateIssueBody(value: number): string;
 }

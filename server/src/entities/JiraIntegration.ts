@@ -5,6 +5,7 @@ class JiraIntegration implements Integration {
     public id = IntegrationTypeEnum.JIRA;
     public name: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].name;
     public baseUrl: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].url;
+    public storyPointsFieldId: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].storyPointsFieldId;
 
     public constructor(
         public email: string,
@@ -35,14 +36,14 @@ class JiraIntegration implements Integration {
         return JSON.stringify({
             jql: `labels = ${this.filterLabel}`,
             maxResults: 10,
-            fields: ["summary", "status", "description", "status", "priority", "customfield_10016"]
+            fields: ["summary", "status", "description", "status", "priority", this.storyPointsFieldId]
         })
     }
 
     public getUpdateIssueBody(value: number): string {
         return JSON.stringify({
             fields: {
-                customfield_10016: value
+                [this.storyPointsFieldId]: value
             }
         });
     }

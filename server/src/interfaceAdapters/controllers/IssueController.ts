@@ -14,7 +14,7 @@ class IssueController<I> {
         private apiIssuePresenter: ApiIssuePresenter,
     ) {
         this.getAllIssuesUseCase = new GetAllIssues(inMemoryIntegrationRepository, redisRoomRepository);
-        this.saveEstimationUseCase = new SaveEstimation(redisRoomRepository, inMemoryIntegrationRepository);
+        this.saveEstimationUseCase = new SaveEstimation(inMemoryIntegrationRepository);
         this.apiIssuePresenter = apiIssuePresenter;
     }
     
@@ -36,9 +36,9 @@ class IssueController<I> {
         try {
             const roomId = req.query.roomId!.toString();
             const issueId = req.params.issueId;
-            const value = req.body.value;
+            const estimationValue = req.body.value;
 
-            await this.saveEstimationUseCase.execute(roomId, issueId, value);
+            await this.saveEstimationUseCase.execute(roomId, issueId, estimationValue);
             
             res.status(200).json({ message: "Estimation saved" });
         } catch (error) {
