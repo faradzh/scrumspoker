@@ -29,3 +29,9 @@ function resetTimer() {
 
 
 export const storiesState = $state<{selectedStory: {id: string, summary: string, key: string} | undefined}>({selectedStory: undefined});
+
+export type Toast = {
+    message: string;
+    type: 'error' | 'success';
+}
+export const toastState = $state<{messages: Toast[]}>({messages: []});

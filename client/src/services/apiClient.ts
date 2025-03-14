@@ -1,3 +1,5 @@
+import ToastService from "./toastService";
+
 export const apiClient = async <T = any>(
     method: "GET" | "POST" | "PUT" | "DELETE",
     url: string,
@@ -23,12 +25,14 @@ export const apiClient = async <T = any>(
   
       if (!response.ok) {
         const errorData = await response.json();
+        ToastService.showToast("API request failed", {type: "error"});
         throw new Error(errorData.message || "API request failed");
       }
   
       return (await response.json()) as T;
     } catch (error) {
-      console.error("API Error:", error);
+      ToastService.showToast(`API Error: ${error}`, {type: "error"});
+      console.error();
       throw error;
     }
   };

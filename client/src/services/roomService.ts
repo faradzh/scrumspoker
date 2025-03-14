@@ -1,4 +1,6 @@
+import Toast from "../lib/Toast.svelte";
 import { apiClient } from "./apiClient";
+import ToastService from "./toastService";
 
 export const getRoomData = async () => {
     const roomId = location.pathname.split("/").pop();
@@ -12,5 +14,10 @@ export const fetchIssues = async () => {
 
 export const updateIssue = async (issueId: string, value: number) => {
     const roomId = location.pathname.split("/").pop();
-    return apiClient("PUT", `/issues/${issueId}?roomId=${roomId}`, {value}, {credentials: 'include'});
+    try {
+        await apiClient("PUT", `/issues/${issueId}?roomId=${roomId}`, {value}, {credentials: 'include'});
+        ToastService.showToast("Estimation saved!");
+    } catch (error) {
+        // no-op
+    }
 }

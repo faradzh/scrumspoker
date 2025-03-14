@@ -13,8 +13,10 @@
   import { getCurrentUser } from "./services/userService";
   import { getRoomData } from "./services/roomService";
   import type { Estimate, SelectedCard, SelectedCards } from "./lib/types";
-
+  import ToastWrapper from "./lib/ToastWrapper.svelte";
+  import ToastService from "./services/toastService";
   
+
   async function fetchRoomData() {
     getRoomData().then((data) => {
       currentUser.update((prevUser) => ({ ...prevUser, isModerator: $currentUser.id === data.moderatorId}));
@@ -89,3 +91,4 @@
     </div>
   </div>
 </main>
+<ToastWrapper />
