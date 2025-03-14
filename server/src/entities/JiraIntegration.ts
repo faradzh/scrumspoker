@@ -38,5 +38,17 @@ class JiraIntegration implements Integration {
             fields: ["summary", "status", "description", "status", "priority", "customfield_10016"]
         })
     }
+
+    public getUpdateIssueBody(value: number): string {
+        return JSON.stringify({
+            fields: {
+                customfield_10016: value
+            }
+        });
+    }
+
+    public getUpdateIssueUrl(): string {
+        return `${this.baseUrl}/issue`;
+    }
 }
 export default JiraIntegration;

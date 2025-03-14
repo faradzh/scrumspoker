@@ -1,5 +1,3 @@
-import { Profile } from "passport";
-
 import Room from "../entities/Room";
 import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
 import { Estimation } from "../types";

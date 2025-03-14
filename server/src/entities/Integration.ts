@@ -15,4 +15,6 @@ export interface Integration extends IntegrationRequestData{
     getAuthorizationHeader(): string;
     getSearchUrl(): string;
     getSearchBody(): string;
+    getUpdateIssueUrl(): string;
+    getUpdateIssueBody(value: number): string;
 }

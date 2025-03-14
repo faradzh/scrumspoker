@@ -84,6 +84,12 @@ class RedisRoomRepository implements RoomRepository {
 
     return issues.map((issue) => JSON.parse(issue));
   }
+
+  async findIntegrationIssue(roomId: string, issueId: string): Promise<Issue | undefined> {
+    const issues = await this.findIntegrationIssues(roomId);
+
+    return issues.find((issue) => issue.id === issueId);
+  }
 }
 
 export default RedisRoomRepository

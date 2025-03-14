@@ -1,5 +1,12 @@
 <script lang="ts">
+  import { updateIssue } from "../services/roomService";
+  import { storiesState } from "../state.svelte";
   import { totalEstimate } from "../store";
+
+  function saveHandler() {
+    const issueId = storiesState.selectedStory?.id!;
+    updateIssue(issueId, $totalEstimate);
+  }
 </script>
 
 <div class="flex justify-center space-x-2">
@@ -12,5 +19,5 @@
             </div>
         </div>
     </div>  
-    <button class="btn self-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition">Save</button>
+    <button onclick={saveHandler} class="btn self-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition">Save</button>
 </div>

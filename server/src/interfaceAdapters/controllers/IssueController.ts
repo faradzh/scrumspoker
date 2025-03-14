@@ -2,22 +2,19 @@ import { Request, Response } from "express";
 
 import GetAllIssues from "../../useCases/GetAllIssues";
 import ApiIssuePresenter from "../presenters/ApiIssuePresenter";
-import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
-import RedisRoomRepository from "../repositories/RedisRoomRepository";
-import IssueTransformer from "../presenters/JiraIssueTransformer";
 import { redisRoomRepository } from "./constants";
 import { inMemoryIntegrationRepository } from "./RoomController";
+import SaveEstimation from "../../useCases/SaveEstimation";
 
 class IssueController<I> {
     private getAllIssuesUseCase;
+    private saveEstimationUseCase;
 
     public constructor(
-        private inMemoryIntegrationRepository: InMemoryIntegrationRepository,
-        private redisRoomRepository: RedisRoomRepository,
         private apiIssuePresenter: ApiIssuePresenter,
-        private issueTransformer: IssueTransformer
     ) {
-        this.getAllIssuesUseCase = new GetAllIssues(inMemoryIntegrationRepository, redisRoomRepository, issueTransformer);
+        this.getAllIssuesUseCase = new GetAllIssues(inMemoryIntegrationRepository, redisRoomRepository);
+        this.saveEstimationUseCase = new SaveEstimation(redisRoomRepository, inMemoryIntegrationRepository);
         this.apiIssuePresenter = apiIssuePresenter;
     }
     
@@ -34,8 +31,23 @@ class IssueController<I> {
             res.status(400).json({ message: error.message });
         }
     }
+
+    public async updateIssueHandler(req: Request, res: Response) {
+        try {
+            const roomId = req.query.roomId!.toString();
+            const issueId = req.params.issueId;
+            const value = req.body.value;
+
+            await this.saveEstimationUseCase.execute(roomId, issueId, value);
+            
+            res.status(200).json({ message: "Estimation saved" });
+        } catch (error) {
+            // @ts-ignore
+            res.status(400).json({ message: error.message });
+        }
+    }
 }
 
-export const issueController = new IssueController(inMemoryIntegrationRepository, redisRoomRepository, new ApiIssuePresenter(), new IssueTransformer);
+export const issueController = new IssueController(new ApiIssuePresenter());
 
 export default IssueController;

@@ -15,7 +15,7 @@ class JiraIssueTransformer {
                 name: issue.fields.priority.name,
                 iconUrl: issue.fields.priority.iconUrl
             },
-            storyPoints: issue.fields.customfield_10016,
+            customfield_10016: issue.fields.customfield_10016,
             summary: issue.fields.summary,
             description: issue.fields.description?.content[0].content[0].text ?? null,
         };

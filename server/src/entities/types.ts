@@ -23,7 +23,7 @@ export interface Issue {
         iconUrl: string;
     },
     // story points field, e.g. 1, 2, 3, 5, 8, 13
-    storyPoints: number;
+    customfield_10016: number;
     summary: string;
     description: string;
     status: string;

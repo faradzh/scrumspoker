@@ -8,7 +8,7 @@ export const apiClient = async <T = any>(
   
     const headers: HeadersInit = {
       "Content-Type": "application/json",
-      ...(config?.headers ?? {})
+      "Accept": "application/json" 
     };
   
     const options: RequestInit = {

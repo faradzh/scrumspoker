@@ -10,9 +10,7 @@ class GetIntegrationIssues {
     constructor(
         private inMemoryIntegrationRepository: InMemoryIntegrationRepository,
         private redisRoomRepository: RedisRoomRepository,
-        private issueTransformer: IssueTransformer
     ) {
-        this.issueTransformer = issueTransformer;
         this.inMemoryIntegrationRepository = inMemoryIntegrationRepository;
         this.redisRoomRepository = redisRoomRepository;
     }
@@ -51,7 +49,6 @@ class GetIntegrationIssues {
         }
         
         const fetchedData = await this.fetchIssues<typeof integration.id>(integration) as JiraIssueResponse;
-
         const TransformerClass = ISSUE_TRANSFORMERS[integration.id];
 
         if (!TransformerClass) {
