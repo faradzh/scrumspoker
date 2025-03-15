@@ -19,11 +19,16 @@ class SaveEstimation {
             "Content-Type": "application/json"
         };
 
-        await fetch(integration.getUpdateIssueUrl(issueId), {
+        console.log('URL', integration.getUpdateIssueUrl(issueId));
+        console.log('BODY', integration.getUpdateIssueBody(value));
+
+        const response = await fetch(integration.getUpdateIssueUrl(issueId), {
             method: "PUT",
             headers,
             body: integration.getUpdateIssueBody(value)
         });
+
+        console.log('RESPONSE', response);
     }
 
     async execute(roomId: string, issueId: string, value: number): Promise<void> {

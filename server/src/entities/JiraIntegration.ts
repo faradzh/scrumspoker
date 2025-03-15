@@ -48,8 +48,8 @@ class JiraIntegration implements Integration {
         });
     }
 
-    public getUpdateIssueUrl(): string {
-        return `${this.baseUrl}/issue`;
+    public getUpdateIssueUrl(id: string): string {
+        return `${this.baseUrl}/issue/${id}`;
     }
 }
 export default JiraIntegration;
