@@ -15,7 +15,7 @@
     });
 </script>
 
-<div class="mb-12 min-h-[199.3px]">
+<div class="mb-4 min-h-[199.3px]">
     <div class="flex">
         {#each $participants as participant, index}
             <div class="mr-6 text-center min-w-[80px]">

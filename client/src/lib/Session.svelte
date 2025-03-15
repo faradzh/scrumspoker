@@ -18,10 +18,10 @@
   const currentStoryText = $derived(storiesState.selectedStory ? (storiesState.selectedStory?.key + ": " + storiesState.selectedStory?.summary) : '');
 </script>
 
-<section class="relative lg:row-span-2 lg-col-span-3 text-black">
+<section class="relative text-black">
     <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem]"></div>
     <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
-        <div class="p-6 h-full">
+        <div class="p-4 h-full">
             <div class="mb-6">
                 <div class="flex justify-between">
                     <div>

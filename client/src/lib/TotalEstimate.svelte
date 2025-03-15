@@ -9,13 +9,13 @@
   }
 </script>
 
-<div class="flex justify-center space-x-2">
+<div class="flex justify-start space-x-2">
     <div class="flex flex-col">   
-        <div class="stats shadow-md rounded-lg">
+        <div class="stats shadow rounded-lg">
             <div class="stat">
                 <div class="stat-title">Total Estimate</div>
                 <div class="stat-value">{$totalEstimate}</div>
-                <div class="stat-desc">as average</div>
+                <!-- <div class="stat-desc">as average</div> -->
             </div>
         </div>
     </div>  

@@ -10,15 +10,15 @@
 
 </script>
 
-<section class="relative lg:col-span-1">
+<section class="relative">
   <div class="bg-white w-full h-full lg:rounded-t-[calc(theme(borderRadius.lg)+1px)]">
-    <div class="p-6">
-      <div class="mb-6">
+    <div class="p-4">
+      <div class="mb-4">
         <h2 class="text-xl font-semibold text-gray-950">Your Estimation</h2>
       </div>
       <div class="flex overflow-x-auto">
         {#each POKER_CARDS as pokerCard}
-          <div class="poker-card cursor-pointer w-full mr-6">
+          <div class="poker-card cursor-pointer w-full mr-4 max-w-[100px]">
             <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
             <img class="rounded-lg" src="{pokerCard.link}" alt="" onclick={() => clickHandler(pokerCard)} />
           </div>
