@@ -1,8 +1,9 @@
 <script lang="ts">
   import { addCardRef } from './utils';
-  import { currentUser, participants, sessionInfo } from '../store';
+  import { currentUser, sessionInfo } from '../store';
   import type { SelectedCard } from './types';
   import { get } from 'svelte/store';
+  import { storiesState } from '../state.svelte';
 
   let cardElement: HTMLDivElement | undefined = $state();
   let { card }: Props = $props();
@@ -12,36 +13,27 @@
       addCardRef(cardElement!);
     }
   });
-    
+
   interface Props {
     card: SelectedCard;
   }
 
   function shouldAddRef() {
+    const selectedStoryId = storiesState.selectedStory?.id;
+
+    if (!selectedStoryId) {
+      return false;
+    }
+
     if (get(currentUser).id === card.userId) {
       return true;
     }
-    return get(sessionInfo).estimationIsRevealed;
+    
+    return get(sessionInfo)[selectedStoryId]?.estimationIsRevealed;
   }
-  
-  const userPicture = $participants.find((participant) => {
-    return participant.id === card.userId;
-  })?.picture ?? '';
-
 </script>
 
 <div class="relative basis-[200px] shrink-0 cursor-pointer min-w-[80px]">
-  <!-- <div class="avatar placeholder absolute top-[-16px] right-[-16px] z-[1]">
-    {#if userPicture}
-      <div class="ring-primary ring-offset-base-100 ring ring-offset-2 w-12 rounded-full">
-        <img src={userPicture} alt="User avatar"/>
-      </div>
-    {:else}
-      <div class="bg-neutral text-neutral-content w-12 rounded-full">
-        <span class="text-xl">RJ</span>
-      </div>
-    {/if}
-  </div> -->
   <div class="poker-card--selected " bind:this={cardElement}>
     <div class="front w-full h-full">
       <img class="rounded-lg" src={shouldAddRef() ? card.link : "/card-cover.svg"} alt="">

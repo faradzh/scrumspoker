@@ -12,26 +12,41 @@
   import { estimationHandler } from "./lib/utils";
   import { getCurrentUser } from "./services/userService";
   import { getRoomData } from "./services/roomService";
-  import type { Estimate, SelectedCard, SelectedCards } from "./lib/types";
+  import type { Estimate, SelectedCard, SelectedCardsByIssue } from "./lib/types";
   import ToastWrapper from "./lib/ToastWrapper.svelte";
+  import { storiesState } from "./state.svelte";
   
 
   async function fetchRoomData() {
+    
     getRoomData().then((data) => {
       currentUser.update((prevUser) => ({ ...prevUser, isModerator: $currentUser.id === data.moderatorId}));
-      const initialSelectedCards = data.estimates.reduce((acc: SelectedCards, estimate: Estimate) => {
+      const initialSelectedCards = data.estimates.reduce((acc: SelectedCardsByIssue, estimate: Estimate) => {
+        const currentIssueId = storiesState.selectedStory?.id;
         const card = getCardByValue(estimate.value);
-        acc[estimate.userId] = {
-          ...card,
-          userId: estimate.userId,
-        } as SelectedCard;
+        console.log('currentIssueId', currentIssueId);
+        if (currentIssueId) {
+          acc[currentIssueId] = {
+            ...acc[currentIssueId],
+            [estimate.userId]: {
+              ...card,
+              userId: estimate.userId,
+            } as SelectedCard,
+          }
+        }
         return acc;
       }, {});
 
+      const currentIssueId = storiesState.selectedStory?.id;
       selectedCards.set(initialSelectedCards);
-      sessionInfo.update((prevSession) => ({ ...prevSession, estimationIsRevealed: data.estimationIsRevealed }));
-      if (data.estimationIsRevealed) {
-        sessionInfo.update((prevSession) => ({ ...prevSession, cardsAreFlipped: true }));
+      if (data.estimationIsRevealed && currentIssueId) {
+        sessionInfo.update((prevSession) => ({
+          ...prevSession, 
+          [currentIssueId]: {
+            cardsAreFlipped: true,
+            estimationIsRevealed: data.estimationIsRevealed
+          }
+        }));
       }
       participants.set(data.participants);
     })
@@ -83,7 +98,7 @@
 <Navbar />
 <main class="bg-gray-50 h-screen overflow-y-hidden">
   <div class="mx-auto px-8 max-w-screen-2xl h-screen">
-    <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[437px_225px] h-screen">
+    <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[auto_225px] h-screen">
       <Stories />
       <Session />
       <CardsDeck />

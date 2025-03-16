@@ -5,6 +5,7 @@ import type { Card, SelectedCard, SelectedCards } from "./types";
 import { cardRefsStore, currentUser, selectedCards, sessionInfo, totalEstimate } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
+import { storiesState } from "../state.svelte";
 
 export function compareLinks(a: Card, b: Card): number {
   if (a.link < b.link) {
@@ -49,8 +50,13 @@ function emitRevealEvent() {
   socket.emit('reveal', ({status}: any) => {
     if (status === 'success') {
       console.log('The estimation was revealed');
+      const selectedStoryId = storiesState.selectedStory?.id!;
+
       sessionInfo.update((info) => {
-        info.estimationIsRevealed = true;
+        info[selectedStoryId] = {
+          ...info[selectedStoryId],
+          estimationIsRevealed: true
+        };
         return info;
       });
     }
@@ -65,17 +71,30 @@ export function revealHandler() {
   }
 
   flipHandler(cardRefs, () => {
+    const selectedStoryId = storiesState.selectedStory?.id;
+
+    if (!selectedStoryId) {
+      return;
+    }
+
     sessionInfo.update((info) => {
-      info.cardsAreFlipped = true;
+      info[selectedStoryId] = {
+        ...info[selectedStoryId],
+        cardsAreFlipped: true
+      };
       return info;
     });
 
-    const total = calculateAverage(get(selectedCards)) || 0;
+    const total = calculateAverage(get(selectedCards)[selectedStoryId]) || 0;
     totalEstimate.set(total);
   });
 };
 
 export function calculateAverage(selectedCards: SelectedCards): number {
+  if (!selectedCards) {
+    return 0;
+  }
+
   const cards = Object.values(selectedCards);
 
   const sum = cards.reduce((acc, card) => acc + card.value, 0);
@@ -100,7 +119,13 @@ export const addCardRef = (cardRef: HTMLDivElement) => {
 
 export const selectCard = (socket: Socket, card: Card) => {
   const session = get(sessionInfo);
-  if (session.estimationIsRevealed || session.cardsAreFlipped) {
+  const selectedStoryId = storiesState.selectedStory?.id;
+
+  if (!selectedStoryId) {
+    return;
+  }
+
+  if (session[selectedStoryId]?.estimationIsRevealed || session[selectedStoryId]?.cardsAreFlipped) {
     return;
   }
 
@@ -114,8 +139,14 @@ export const selectCard = (socket: Socket, card: Card) => {
 export const estimationHandler = ({selectedCard}: {selectedCard: SelectedCard}) => {
   const userId = selectedCard.userId;
   const updatedCards = {...get(selectedCards)};
+  const selectedStoryId = storiesState.selectedStory?.id;
 
-  updatedCards[userId] = selectedCard;
+  if (selectedStoryId) {
+    updatedCards[selectedStoryId] = {
+      ...updatedCards[selectedStoryId],
+      [userId]: selectedCard
+    };
+  }
 
   selectedCards.set(updatedCards);
 };

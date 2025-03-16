@@ -13,5 +13,6 @@ export default defineConfig({
       },
     },
     outDir: "../server/public",
+    sourcemap: true,
   },
 });

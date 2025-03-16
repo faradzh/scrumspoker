@@ -12,6 +12,10 @@ export interface SelectedCards {
   [userId: string]: SelectedCard;
 }
 
+export interface SelectedCardsByIssue {
+  [issueId: string]: SelectedCards;
+}
+
 export type User = {
   id: string;
   picture: string;

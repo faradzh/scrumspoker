@@ -1,8 +1,8 @@
 import { writable } from "svelte/store";
 
-import type { Room, SelectedCards, User } from "./lib/types";
+import { type SelectedCardsByIssue, type Room, type User } from "./lib/types";
 
-export const selectedCards = writable<SelectedCards>({});
+export const selectedCards = writable<SelectedCardsByIssue>({});
 
 export const cardRefsStore = writable<HTMLDivElement[]>([]);
 
@@ -12,7 +12,7 @@ export const modalStore = writable({ isOpen: false });
 
 export const rooms = writable<Room[]>([]);
 
-export const sessionInfo = writable<any>();
+export const sessionInfo = writable<any>({});
 
 export const totalEstimate = writable<number>(0);
 
