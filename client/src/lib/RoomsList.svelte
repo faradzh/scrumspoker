@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import {rooms} from "../store";
+    import RoomCard from "../admin/RoomCard.svelte";
 
     async function fetchRooms() {
         const response =  await fetch('/rooms');
@@ -12,27 +13,15 @@
     });
 </script>
 
-<div class="flex justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-black">
-    <table class="table table-zebra">
-        <!-- head -->
-        <thead>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Estimation method</th>
-            <th>Link</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- row 1 -->
-          {#each $rooms as room, index}
-            <tr>
-              <th>{index + 1}</th>
-              <td>{room.name}</td>
-              <td>{room.estimationMethod}</td>
-              <td><a href="{room.link}">{room.link}</a></td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
+{#if $rooms.length === 0}
+  <div class="text-center">
+    <img class="max-w-80 m-auto mb-6" src="/no-data-panda.svg" alt="">
+    <h3 class="text-black text-lg font-bold">No rooms available yet.</h3>
   </div>
+{/if}
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {#each $rooms as room}
+    <RoomCard room={room} />
+  {/each}
+</div>
