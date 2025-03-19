@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import {rooms} from "../store";
-    import RoomCard from "../admin/RoomCard.svelte";
+    import RoomCard from "./RoomCard.svelte";
 
     async function fetchRooms() {
         const response =  await fetch('/rooms');

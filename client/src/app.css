@@ -18,6 +18,8 @@
   -webkit-text-size-adjust: 100%;
 
   height: 100vh;
+  overflow: hidden; 
+  scrollbar-width: none;
 }
 
 @layer base {
@@ -41,4 +43,40 @@
   .scrollbar-visible::-webkit-scrollbar-track {
     background: #f0f0f0; /* Track color */
   }
+}
+
+.radio-btn:is(input[type="radio"]):checked {
+  --tw-border-opacity: 1;
+  --tw-bg-opacity: 1;
+  background: rgb(124 58 237 / var(--tw-bg-opacity, 1));
+  --tw-text-opacity: 1;
+  color: white;
+  border-color: rgb(124 58 237 / var(--tw-bg-opacity, 1));
+}
+
+.radio-btn:is(input[type="radio"]) {
+  --tw-border-opacity: 1;
+  --tw-bg-opacity: 1;
+  background: transparent;
+  --tw-text-opacity: 1;
+  color: black;
+  border-color: black
+}
+
+.radio-btn:is(input[type="radio"]):hover {
+  --tw-border-opacity: 1;
+  --tw-bg-opacity: 1;
+  background: rgb(124 58 237 / var(--tw-bg-opacity, 1));
+  --tw-text-opacity: 1;
+  color: white;
+  border-color: rgb(124 58 237 / var(--tw-bg-opacity, 1));
+}
+
+.radio-btn:is(input[type="radio"]:checked):hover {
+  --tw-border-opacity: 1;
+  --tw-bg-opacity: 1;
+  background: rgb(124 58 237 / var(--tw-bg-opacity, 1));
+  --tw-text-opacity: 1;
+  color: white;
+  border-color: rgb(124 58 237 / var(--tw-bg-opacity, 1));
 }
