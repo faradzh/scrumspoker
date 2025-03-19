@@ -10,7 +10,7 @@
         <Input id="name" label="Room Name" placeholder="Enter room name" bind:value={values.name} />
     </div>
     <div class="mb-4">
-        <Input id="maxParticipants" label="Maximum Participants<" type="number" value="5" min="1" />
+        <Input id="maxParticipants" label="Maximum Participants" type="number" value="5" min="1" />
     </div>
     <div class="mb-4">
         <div class="label text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-1 pl-0">Estimation Method</div>
