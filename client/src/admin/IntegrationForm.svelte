@@ -16,6 +16,6 @@
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">This label will be used to filter issues for the session.</p>
     </div>
     <div class="mb-4">
-        <Input id="projectName" label="Project Name" placeholder="Enter Jira project name" bind:value={values.filterLabel} />
+        <Input id="projectName" label="Project Name" placeholder="Enter Jira project name" bind:value={values.projectName} />
     </div>
 </form>

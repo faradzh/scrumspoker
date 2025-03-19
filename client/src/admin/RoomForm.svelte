@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { INTEGRATION_NAMES } from "./constants";
     import Input from "./Input.svelte";
     let {formRef = $bindable(), values, onSubmit, onIntegrationChange} = $props();
 </script>
@@ -22,8 +23,29 @@
     </div>
     <div class="mb-4">
         <div class="label text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-1 pl-0">Integration</div>
-        <input type="radio" name="" aria-label="None" class="btn btn-outline h-9 min-h-9 text-white radio-btn" checked={values.integrationId === '' || values.integrationId === undefined} onchange={onIntegrationChange} />
-        <input type="radio" name="Jira" aria-label="Jira" class="btn btn-outline h-9 min-h-9  text-white radio-btn" checked={values.integrationId === 'Jira'} onchange={onIntegrationChange} />
-        <input type="radio" name="Asana" aria-label="Asana" class="btn btn-outline h-9 min-h-9 text-white radio-btn" checked={values.integrationId === 'Asana'} onchange={onIntegrationChange} />
+        <input
+            type="radio"
+            name=""
+            aria-label="None"
+            class="btn btn-outline h-9 min-h-9 text-white radio-btn"
+            checked={values.integrationId === '' || values.integrationId === undefined} 
+            onchange={onIntegrationChange} 
+        />
+        <input
+            type="radio"
+            name={INTEGRATION_NAMES.JIRA}
+            aria-label="Jira"
+            class="btn btn-outline h-9 min-h-9 text-white radio-btn"
+            checked={values.integrationId === INTEGRATION_NAMES.JIRA}
+            onchange={onIntegrationChange} 
+        />
+        <input
+            type="radio"
+            name={INTEGRATION_NAMES.ASANA}
+            aria-label="Asana"
+            class="btn btn-outline h-9 min-h-9 text-white radio-btn"
+            checked={values.integrationId === INTEGRATION_NAMES.ASANA}
+            onchange={onIntegrationChange} 
+        />
     </div>
 </form>

@@ -3,18 +3,28 @@
     import IntegrationForm from "./IntegrationForm.svelte";
     import FormService from "./FormService.svelte";
     import RoomForm from "./RoomForm.svelte";
-    import { FORM_BUTTONS } from "./constants";
+    import { FORM_BUTTONS, INTEGRATION_NAMES } from "./constants";
     
     const formService = new FormService([RoomForm, IntegrationForm]);
     const CurrentForm = $derived(formService.getCurrentPage());
 
-    const formData = $state<{name: string, estimationMethod: string, integrationId?: string}>({
+    type FormDataType = {
+        name: string;
+        estimationMethod: string;
+        integrationId?: string;
+        jiraEmail?: string;
+        apiToken?: string;
+        filterLabel?: string;
+        projectName?: string;
+    }
+
+    const formData = $state<FormDataType>({
       name: '',
       estimationMethod: ''
     });
   
     let formRef: HTMLFormElement | null = $state(null);
-    const isIntegrationAdded = $derived(formData.integrationId === 'Jira');
+    const isIntegrationAdded = $derived(formData.integrationId === INTEGRATION_NAMES.JIRA);
   
     const triggerFormSubmit = () => {
       if (formRef) {
@@ -24,13 +34,25 @@
   
     async function onSubmit(event: Event) {
       event?.preventDefault();
+
+      const body = JSON.stringify({
+        name: formData.name,
+        estimationMethod: formData.estimationMethod,
+        integration: {
+          id: formData.integrationId,
+          email: formData.jiraEmail,
+          apiToken: formData.apiToken,
+          filterLabel: formData.filterLabel,
+          projectName: formData.projectName
+        }
+      });
   
       const response = await fetch('/rooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body
       });
   
       const room = await response.json();

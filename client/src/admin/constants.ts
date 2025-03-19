@@ -4,3 +4,8 @@ export enum FORM_BUTTONS {
     NEXT = 'Next',
     CREATE = 'Create Room'
 }
+
+export enum INTEGRATION_NAMES {
+    JIRA = 'JIRA',
+    ASANA = 'ASANA'
+}

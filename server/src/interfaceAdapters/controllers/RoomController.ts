@@ -17,7 +17,6 @@ import { IntegrationRepository } from "../repositories/IntegrationRepository";
 import { IntegrationRequestData } from "../../entities/Integration";
 import RedisRoomRepository from "../repositories/RedisRoomRepository";
 import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
-import { IntegrationTypeEnum } from "../../useCases/constants";
 
 class RoomController {
     private createRoomUseCase;
@@ -39,16 +38,9 @@ class RoomController {
         const moderator = req.user as Profile;
         try {
             const room = await this.createRoomUseCase.execute({...initialData, moderator});
-            // if (initialData.integration) {
-            const integration = {
-                id: IntegrationTypeEnum.JIRA,
-                email: 'faradj.musaev@gmail.com',
-                apiToken: process.env.JIRA_API_TOKEN!,
-                projectName: 'SCRUM',
-                filterLabel: 'ToEstimate'
+            if (initialData.integration) {
+                await this.addIntegrationUseCase.execute(room.id, initialData.integration as IntegrationRequestData);
             }
-            await this.addIntegrationUseCase.execute(room.id, integration as IntegrationRequestData);
-            // }
             const roomResponse = this.roomPresenter.presentRoom(room);
             res.status(201).json(roomResponse);
         } catch (error) {
