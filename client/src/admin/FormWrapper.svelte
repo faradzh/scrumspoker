@@ -3,6 +3,7 @@
     import IntegrationForm from "./IntegrationForm.svelte";
     import FormService from "./FormService.svelte";
     import RoomForm from "./RoomForm.svelte";
+    import { FORM_BUTTONS } from "./constants";
     
     const formService = new FormService([RoomForm, IntegrationForm]);
     const CurrentForm = $derived(formService.getCurrentPage());
@@ -23,7 +24,6 @@
   
     async function onSubmit(event: Event) {
       event?.preventDefault();
-      console.log(JSON.stringify(formData));
   
       const response = await fetch('/rooms', {
         method: 'POST',
@@ -45,11 +45,11 @@
   
   
     function onAction() {
-      modalStore.update((store) => ({...store, isOpen: false}));
+      closeModal();
       triggerFormSubmit();
     }
 
-    function onClose() {
+    function closeModal() {
       modalStore.update((store) => ({...store, isOpen: false}));
     }
 
@@ -63,7 +63,7 @@
 
     function leftButtonClick() {
       if (formService.isFirstPage()) {
-        onClose();
+        closeModal();
     } else {
         onBack();
       }
@@ -79,16 +79,16 @@
 
     const leftButtonLabel = $derived.by(() => {
         if (!formService.isFirstPage() && isIntegrationAdded) {
-            return 'Back';
+            return FORM_BUTTONS.BACK;
         }
-        return 'Cancel';
+        return FORM_BUTTONS.CANCEL;
     })
 
     const rightButtonLabel = $derived.by(() => {
         if (formService.isFirstPage() && isIntegrationAdded) {
-            return 'Next';
+            return FORM_BUTTONS.NEXT;
         }
-        return 'Create Room'
+        return FORM_BUTTONS.CREATE
     })
 </script>
 
