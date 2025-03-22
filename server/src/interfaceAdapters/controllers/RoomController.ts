@@ -10,8 +10,8 @@ import JoinRoom from "../../useCases/JoinRoom";
 import GetAllRooms from "../../useCases/GetAllRooms";
 import EstimateTask from "../../useCases/EstimateTask";
 import RevealEstimation from "../../useCases/RevealEstimation";
+import Integration from "../../useCases/Integration";
 import { redisRoomRepository } from "./constants";
-import AddIntegration from "../../useCases/AddIntegration";
 import { RoomRepository } from "../repositories/RoomRepository";
 import { IntegrationRepository } from "../repositories/IntegrationRepository";
 import { IntegrationRequestData } from "../../entities/Integration";
@@ -20,14 +20,14 @@ import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRe
 
 class RoomController {
     private createRoomUseCase;
-    private addIntegrationUseCase;
+    private integrationUseCases;
     private getAllRoomsUseCase;
     private joinRoomUseCase;
     private roomPresenter;
 
     public constructor(roomRepository: RoomRepository, redisRoomRepository: RedisRoomRepository, integrationRepository: IntegrationRepository, roomPresenter: RoomPresenter) {
         this.createRoomUseCase = new CreateRoom(roomRepository);
-        this.addIntegrationUseCase = new AddIntegration(integrationRepository);
+        this.integrationUseCases = new Integration(integrationRepository);
         this.getAllRoomsUseCase = new GetAllRooms(roomRepository);
         this.joinRoomUseCase = new JoinRoom(roomRepository, redisRoomRepository);
         this.roomPresenter = roomPresenter;
@@ -39,7 +39,7 @@ class RoomController {
         try {
             const room = await this.createRoomUseCase.execute({...initialData, moderator});
             if (initialData.integration) {
-                await this.addIntegrationUseCase.execute(room.id, initialData.integration as IntegrationRequestData);
+                await this.integrationUseCases.addIntegration(room.id, initialData.integration as IntegrationRequestData);
             }
             const roomResponse = this.roomPresenter.presentRoom(room);
             res.status(201).json(roomResponse);

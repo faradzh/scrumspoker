@@ -11,6 +11,7 @@ import { checkLoggedIn } from "./middleware/validationMiddleware";
 import { patchSession } from "./infrastructure/session/sessionPatcher";
 // import integrationRouter from "./routes/IntegrationRouter";
 import issuesRouter from "./routes/IssuesRouter";
+import integrationRouter from "./routes/IntegrationRouter";
 
 const api = express();
 
@@ -52,7 +53,7 @@ api.use(express.static(path.join(__dirname,  "..", "public")));
 api.use(compression());
 
 api.use('/rooms', roomsRouter);
-// api.use('/integrations', integrationRouter);
+api.use('/integration', integrationRouter);
 api.use('/issues', issuesRouter);
 
 api.get("/admin", (_, res) => {
