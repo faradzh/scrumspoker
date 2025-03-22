@@ -1,6 +1,6 @@
 import type { Component } from "svelte";
 
-type ComponentType = Component<{ values: any; onSubmit: any; onIntegrationChange: any, formRef: HTMLFormElement  | null }, {}>;
+type ComponentType = Component<{ values: any, errors: any, onSubmit: any, formRef: HTMLFormElement  | null, onIntegrationInput?: any}, {}>;
 
 class FormService {
     private pages = $state<ComponentType[]>([]);

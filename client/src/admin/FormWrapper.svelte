@@ -4,67 +4,60 @@
     import FormService from "./FormService.svelte";
     import RoomForm from "./RoomForm.svelte";
     import { FORM_BUTTONS, INTEGRATION_NAMES } from "./constants";
+    import { CreateRoomSchema} from "./validators";
+    import { formData } from "./state.svelte";
     
     const formService = new FormService([RoomForm, IntegrationForm]);
     const CurrentForm = $derived(formService.getCurrentPage());
 
-    type FormDataType = {
-        name: string;
-        estimationMethod: string;
-        integrationId?: string;
-        jiraEmail?: string;
-        apiToken?: string;
-        filterLabel?: string;
-        projectName?: string;
-    }
-
-    const formData = $state<FormDataType>({
-      name: '',
-      estimationMethod: ''
-    });
+    let formErrors = $state({});
   
     let formRef: HTMLFormElement | null = $state(null);
-    const isIntegrationAdded = $derived(formData.integrationId === INTEGRATION_NAMES.JIRA);
+
+    const isIntegrationAdded = $derived(formData.integration?.id === INTEGRATION_NAMES.JIRA);
   
     const triggerFormSubmit = () => {
       if (formRef) {
         formRef.requestSubmit(); // Triggers the form's submit event
       }
     };
+
+    const onIntegrationInput = (event: Event) => {
+      const target = event.target as HTMLInputElement;
+      if (formData.integration && !target.value) {
+        delete formData.integration;
+      }
+
+      if (target.value) {
+        formData.integration = {
+          id: target.value as INTEGRATION_NAMES
+        }
+      }
+    };
   
     async function onSubmit(event: Event) {
-      event?.preventDefault();
+      event.preventDefault();
+      const parsed = CreateRoomSchema.safeParse(formData);
 
-      const body = JSON.stringify({
-        name: formData.name,
-        estimationMethod: formData.estimationMethod,
-        integration: {
-          id: formData.integrationId,
-          email: formData.jiraEmail,
-          apiToken: formData.apiToken,
-          filterLabel: formData.filterLabel,
-          projectName: formData.projectName
-        }
-      });
+      if (!parsed.success) {
+        formErrors = parsed.error.format();
+        console.log('formErrors', formErrors);
+        return;
+      }
+
+      console.log('Final form data', formData);
   
       const response = await fetch('/rooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body
+        body: JSON.stringify(formData)
       });
   
       const room = await response.json();
       rooms.update((prevRooms) => [...prevRooms, room]);
     };
-  
-    function onIntegrationChange(e: MouseEvent) {
-      const target = e.target as HTMLInputElement;
-      const value = target.getAttribute('name');
-      formData.integrationId = value ?? '';
-    }
-  
   
     function onAction() {
       closeModal();
@@ -114,7 +107,7 @@
     })
 </script>
 
-<CurrentForm bind:formRef values={formData} onSubmit={onSubmit} onIntegrationChange={onIntegrationChange} />
+<CurrentForm bind:formRef values={formData} onSubmit={onSubmit} errors={formErrors} onIntegrationInput={onIntegrationInput} />
 <div class="modal-action">
     <div class="flex justify-between w-full">
         <button class="btn bg-white text-black min-h-10 h-10" onclick={leftButtonClick}>{leftButtonLabel}</button>
