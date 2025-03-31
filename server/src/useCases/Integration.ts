@@ -1,37 +1,88 @@
-import { Integration as IntegrationI, IntegrationRequestData } from "../entities/Integration";
 import { IntegrationRepository } from "../interfaceAdapters/repositories/IntegrationRepository";
-import { INTEGRATION_CLASSES, IntegrationTypeEnum } from "./constants";
+import {
+  INTEGRATION_CLASSES,
+  IntegrationTypeEnum,
+  OAUTH2INTEGRATION_CLASSES,
+} from "./constants";
 
 class Integration {
-    constructor(private integrationRepository: IntegrationRepository) {
-        this.integrationRepository = integrationRepository;
+  constructor(private integrationRepository: IntegrationRepository) {
+    this.integrationRepository = integrationRepository;
+  }
+
+  public async testIntegration(integration: any): Promise<Response> {
+    const headers = {
+      Authorization: integration.getAuthorizationHeader(),
+      "Content-Type": "application/json",
+    };
+
+    // test if integration setup is a success
+    const response = await fetch(integration.getMyselfUrl(), {
+      headers,
+    });
+
+    console.log("Reponse", response);
+
+    if (response.status !== 200) {
+      throw new Error("The integration connection test failed!");
     }
 
-    public async testIntegration(data: IntegrationRequestData): Promise<{response: Response, integration: IntegrationI}> {
-        const { id, email, apiToken, projectName, filterLabel } = data;
+    return response;
+  }
 
-        const integration = new INTEGRATION_CLASSES[id as IntegrationTypeEnum](email, apiToken, projectName, filterLabel);
+  public buildTokenBasedIntegration(integrationData: any) {
+    const { id, email, apiToken, filterLabel, projectName } = integrationData;
 
-        const headers = { Authorization: integration.getAuthorizationHeader(), "Content-Type": "application/json" };
-        
-        // test if integration setup is a success
-        const response = await fetch(integration.getMyselfUrl(), {
-            headers
-        });
+    const integration = new INTEGRATION_CLASSES[id as IntegrationTypeEnum]({
+      email,
+      apiToken,
+      filterLabel,
+      projectName,
+    });
 
-        return {
-            response,
-            integration
-        };
-    }
-    
-    public async addIntegration(roomId: string, data: IntegrationRequestData): Promise<Response> {
-        const {response, integration}  = await this.testIntegration(data);
-        
-        await this.integrationRepository.saveIntegration(roomId, integration);
+    return integration;
+  }
 
-        return response;
-    }
+  private async save(roomId: string, integration: any) {
+    await this.integrationRepository.saveIntegration(roomId, integration);
+  }
+
+  public async addTokenBasedIntegration(
+    roomId: string,
+    data: any
+  ): Promise<Response> {
+    const integration = this.buildTokenBasedIntegration(data);
+
+    console.log("Token based", integration.getMyselfUrl());
+
+    const response = await this.testIntegration(integration);
+
+    this.save(roomId, integration);
+
+    return response;
+  }
+
+  public async addOauth2Integration(
+    roomId: string,
+    { id, filterLabel, projectName }: any,
+    { accessToken }: any
+  ): Promise<Response> {
+    const integration = new OAUTH2INTEGRATION_CLASSES[
+      id as IntegrationTypeEnum
+    ]({
+      accessToken,
+      filterLabel,
+      projectName,
+    });
+
+    await integration.fetchCloudId();
+
+    const response = await this.testIntegration(integration);
+
+    this.save(roomId, integration);
+
+    return response;
+  }
 }
 
 export default Integration;

@@ -20,6 +20,7 @@
     "express": "^4.21.1",
     "ioredis": "^5.5.0",
     "passport": "^0.7.0",
+    "passport-atlassian-oauth2": "^2.1.0",
     "passport-google-oauth20": "^2.0.0",
     "socket.io": "^4.8.0",
     "uuid": "^11.0.4",

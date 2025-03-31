@@ -1,55 +1,73 @@
 import { INTEGRATIONS, IntegrationTypeEnum } from "../useCases/constants";
 import { Integration } from "./Integration";
 
+export interface JiraArgs {
+  email: string;
+  apiToken: string;
+  filterLabel: string;
+  projectName?: string;
+}
 class JiraIntegration implements Integration {
-    public id = IntegrationTypeEnum.JIRA;
-    public name: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].name;
-    public baseUrl: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].url;
-    public storyPointsFieldId: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].storyPointsFieldId;
+  public id = IntegrationTypeEnum.JIRA;
+  public name: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].name;
+  public baseUrl: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].url;
+  public storyPointsFieldId: string =
+    INTEGRATIONS[IntegrationTypeEnum.JIRA].storyPointsFieldId;
 
-    public constructor(
-        public email: string,
-        public apiToken: string,
-        public projectName: string,
-        public filterLabel: string
-    ) {
-        this.email = email;
-        this.apiToken = apiToken;
-        this.projectName = projectName ?? '';
-        this.filterLabel = filterLabel ?? '';
-    }
+  public email;
+  public apiToken;
+  public projectName;
+  public filterLabel;
 
-    public getAuthorizationHeader(): string {
-        const auth = btoa(`${this.email}:${this.apiToken}`);
-        return `Basic ${auth}`;
-    }
+  public constructor({ email, apiToken, projectName, filterLabel }: JiraArgs) {
+    this.email = email;
+    this.apiToken = apiToken;
+    this.projectName = projectName ?? "";
+    this.filterLabel = filterLabel ?? "";
+  }
 
-    public getMyselfUrl(): string {
-        return `${this.baseUrl}/myself`;
+  public getAuthorizationHeader(): string {
+    if (this.email && this.apiToken) {
+      const auth = btoa(`${this.email}:${this.apiToken}`);
+      return `Basic ${auth}`;
+    } else {
+      throw new Error("Auth header is not defined!");
     }
+  }
 
-    public getSearchUrl(): string {
-        return `${this.baseUrl}/search/jql`;
-    }
+  public getMyselfUrl(): string {
+    return `${this.baseUrl}/myself`;
+  }
 
-    public getSearchBody(): string {
-        return JSON.stringify({
-            jql: `labels = ${this.filterLabel}`,
-            maxResults: 10,
-            fields: ["summary", "status", "description", "status", "priority", this.storyPointsFieldId]
-        })
-    }
+  public getSearchUrl(): string {
+    return `${this.baseUrl}/search/jql`;
+  }
 
-    public getUpdateIssueBody(value: number): string {
-        return JSON.stringify({
-            fields: {
-                [this.storyPointsFieldId]: value
-            }
-        });
-    }
+  public getSearchBody(): string {
+    return JSON.stringify({
+      jql: `labels = ${this.filterLabel}`,
+      maxResults: 10,
+      fields: [
+        "summary",
+        "status",
+        "description",
+        "status",
+        "priority",
+        this.storyPointsFieldId,
+      ],
+    });
+  }
 
-    public getUpdateIssueUrl(id: string): string {
-        return `${this.baseUrl}/issue/${id}`;
-    }
+  public getUpdateIssueBody(value: number): string {
+    return JSON.stringify({
+      fields: {
+        [this.storyPointsFieldId]: value,
+      },
+    });
+  }
+
+  public getUpdateIssueUrl(id: string): string {
+    return `${this.baseUrl}/issue/${id}`;
+  }
 }
 export default JiraIntegration;
