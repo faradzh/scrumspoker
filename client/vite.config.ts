@@ -10,6 +10,7 @@ export default defineConfig({
       input: {
         client: "./room.html",
         admin: "./admin.html",
+        login: "./login.html",
       },
     },
     outDir: "../server/public",
