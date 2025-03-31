@@ -1,25 +1,31 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 import Room from "../entities/Room";
 import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
-import { RoomData } from '../types';
+import { RoomData } from "../types";
 
 class CreateRoom {
-    private roomRepository;
+  private roomRepository;
 
-    constructor(roomRepository: RoomRepository) {
-        this.roomRepository = roomRepository;
-    }
+  constructor(roomRepository: RoomRepository) {
+    this.roomRepository = roomRepository;
+  }
 
-    public async execute(initialData: RoomData): Promise<Room> {
-        const roomId = uuidv4();
+  public async execute(initialData: RoomData): Promise<Room> {
+    const roomId = uuidv4();
 
-        const newRoom = new Room(roomId, initialData.name, initialData.estimationMethod, [], initialData.moderator);
+    const newRoom = new Room(
+      roomId,
+      initialData.name,
+      initialData.estimationMethod,
+      [],
+      initialData.moderator
+    );
 
-        await this.roomRepository.saveRoom?.(newRoom);
+    await this.roomRepository.saveRoom?.(newRoom);
 
-        return newRoom;
-    }
+    return newRoom;
+  }
 }
 
 export default CreateRoom;
