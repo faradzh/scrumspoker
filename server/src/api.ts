@@ -3,7 +3,7 @@ import path from "path";
 import passport from "passport";
 import cookieSession from "cookie-session";
 import compression from "compression";
-import cors from 'cors';
+import cors from "cors";
 
 import roomsRouter from "./routes/RoomsRouter";
 import authRouter from "./routes/AuthRouter";
@@ -21,7 +21,7 @@ const corsOptions = {
   origin: ["http://localhost:5173", "https://scrumspoker.com"], // Change this to your frontend URL
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
   credentials: true, // Allow cookies (if needed)
-  allowedHeaders: ["Content-Type", "Authorization"] // Allowed headers
+  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
 };
 
 // Allow specific frontend origin
@@ -30,31 +30,37 @@ api.use(cors(corsOptions));
 // ✅ Manually handle preflight requests (important)
 api.options("*", cors(corsOptions));
 
-api.use(cookieSession({
-  name: 'session',
-  maxAge: 24 * 60 * 60 * 1000,
-  keys: [process.env.COOKIE_SECRET1!, process.env.COOKIE_SECRET2!]
-}));
+api.use(
+  cookieSession({
+    name: "session",
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [process.env.COOKIE_SECRET1!, process.env.COOKIE_SECRET2!],
+  })
+);
 
 api.use(patchSession);
 
 api.use(passport.initialize());
 api.use(passport.session());
 
-api.use('/auth', authRouter);
+api.use("/auth", authRouter);
+
+api.get("/login", (_, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "login.html"));
+});
+
+api.use(express.static(path.join(__dirname, "..", "public")));
 
 api.use((req: Request, res: Response, next: NextFunction) => {
   checkLoggedIn(req, res, next);
 });
 
-api.use(express.static(path.join(__dirname,  "..", "public")));
-
 // compress all responses to improve performance
 api.use(compression());
 
-api.use('/rooms', roomsRouter);
-api.use('/integration', integrationRouter);
-api.use('/issues', issuesRouter);
+api.use("/rooms", roomsRouter);
+api.use("/integration", integrationRouter);
+api.use("/issues", issuesRouter);
 
 api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "admin.html"));

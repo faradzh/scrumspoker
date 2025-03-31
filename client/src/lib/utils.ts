@@ -2,7 +2,13 @@ import anime from "animejs";
 import { get } from "svelte/store";
 
 import type { Card, SelectedCard, SelectedCards } from "./types";
-import { cardRefsStore, currentUser, selectedCards, sessionInfo, totalEstimate } from "../store";
+import {
+  cardRefsStore,
+  currentUser,
+  selectedCards,
+  sessionInfo,
+  totalEstimate,
+} from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
 import { storiesState } from "../state.svelte";
@@ -20,11 +26,11 @@ export function compareLinks(a: Card, b: Card): number {
 export function flipHandler(targets: HTMLDivElement[], onComplete: () => void) {
   anime({
     targets,
-    scale: [{value: 1}, {value: 1.4}, {value: 1, delay: 250}],
-    rotateY: {value: '+=180', delay: 200},
-    easing: 'easeInOutSine',
+    scale: [{ value: 1 }, { value: 1.4 }, { value: 1, delay: 250 }],
+    rotateY: { value: "+=180", delay: 200 },
+    easing: "easeInOutSine",
     duration: 400,
-    complete: onComplete
+    complete: onComplete,
   });
 }
 
@@ -37,7 +43,7 @@ export function reEstimateHandler() {
 
 export function revealCards() {
   const cardRefs = get(cardRefsStore);
-  
+
   if (cardRefs.length === 0) {
     return;
   }
@@ -47,15 +53,15 @@ export function revealCards() {
 }
 
 function emitRevealEvent() {
-  socket.emit('reveal', ({status}: any) => {
-    if (status === 'success') {
-      console.log('The estimation was revealed');
+  socket.emit("reveal", ({ status }: any) => {
+    if (status === "success") {
+      console.log("The estimation was revealed");
       const selectedStoryId = storiesState.selectedStory?.id!;
 
       sessionInfo.update((info) => {
         info[selectedStoryId] = {
           ...info[selectedStoryId],
-          estimationIsRevealed: true
+          estimationIsRevealed: true,
         };
         return info;
       });
@@ -65,7 +71,7 @@ function emitRevealEvent() {
 
 export function revealHandler() {
   const cardRefs = get(cardRefsStore);
-  
+
   if (cardRefs.length === 0) {
     return;
   }
@@ -80,7 +86,7 @@ export function revealHandler() {
     sessionInfo.update((info) => {
       info[selectedStoryId] = {
         ...info[selectedStoryId],
-        cardsAreFlipped: true
+        cardsAreFlipped: true,
       };
       return info;
     });
@@ -88,7 +94,7 @@ export function revealHandler() {
     const total = calculateAverage(get(selectedCards)[selectedStoryId]) || 0;
     totalEstimate.set(total);
   });
-};
+}
 
 export function calculateAverage(selectedCards: SelectedCards): number {
   if (!selectedCards) {
@@ -107,7 +113,7 @@ export const addCardRef = (cardRef: HTMLDivElement) => {
   );
 
   const updatedCardRefs = [...get(cardRefsStore)];
-  
+
   if (cardRefIndex === -1) {
     updatedCardRefs.push(cardRef);
   } else {
@@ -125,26 +131,33 @@ export const selectCard = (socket: Socket, card: Card) => {
     return;
   }
 
-  if (session[selectedStoryId]?.estimationIsRevealed || session[selectedStoryId]?.cardsAreFlipped) {
+  if (
+    session[selectedStoryId]?.estimationIsRevealed ||
+    session[selectedStoryId]?.cardsAreFlipped
+  ) {
     return;
   }
 
-  estimationHandler({selectedCard: { ...card, userId: get(currentUser).id}});
+  estimationHandler({ selectedCard: { ...card, userId: get(currentUser).id } });
 
   socket.emit("estimation", {
-    selectedCard: {...card, userId: get(currentUser).id}
+    selectedCard: { ...card, userId: get(currentUser).id },
   });
 };
 
-export const estimationHandler = ({selectedCard}: {selectedCard: SelectedCard}) => {
+export const estimationHandler = ({
+  selectedCard,
+}: {
+  selectedCard: SelectedCard;
+}) => {
   const userId = selectedCard.userId;
-  const updatedCards = {...get(selectedCards)};
+  const updatedCards = { ...get(selectedCards) };
   const selectedStoryId = storiesState.selectedStory?.id;
 
   if (selectedStoryId) {
     updatedCards[selectedStoryId] = {
       ...updatedCards[selectedStoryId],
-      [userId]: selectedCard
+      [userId]: selectedCard,
     };
   }
 

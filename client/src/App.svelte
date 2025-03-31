@@ -84,6 +84,7 @@
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
         event.preventDefault();
         socket.emit('leaveRoom', {user: get(currentUser)});
+        socket.disconnect();
     };
 
     // fires when the user closes the tab

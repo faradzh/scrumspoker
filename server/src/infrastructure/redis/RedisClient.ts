@@ -6,13 +6,12 @@ const redisClient = new Redis({
   username: "default",
   password: "hVUB9gp9zwYFS8OJaIpsquYdpQsAEeio",
   reconnectOnError: (error) => {
-    console.log('Reconnect on error', error);
+    console.log("Reconnect on error", error);
     return true;
   },
   retryStrategy: (times) => {
-    const delay = Math.min(times * 50, 2000);
-    return delay; // delay in ms
-  }
+    return Math.min(times * 50, 2000);
+  },
 });
 
 redisClient.on("connect", () => {
