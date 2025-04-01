@@ -3,26 +3,26 @@ import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository
 import { Estimation } from "../types";
 
 class EstimateTask {
-    private temporaryRepository: RoomRepository;
+  private temporaryRepository: RoomRepository;
 
-    constructor(temporaryRepository: RoomRepository) {
-        this.temporaryRepository = temporaryRepository;
+  constructor(temporaryRepository: RoomRepository) {
+    this.temporaryRepository = temporaryRepository;
+  }
+
+  async execute(roomId: string, estimation: Estimation): Promise<Room> {
+    const room = await this.temporaryRepository.findRoomById?.(roomId);
+    if (!room) {
+      throw new Error("Room was not found");
     }
 
-    async execute(roomId: string, estimation: Estimation): Promise<Room> {
-        const room = await this.temporaryRepository.findRoomById?.(roomId);
-        if (!room) {
-            throw new Error("Room was not found");
-        }
-        
-        // if (!room.userHasEstimated(estimation.userId)) {
-        room.addEstimate(estimation);
-        console.log('The estimation was added');
-        await this.temporaryRepository.addEstimate?.(room.id, estimation);
-        // }
-        
-        return room;
-    }
+    // if (!room.userHasEstimated(estimation.userId)) {
+    room.addEstimate(estimation);
+    console.log("The estimation was added by:", estimation.userId);
+    await this.temporaryRepository.addEstimate?.(room.id, estimation);
+    // }
+
+    return room;
+  }
 }
 
 export default EstimateTask;

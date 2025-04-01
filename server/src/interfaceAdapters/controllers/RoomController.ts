@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { Profile } from "passport";
 
 import CreateRoom from "../../useCases/CreateRoom";
 import RoomPresenter from "../presenters/RoomPresenter";
@@ -14,7 +13,6 @@ import Integration from "../../useCases/Integration";
 import { redisRoomRepository } from "./constants";
 import { RoomRepository } from "../repositories/RoomRepository";
 import { IntegrationRepository } from "../repositories/IntegrationRepository";
-import { IntegrationRequestData } from "../../entities/Integration";
 import RedisRoomRepository from "../repositories/RedisRoomRepository";
 import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
 import { RequestUser } from "../../infrastructure/auth/types";
@@ -94,9 +92,12 @@ class RoomController {
 
   public async joinRoomHandler(req: Request, res: Response): Promise<void> {
     const roomId = req.params.id;
-    const participant = req.user as Profile;
+    const participant = req.user as RequestUser;
     try {
-      const room = await this.joinRoomUseCase.execute(roomId, participant);
+      const room = await this.joinRoomUseCase.execute(
+        roomId,
+        participant.profile
+      );
       const roomResponse = this.roomPresenter.presentRoom(room);
       res.status(200).json(roomResponse);
     } catch (error) {

@@ -17,7 +17,7 @@ function verifyCallback(
   profile: any,
   done: any
 ) {
-  return done(null, {
+  done(null, {
     profile: {
       id: profile.id,
       picture: profile._json?.picture,

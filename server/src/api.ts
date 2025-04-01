@@ -12,6 +12,7 @@ import { patchSession } from "./infrastructure/session/sessionPatcher";
 // import integrationRouter from "./routes/IntegrationRouter";
 import issuesRouter from "./routes/IssuesRouter";
 import integrationRouter from "./routes/IntegrationRouter";
+import { RequestUser } from "./infrastructure/auth/types";
 
 const api = express();
 
@@ -68,7 +69,13 @@ api.get("/admin", (_, res) => {
 
 api.get("/api/current-user", (req, res) => {
   if (req.isAuthenticated()) {
-    res.json(req.user); // Passport attaches the user object to req.user
+    const user = req.user as RequestUser;
+    // Passport attaches the user object to req.user
+    res.json({
+      id: user.profile.id,
+      // @ts-ignore
+      picture: user.profile.picture,
+    });
   } else {
     res.status(401).json({ error: "Unauthorized" });
   }
