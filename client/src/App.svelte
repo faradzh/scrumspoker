@@ -2,60 +2,25 @@
   import { onMount } from "svelte";
   import { get } from "svelte/store";
   
-  import { selectedCards, currentUser, sessionInfo, participants } from "./store";
+  import { currentUser, participants } from "./store";
   import Navbar from "./lib/Navbar.svelte";
   import CardsDeck from "./lib/CardsDeck.svelte";
   import { socket } from "./sockets";
-  import { getCardByValue } from "./utils";
+  import { initRoom } from "./utils";
   import Stories from "./lib/Stories.svelte";
   import Session from "./lib/Session.svelte";
   import { estimationHandler } from "./lib/utils";
   import { getCurrentUser } from "./services/userService";
   import { getRoomData } from "./services/roomService";
-  import type { Estimate, SelectedCard, SelectedCardsByIssue } from "./lib/types";
   import ToastWrapper from "./lib/ToastWrapper.svelte";
-  import { storiesState } from "./state.svelte";
   
 
-  async function fetchRoomData() {
-    
-    getRoomData().then((data) => {
-      currentUser.update((prevUser) => ({ ...prevUser, isModerator: $currentUser.id === data.moderatorId}));
-      const initialSelectedCards = data.estimates.reduce((acc: SelectedCardsByIssue, estimate: Estimate) => {
-        const currentIssueId = storiesState.selectedStory?.id;
-        const card = getCardByValue(estimate.value);
-        console.log('currentIssueId', currentIssueId);
-        if (currentIssueId) {
-          acc[currentIssueId] = {
-            ...acc[currentIssueId],
-            [estimate.userId]: {
-              ...card,
-              userId: estimate.userId,
-            } as SelectedCard,
-          }
-        }
-        return acc;
-      }, {});
-
-      const currentIssueId = storiesState.selectedStory?.id;
-      selectedCards.set(initialSelectedCards);
-      if (data.estimationIsRevealed && currentIssueId) {
-        sessionInfo.update((prevSession) => ({
-          ...prevSession, 
-          [currentIssueId]: {
-            cardsAreFlipped: true,
-            estimationIsRevealed: data.estimationIsRevealed
-          }
-        }));
-      }
-      participants.set(data.participants);
-    })
-  }
-
   onMount(() => {
-    Promise.all([getCurrentUser(), fetchRoomData()]).then((values) => {
-      const [user] = values;
+    Promise.all([getCurrentUser(), getRoomData()]).then((values) => {
+      const [user, roomData] = values;
+
       currentUser.set(user);
+      initRoom(roomData);
 
       socket.emit('joinRoom', {user});
 

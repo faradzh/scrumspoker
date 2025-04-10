@@ -4,6 +4,7 @@ import { get } from "svelte/store";
 import type { Card, SelectedCard, SelectedCards } from "./types";
 import {
   cardRefsStore,
+  currentIssueId,
   currentUser,
   selectedCards,
   sessionInfo,
@@ -11,7 +12,6 @@ import {
 } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
-import { storiesState } from "../state.svelte";
 
 export function compareLinks(a: Card, b: Card): number {
   if (a.link < b.link) {
@@ -53,14 +53,18 @@ export function revealCards() {
 }
 
 function emitRevealEvent() {
-  socket.emit("reveal", ({ status }: any) => {
+  const issueId = get(currentIssueId);
+
+  socket.emit("reveal", { issueId }, ({ status }: any) => {
     if (status === "success") {
       console.log("The estimation was revealed");
-      const selectedStoryId = storiesState.selectedStory?.id!;
 
+      if (!issueId) {
+        return;
+      }
       sessionInfo.update((info) => {
-        info[selectedStoryId] = {
-          ...info[selectedStoryId],
+        info[issueId] = {
+          ...info[issueId],
           estimationIsRevealed: true,
         };
         return info;
@@ -76,22 +80,31 @@ export function revealHandler() {
     return;
   }
 
+  const issueId = get(currentIssueId);
+  const session = get(sessionInfo);
+
+  if (!issueId) {
+    return;
+  }
+
+  if (
+    session[issueId]?.estimationIsRevealed ||
+    session[issueId]?.cardsAreFlipped
+  ) {
+    return;
+  }
+
   flipHandler(cardRefs, () => {
-    const selectedStoryId = storiesState.selectedStory?.id;
-
-    if (!selectedStoryId) {
-      return;
-    }
-
     sessionInfo.update((info) => {
-      info[selectedStoryId] = {
-        ...info[selectedStoryId],
+      info[issueId] = {
+        ...info[issueId],
         cardsAreFlipped: true,
       };
+      console.log("NewInfo", info);
       return info;
     });
 
-    const total = calculateAverage(get(selectedCards)[selectedStoryId]) || 0;
+    const total = calculateAverage(get(selectedCards)[issueId]) || 0;
     totalEstimate.set(total);
   });
 }
@@ -124,24 +137,25 @@ export const addCardRef = (cardRef: HTMLDivElement) => {
 };
 
 export const selectCard = (socket: Socket, card: Card) => {
+  const issueId = get(currentIssueId);
+  const user = get(currentUser);
   const session = get(sessionInfo);
-  const selectedStoryId = storiesState.selectedStory?.id;
 
-  if (!selectedStoryId) {
+  if (!issueId) {
     return;
   }
 
   if (
-    session[selectedStoryId]?.estimationIsRevealed ||
-    session[selectedStoryId]?.cardsAreFlipped
+    session[issueId]?.estimationIsRevealed ||
+    session[issueId]?.cardsAreFlipped
   ) {
     return;
   }
 
-  estimationHandler({ selectedCard: { ...card, userId: get(currentUser).id } });
+  estimationHandler({ selectedCard: { ...card, userId: user.id, issueId } });
 
   socket.emit("estimation", {
-    selectedCard: { ...card, userId: get(currentUser).id },
+    selectedCard: { ...card, userId: user.id, issueId },
   });
 };
 
@@ -152,14 +166,16 @@ export const estimationHandler = ({
 }) => {
   const userId = selectedCard.userId;
   const updatedCards = { ...get(selectedCards) };
-  const selectedStoryId = storiesState.selectedStory?.id;
+  const issueId = get(currentIssueId);
 
-  if (selectedStoryId) {
-    updatedCards[selectedStoryId] = {
-      ...updatedCards[selectedStoryId],
-      [userId]: selectedCard,
-    };
+  if (!issueId) {
+    return;
   }
+
+  updatedCards[issueId] = {
+    ...updatedCards[issueId],
+    [userId]: selectedCard,
+  };
 
   selectedCards.set(updatedCards);
 };

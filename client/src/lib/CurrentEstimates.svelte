@@ -1,11 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import { participants, selectedCards } from "../store";
+  import { currentIssueId, participants, selectedCards } from "../store";
   import Card from "./Card.svelte";
   import { socket } from "../sockets";
   import { revealHandler } from "./utils";
-  import { storiesState } from "../state.svelte";
 
     onMount(() => {
         socket.on('reveal', revealHandler);
@@ -14,7 +13,6 @@
             socket.off('reveal', revealHandler);
         }
     });
-    const selectedStoryId = $derived(storiesState.selectedStory?.id!);
 </script>
 
 <div class="mb-4 min-h-[199.3px]">
@@ -32,8 +30,8 @@
                         </div>
                     {/if}
                 </div>
-                {#if $selectedCards[selectedStoryId]?.[participant.id]}
-                    <Card card={$selectedCards[selectedStoryId][participant.id]} />
+                {#if $currentIssueId && $selectedCards[$currentIssueId]?.[participant.id]}
+                    <Card card={$selectedCards[$currentIssueId][participant.id]} />
                 {/if}
             </div>
         {/each}

@@ -1,30 +1,41 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Story from "./Story.svelte";
-  import { storiesState } from "../state.svelte";
   import { fetchIssues } from "../services/roomService";
+  import { currentIssueId, isModerator, issuesStore, setCurrentIssue, setIssuesList } from "../store";
+  import { socket } from "../sockets";
+
   import type { Issue } from "./types";
-  import { isModerator } from "../store";
-
-  let stories: Array<Issue> = $state([]);
-
-  const storiesNum = $derived(stories.length);
 
   async function fetchStories() {
     const data = await fetchIssues();
-    stories = data;
-    storiesState.selectedStory = data?.[0];
+    setIssuesList(data);
+    if (!$issuesStore.current) {
+      setCurrentIssue(data[0]);
+    }
   }
 
-  function selectStory(story: Issue) {
-    if (story.id === storiesState.selectedStory?.id || $isModerator) {
-        return;
+  function selectIssueHandler(issue: Issue) {
+    if (!$isModerator) {
+      return;
     }
-    storiesState.selectedStory = story;
+    setCurrentIssue(issue);
+    emitIssueSelect(issue);
+  }
+
+  function emitIssueSelect(issue: Issue) {
+    socket.emit('issueSelect', ({id: issue.id}))
   }
 
   onMount(() => {
     fetchStories();
+
+    socket.on('issueSelect', ({id}) => {
+      const issue = $issuesStore.list.find((issue) => issue.id === id);
+      if (issue) {
+        setCurrentIssue(issue);
+      }
+    });
   });
 
 </script>
@@ -35,11 +46,11 @@
         <div class="p-4 h-full">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-950">User Stories</h2>
-                <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md text-sm">{storiesNum} stories</span>
+                <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md text-sm">{$issuesStore.list.length} stories</span>
             </div>
             <div class="space-y-2 max-h-[655px] pr-2 scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-                {#each stories as story}
-                    <Story {story} onSelect={() => selectStory(story)} isSelected={story.id === storiesState.selectedStory?.id} />
+                {#each $issuesStore.list as issue}
+                    <Story story={issue} onSelect={() => selectIssueHandler(issue)} isSelected={issue.id === $currentIssueId} />
                 {/each}
             </div>
         </div>

@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { storiesState } from "../state.svelte";
-  import { isModerator, selectedCards, sessionInfo, totalEstimate } from "../store";
+  import { currentIssueId, isModerator, issuesStore, selectedCards, sessionInfo, totalEstimate } from "../store";
   import ActionButtons from "./ActionButtons.svelte";
   import CurrentEstimates from "./CurrentEstimates.svelte";
   import Timer from "./Timer.svelte";
@@ -8,22 +7,22 @@
   import { calculateAverage } from "./utils";
   
   const isEnabled = $derived.by(() => {
-    if (!storiesState.selectedStory?.id) {
+    if (!$currentIssueId) {
       return false;
     }
-    const total = calculateAverage($selectedCards[storiesState.selectedStory.id]) || 0;
-    return total > 0 && $sessionInfo[storiesState.selectedStory.id]?.cardsAreFlipped;
+    const total = calculateAverage($selectedCards[$currentIssueId]) || 0;
+    return total > 0 && $sessionInfo[$currentIssueId]?.cardsAreFlipped;
   });
 
   $effect(() => {
-    if (!storiesState.selectedStory?.id) {
+    if (!$currentIssueId) {
       return;
     }
-    const total = calculateAverage($selectedCards[storiesState.selectedStory.id]) || 0;
+    const total = calculateAverage($selectedCards[$currentIssueId]) || 0;
     $totalEstimate = total;
   });
 
-  const currentStoryText = $derived(storiesState.selectedStory ? (storiesState.selectedStory?.key + ": " + storiesState.selectedStory?.summary) : '');
+  const currentStoryText = $derived($issuesStore.current ? ( $issuesStore.current?.key + ": " + $issuesStore.current?.summary) : '');
 </script>
 
 <section class="relative text-black">

@@ -31,10 +31,6 @@ function resetTimer() {
   clearInterval(timerState.interval);
 }
 
-export const storiesState = $state<{
-  selectedStory: { id: string; summary: string; key: string } | undefined;
-}>({ selectedStory: undefined });
-
 export type Toast = {
   message: string;
   type: "error" | "success";

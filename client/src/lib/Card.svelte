@@ -1,9 +1,8 @@
 <script lang="ts">
   import { addCardRef } from './utils';
-  import { currentUser, sessionInfo } from '../store';
+  import { currentIssueId, currentUser, issuesStore, sessionInfo } from '../store';
   import type { SelectedCard } from './types';
   import { get } from 'svelte/store';
-  import { storiesState } from '../state.svelte';
 
   let cardElement: HTMLDivElement | undefined = $state();
   let { card }: Props = $props();
@@ -19,9 +18,7 @@
   }
 
   function shouldAddRef() {
-    const selectedStoryId = storiesState.selectedStory?.id;
-
-    if (!selectedStoryId) {
+    if (!$currentIssueId) {
       return false;
     }
 
@@ -29,7 +26,7 @@
       return true;
     }
     
-    return get(sessionInfo)[selectedStoryId]?.estimationIsRevealed;
+    return get(sessionInfo)[$currentIssueId]?.estimationIsRevealed;
   }
 </script>
 
