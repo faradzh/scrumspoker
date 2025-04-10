@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
 import {
   estimateTask,
-  revealEstimation,
+  session,
 } from "./interfaceAdapters/controllers/RoomController";
 
 export function listen(io: Server) {
@@ -20,20 +20,26 @@ export function listen(io: Server) {
       socket.to(roomId).emit("leaveRoom", { user });
     });
 
+    socket.on("issueSelect", ({ id }) => {
+      session.setCurrentIssue(roomId, id);
+      socket.to(roomId).emit("issueSelect", { id });
+    });
+
     socket.on("estimation", (data) => {
       const { selectedCard } = data;
 
       estimateTask.execute(roomId, {
         userId: selectedCard.userId,
         value: selectedCard.value,
+        issueId: selectedCard.issueId,
       });
 
       socket.to(roomId).emit("estimation", data);
     });
 
-    socket.on("reveal", (callback) => {
+    socket.on("reveal", ({ issueId }, callback) => {
       try {
-        revealEstimation.execute(roomId);
+        session.revealEstimation(roomId, issueId);
         socket.to(roomId).emit("reveal");
         callback({ status: "success", message: "The estimation was revealed" });
       } catch (error: unknown) {

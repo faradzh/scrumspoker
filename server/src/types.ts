@@ -1,16 +1,20 @@
-import { z } from 'zod';
-import { Profile } from 'passport';
+import { z } from "zod";
+import { Profile } from "passport";
 
-import { CreateRoomSchema } from './middleware/validationMiddleware';
-import CreateRoom from './useCases/CreateRoom';
-import JoinRoom from './useCases/JoinRoom';
-import GetAllRooms from './useCases/GetAllRooms';
-import AddIntegration from './useCases/Integration';
-import GetAllIssues from './useCases/GetAllIssues';
+import { CreateRoomSchema } from "./middleware/validationMiddleware";
+import CreateRoom from "./useCases/CreateRoom";
+import JoinRoom from "./useCases/JoinRoom";
+import GetAllRooms from "./useCases/GetAllRooms";
+import AddIntegration from "./useCases/Integration";
+import GetAllIssues from "./useCases/GetAllIssues";
 
 export type RoomData = z.infer<typeof CreateRoomSchema>;
 
-export const EstimationMethodEnum = z.enum(['fibbonachi', 'powerOfTwo', 'tshirtSizes']);
+export const EstimationMethodEnum = z.enum([
+  "fibbonachi",
+  "powerOfTwo",
+  "tshirtSizes",
+]);
 
 export type RoomUseCase = CreateRoom | JoinRoom | GetAllRooms;
 
@@ -19,13 +23,13 @@ export type IntegrationUseCase = AddIntegration;
 export type IssueUseCase = GetAllIssues;
 
 export const ProfileSchema: z.ZodType<Profile> = z.object({
-    id: z.string(),
-    displayName: z.string(),
-    provider: z.string()
+  id: z.string(),
+  displayName: z.string(),
+  provider: z.string(),
 });
 
 export type Estimation = {
-    userId: string;
-    value: number;
+  userId: string;
+  value: number;
+  issueId?: string;
 };
-  

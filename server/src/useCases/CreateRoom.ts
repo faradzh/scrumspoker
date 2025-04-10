@@ -19,6 +19,8 @@ class CreateRoom {
       initialData.name,
       initialData.estimationMethod,
       [],
+      [],
+      null,
       initialData.moderator
     );
 

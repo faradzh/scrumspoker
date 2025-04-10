@@ -16,6 +16,7 @@ import { IntegrationRepository } from "../repositories/IntegrationRepository";
 import RedisRoomRepository from "../repositories/RedisRoomRepository";
 import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
 import { RequestUser } from "../../infrastructure/auth/types";
+import Session from "../../useCases/Session";
 
 class RoomController {
   private createRoomUseCase;
@@ -120,6 +121,6 @@ export const roomController = new RoomController(
 );
 
 export const estimateTask = new EstimateTask(redisRoomRepository);
-export const revealEstimation = new RevealEstimation(redisRoomRepository);
+export const session = new Session(redisRoomRepository);
 
 export default RoomController;

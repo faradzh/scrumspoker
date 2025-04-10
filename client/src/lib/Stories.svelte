@@ -3,8 +3,10 @@
   import Story from "./Story.svelte";
   import { storiesState } from "../state.svelte";
   import { fetchIssues } from "../services/roomService";
+  import type { Issue } from "./types";
+  import { isModerator } from "../store";
 
-  let stories: Array<{id: string}> = $state([]);
+  let stories: Array<Issue> = $state([]);
 
   const storiesNum = $derived(stories.length);
 
@@ -14,8 +16,8 @@
     storiesState.selectedStory = data?.[0];
   }
 
-  function selectStory(story: {id: string, summary: string, key: string}) {
-    if (story.id === storiesState.selectedStory?.id) {
+  function selectStory(story: Issue) {
+    if (story.id === storiesState.selectedStory?.id || $isModerator) {
         return;
     }
     storiesState.selectedStory = story;
@@ -37,7 +39,7 @@
             </div>
             <div class="space-y-2 max-h-[655px] pr-2 scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                 {#each stories as story}
-                    <Story {story} onSelect={selectStory} isSelected={story.id === storiesState.selectedStory?.id} />
+                    <Story {story} onSelect={() => selectStory(story)} isSelected={story.id === storiesState.selectedStory?.id} />
                 {/each}
             </div>
         </div>

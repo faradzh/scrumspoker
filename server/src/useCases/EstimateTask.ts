@@ -9,17 +9,17 @@ class EstimateTask {
     this.temporaryRepository = temporaryRepository;
   }
 
-  async execute(roomId: string, estimation: Estimation): Promise<Room> {
+  async execute(
+    roomId: string,
+    estimation: Estimation
+  ): Promise<Room | undefined> {
     const room = await this.temporaryRepository.findRoomById?.(roomId);
     if (!room) {
       throw new Error("Room was not found");
     }
 
-    // if (!room.userHasEstimated(estimation.userId)) {
     room.addEstimate(estimation);
-    console.log("The estimation was added by:", estimation.userId);
-    await this.temporaryRepository.addEstimate?.(room.id, estimation);
-    // }
+    await this.temporaryRepository.addEstimateByIssue?.(room.id, estimation);
 
     return room;
   }

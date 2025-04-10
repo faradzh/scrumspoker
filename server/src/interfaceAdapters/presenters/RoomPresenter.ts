@@ -1,19 +1,19 @@
-import { User } from "../../entities/types";
-import { Estimation } from "../../types";
+import { Estimates, User } from "../../entities/types";
 
 interface RoomPresenter {
-    presentRoom(data: unknown): void;
-};
+  presentRoom(data: unknown): void;
+}
 
 export type RoomResponse = {
-    id: string;
-    name: string;
-    estimationMethod: string;
-    participants: Array<User>;
-    link: string;
-    moderatorId: string;
-    estimates?: Array<Estimation>;
-    estimationIsRevealed: boolean;
+  id: string;
+  name: string;
+  estimationMethod: string;
+  participants: Array<User>;
+  link: string;
+  moderatorId: string;
+  estimates?: Estimates;
+  estimatedIssues?: string[];
+  currentIssue: null | string;
 };
 
 export default RoomPresenter;

@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { derived, writable } from "svelte/store";
 
 import { type SelectedCardsByIssue, type Room, type User } from "./lib/types";
 
@@ -17,3 +17,8 @@ export const sessionInfo = writable<any>({});
 export const totalEstimate = writable<number>(0);
 
 export const participants = writable<User[]>([]);
+
+export const isModerator = derived(
+  currentUser,
+  ($currentUser) => $currentUser?.isModerator
+);

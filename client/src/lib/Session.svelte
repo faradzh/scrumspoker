@@ -1,6 +1,6 @@
 <script lang="ts">
   import { storiesState } from "../state.svelte";
-  import { selectedCards, sessionInfo, totalEstimate } from "../store";
+  import { isModerator, selectedCards, sessionInfo, totalEstimate } from "../store";
   import ActionButtons from "./ActionButtons.svelte";
   import CurrentEstimates from "./CurrentEstimates.svelte";
   import Timer from "./Timer.svelte";
@@ -38,7 +38,9 @@
                     </div>
                     <div class="flex items-center space-x-4 mt-4 md:mt-0">
                         <Timer />
-                        <ActionButtons />
+                        {#if $isModerator}
+                          <ActionButtons />
+                        {/if}
                     </div>
                 </div>
             </div>
