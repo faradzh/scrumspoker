@@ -18,6 +18,8 @@
   }
 
   function shouldAddRef() {
+    const session = get(sessionInfo);
+
     if (!$currentIssueId) {
       return false;
     }
@@ -26,7 +28,7 @@
       return true;
     }
     
-    return get(sessionInfo)[$currentIssueId]?.estimationIsRevealed;
+    return session[$currentIssueId]?.cardsAreFlipped || session[$currentIssueId]?.estimationIsRevealed;
   }
 </script>
 
