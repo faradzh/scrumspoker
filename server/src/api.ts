@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import path from "path";
 import passport from "passport";
 import cookieSession from "cookie-session";
@@ -52,7 +52,7 @@ api.use("/rooms", roomsRouter);
 api.use("/integration", integrationRouter);
 api.use("/issues", issuesRouter);
 
-// api.use("/admin", checkLoggedIn);
+api.use("/admin", checkLoggedIn);
 
 api.use(express.static(path.join(__dirname, "..", "public")));
 
