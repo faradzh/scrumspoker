@@ -3,10 +3,15 @@ import { Strategy as AtlassianStrategy } from "passport-atlassian-oauth2";
 
 import { ACCESS_TOKEN_TYPES } from "./types";
 
+const CALLBACK_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.JIRA_REDIRECT_URL_PROD
+    : process.env.JIRA_REDIRECT_URL_DEV;
+
 const AUTH_OPTIONS = {
   clientID: process.env.JIRA_CLIENT_ID,
   clientSecret: process.env.JIRA_CLIENT_SECRET,
-  callbackURL: "http://localhost:3000/auth/jira/callback",
+  callbackURL: CALLBACK_URL,
   authorizationURL: "https://auth.atlassian.com/authorize",
   tokenURL: "https://auth.atlassian.com/oauth/token",
   scope: [
