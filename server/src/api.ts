@@ -52,7 +52,7 @@ api.get("/login", (_, res) => {
 
 api.use(express.static(path.join(__dirname, "..", "public")));
 
-api.use((req: Request, res: Response, next: NextFunction) => {
+api.use("/admin", (req: Request, res: Response, next: NextFunction) => {
   checkLoggedIn(req, res, next);
 });
 
