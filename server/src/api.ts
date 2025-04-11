@@ -44,22 +44,21 @@ api.use(patchSession);
 api.use(passport.initialize());
 api.use(passport.session());
 
+// compress all responses to improve performance
+api.use(compression());
+
 api.use("/auth", authRouter);
+api.use("/rooms", roomsRouter);
+api.use("/integration", integrationRouter);
+api.use("/issues", issuesRouter);
+
+api.use("/admin", checkLoggedIn);
+
+api.use(express.static(path.join(__dirname, "..", "public")));
 
 api.get("/login", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "login.html"));
 });
-
-api.use(express.static(path.join(__dirname, "..", "public")));
-
-api.use("/admin", checkLoggedIn);
-
-// compress all responses to improve performance
-api.use(compression());
-
-api.use("/rooms", roomsRouter);
-api.use("/integration", integrationRouter);
-api.use("/issues", issuesRouter);
 
 api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
