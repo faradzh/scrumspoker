@@ -52,7 +52,7 @@ api.use("/rooms", roomsRouter);
 api.use("/integration", integrationRouter);
 api.use("/issues", issuesRouter);
 
-api.use("/admin", checkLoggedIn);
+// api.use("/admin", checkLoggedIn);
 
 api.use(express.static(path.join(__dirname, "..", "public")));
 
