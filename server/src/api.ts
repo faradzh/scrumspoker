@@ -52,9 +52,7 @@ api.get("/login", (_, res) => {
 
 api.use(express.static(path.join(__dirname, "..", "public")));
 
-api.use("/admin", (req: Request, res: Response, next: NextFunction) => {
-  checkLoggedIn(req, res, next);
-});
+api.use("/admin", checkLoggedIn);
 
 // compress all responses to improve performance
 api.use(compression());
