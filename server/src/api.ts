@@ -9,13 +9,14 @@ import roomsRouter from "./routes/RoomsRouter";
 import authRouter from "./routes/AuthRouter";
 import { checkLoggedIn } from "./middleware/validationMiddleware";
 import { patchSession } from "./infrastructure/session/sessionPatcher";
-// import integrationRouter from "./routes/IntegrationRouter";
 import issuesRouter from "./routes/IssuesRouter";
 import integrationRouter from "./routes/IntegrationRouter";
 import { RequestUser } from "./infrastructure/auth/types";
+import joinRouter from "./routes/JoinRouter";
 
 const api = express();
 
+api.use(express.urlencoded({ extended: true }));
 api.use(express.json());
 
 const corsOptions = {
@@ -25,7 +26,6 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
 };
 
-// Allow specific frontend origin
 api.use(cors(corsOptions));
 
 // ✅ Manually handle preflight requests (important)
@@ -49,6 +49,7 @@ api.use(compression());
 
 api.use("/auth", authRouter);
 api.use("/rooms", roomsRouter);
+api.use("/join", joinRouter);
 api.use("/integration", integrationRouter);
 api.use("/issues", issuesRouter);
 
@@ -58,6 +59,29 @@ api.use(express.static(path.join(__dirname, "..", "public")));
 
 api.get("/login", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "login.html"));
+});
+
+api.post("/login", (req, res) => {
+  let name = req.body.name?.trim();
+  const guestUserId = crypto.randomUUID();
+
+  if (!name) {
+    name = "Anonymous Panda";
+  }
+
+  if (req.session) {
+    req.session.guestUser = {
+      id: guestUserId,
+      name,
+      incognito: !req.body.name?.trim(),
+    };
+  }
+
+  const redirectUrl = req.session!.returnTo;
+
+  delete req.session!.returnTo;
+
+  return res.redirect(redirectUrl);
 });
 
 api.get("/admin", (_, res) => {
@@ -72,6 +96,12 @@ api.get("/api/current-user", (req, res) => {
       id: user.profile.id,
       // @ts-ignore
       picture: user.profile.picture,
+    });
+  } else if (req.session?.guestUser) {
+    res.json({
+      id: req.session?.guestUser.id,
+      // @ts-ignore
+      name: req.session?.guestUser.name,
     });
   } else {
     res.status(401).json({ error: "Unauthorized" });

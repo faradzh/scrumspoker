@@ -93,12 +93,10 @@ class RoomController {
 
   public async joinRoomHandler(req: Request, res: Response): Promise<void> {
     const roomId = req.params.id;
-    const participant = req.user as RequestUser;
+    const participant =
+      (req.user as RequestUser)?.profile || req.session?.guestUser;
     try {
-      const room = await this.joinRoomUseCase.execute(
-        roomId,
-        participant.profile
-      );
+      const room = await this.joinRoomUseCase.execute(roomId, participant);
       const roomResponse = this.roomPresenter.presentRoom(room);
       res.status(200).json(roomResponse);
     } catch (error) {

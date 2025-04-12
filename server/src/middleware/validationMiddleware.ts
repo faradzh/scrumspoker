@@ -48,3 +48,19 @@ export const checkLoggedIn = (
   }
   next();
 };
+
+export const checkIfIdentified = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const isLoggedIn = req.isAuthenticated() && req.user;
+  const guestUser = req.session?.guestUser;
+
+  if (isLoggedIn || guestUser) {
+    next();
+  } else {
+    req.session!.returnTo = req.originalUrl;
+    return res.redirect("/login");
+  }
+};

@@ -2,7 +2,7 @@
     let { room } = $props();
 
     const origin = window.location.origin;
-    const roomLink = `${origin}/rooms/${room.id}`;
+    const roomLink = `${origin}/join/${room.id}`;
 </script>
 
 <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer">

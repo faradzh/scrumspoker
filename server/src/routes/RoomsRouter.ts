@@ -1,8 +1,8 @@
 import express from "express";
-import path from "path";
 
 import { roomController } from "../interfaceAdapters/controllers/RoomController";
 import {
+  checkIfIdentified,
   CreateRoomSchema,
   validateRoom,
 } from "../middleware/validationMiddleware";
@@ -17,12 +17,10 @@ roomsRouter.get("/", async (req, res) => {
   roomController.getAllRoomsHandler(req, res);
 });
 
-roomsRouter.get("/:id", async (req, res) => {
+roomsRouter.get("/:id", checkIfIdentified, async (req, res) => {
   const acceptHeader = req.headers.accept;
   if (acceptHeader && acceptHeader.includes("application/json")) {
     roomController.joinRoomHandler(req, res);
-  } else {
-    res.sendFile(path.join(__dirname, "..", "..", "public", "room.html"));
   }
 });
 
