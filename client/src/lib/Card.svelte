@@ -32,13 +32,13 @@
   }
 </script>
 
-<div class="relative basis-[200px] shrink-0 cursor-pointer min-w-[80px]">
-  <div class="poker-card--selected " bind:this={cardElement}>
-    <div class="front w-full h-full">
-      <img class="rounded-lg" src={shouldAddRef() ? card.link : "/card-cover.svg"} alt="">
+<div class="relative cursor-pointer ">
+  <div class="poker-card--selected" bind:this={cardElement}>
+    <div class="front h-32">
+      <img class="rounded-lg h-full w-full" src={shouldAddRef() ? card.link : "/card-cover.svg"} alt="">
     </div>
-    <div class="back absolute top-0 left-0 w-full h-full">
-      <img class="rounded-lg" src={card.link} alt="">
+    <div class="back absolute top-0 left-0 h-32">
+      <img class="rounded-lg h-full w-full" src={card.link} alt="">
     </div>
   </div>
 </div>

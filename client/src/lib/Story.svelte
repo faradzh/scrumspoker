@@ -12,4 +12,5 @@
     <h3 class="font-medium text-gray-950 mt-1 mb-1">{story.summary}</h3>
     <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
         {story.description}
+    </p>
 </div>

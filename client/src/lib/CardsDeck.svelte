@@ -18,9 +18,9 @@
       </div>
       <div class="flex overflow-x-auto">
         {#each POKER_CARDS as pokerCard}
-          <div class="poker-card cursor-pointer w-full mr-4 max-w-[100px]">
+          <div class="poker-card cursor-pointer mr-4 h-32">
             <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-            <img class="rounded-lg" src="{pokerCard.link}" alt="" onclick={() => clickHandler(pokerCard)} />
+            <img class="rounded-lg h-full w-full" src="{pokerCard.link}" alt="" onclick={() => clickHandler(pokerCard)} />
           </div>
         {/each}
       </div>

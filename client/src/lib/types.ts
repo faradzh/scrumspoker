@@ -20,6 +20,7 @@ export type User = {
   id: string;
   picture: string;
   isModerator: boolean;
+  name?: string;
 };
 
 export type Room = {
