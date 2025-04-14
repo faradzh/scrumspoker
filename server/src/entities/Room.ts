@@ -34,7 +34,17 @@ class Room {
     if (this.participants.find((p) => p.id === participant.id)) {
       return;
     }
+
     this.participants?.push(participant);
+  }
+
+  public setParticipantOnline(participant: User, online: boolean): void {
+    const participants = [...this.participants];
+    const userIndex = this.participants.findIndex(
+      (prevP) => prevP.id === participant.id
+    );
+    participants[userIndex] = { ...participant, online };
+    this.participants = participants;
   }
 
   public removeParticipant(participant: User): void {

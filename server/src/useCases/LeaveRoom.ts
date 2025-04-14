@@ -2,7 +2,7 @@ import Room from "../entities/Room";
 import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
 import { User } from "../entities/types";
 
-class JoinRoom {
+class LeaveRoom {
   private persistedRepo: RoomRepository;
   private tempRepo: RoomRepository;
 
@@ -11,29 +11,23 @@ class JoinRoom {
     this.tempRepo = tempRepo;
   }
 
-  async execute(roomId: string, participant: User): Promise<Room> {
+  async execute(roomId: string, participant: User): Promise<Room | undefined> {
     const roomSettings = await this.persistedRepo.findRoomById?.(roomId);
     if (!roomSettings) {
-      throw new Error("Room settings not found");
+      return;
     }
 
     const room = await this.tempRepo.joinRoom?.(roomSettings)!;
 
     if (!room.hasParticipant(participant)) {
-      room.addParticipant({ ...participant, online: true });
-      this.tempRepo.saveParticipant?.(roomId, participant);
-    } else {
-      // @ts-ignore
-      if (global._timeout) {
-        // @ts-ignore
-        clearTimeout(global._timeout);
-      }
-      room.setParticipantOnline(participant, true);
-      this.tempRepo.setParticipantOnline?.(roomId, participant, true);
+      throw new Error("Participant is NOT in the room.");
     }
+
+    room.setParticipantOnline(participant, false);
+    this.tempRepo.setParticipantOnline?.(roomId, participant, false);
 
     return room;
   }
 }
 
-export default JoinRoom;
+export default LeaveRoom;

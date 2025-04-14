@@ -20,6 +20,7 @@ export type User = {
   id: string;
   picture: string;
   isModerator: boolean;
+  online: boolean;
   name?: string;
 };
 

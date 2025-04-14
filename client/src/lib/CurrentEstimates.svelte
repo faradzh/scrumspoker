@@ -26,7 +26,7 @@
     <div class="flex">
         {#each $participants as participant, index}
             <div class="mr-6 text-center min-w-[80px]">
-                <div class={`avatar online mb-2 ${!participant.picture ? 'placeholder' : ''}`}>
+                <div class={`avatar mb-2 ${participant.online ? 'online' : 'offline'} ${!participant.picture ? 'placeholder' : ''}`}>
                     {#if participant.picture}
                         <div class="w-16 rounded-full">
                             <img src={participant.picture} alt={`Participant #${index}`} />

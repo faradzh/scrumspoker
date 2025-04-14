@@ -1,11 +1,12 @@
 import anime from "animejs";
 import { get } from "svelte/store";
 
-import type { Card, SelectedCard, SelectedCards } from "./types";
+import type { Card, SelectedCard, SelectedCards, User } from "./types";
 import {
   cardRefsStore,
   currentIssueId,
   currentUser,
+  participants,
   selectedCards,
   sessionInfo,
   totalEstimate,
@@ -178,4 +179,29 @@ export const estimationHandler = ({
   };
 
   selectedCards.set(updatedCards);
+};
+
+export const onRoomJoin = ({ user }: { user: User }) => {
+  const userIndex = get(participants).findIndex(
+    (participant) => participant.id === user.id
+  );
+  let prevList = get(participants);
+
+  if (userIndex !== -1) {
+    prevList[userIndex] = user;
+  } else {
+    prevList = [...prevList, user];
+  }
+
+  participants.set(prevList);
+};
+
+export const onRoomLeave = ({ user }: { user: User }) => {
+  participants.update((prevParticipants) => {
+    const userIndex = prevParticipants.findIndex(
+      (prevUser) => prevUser.id === user.id
+    );
+    prevParticipants[userIndex] = { ...user, online: false };
+    return prevParticipants;
+  });
 };

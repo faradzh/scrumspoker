@@ -5,6 +5,11 @@ import { Estimation } from "../../types";
 export interface RoomRepository {
   saveRoom?(data: unknown): Promise<Room | void>;
   saveParticipant?(roomId: string, participant: User): Promise<void>;
+  setParticipantOnline?(
+    roomId: string,
+    participant: User,
+    online: boolean
+  ): Promise<void>;
   joinRoom?(room: Room): Promise<Room>;
   findRoomById?(roomId: string): Promise<Room | undefined>;
   deleteRoom?(roomId: string): Promise<void>;

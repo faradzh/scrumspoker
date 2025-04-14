@@ -8,6 +8,7 @@ export type EstimationMethod = z.infer<typeof EstimationMethodEnum>;
 export interface User extends Profile {
   estimate?: number;
   picture?: string;
+  online?: boolean;
 }
 
 export type Estimates = Record<string, Record<string, string>>;

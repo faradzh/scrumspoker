@@ -21,7 +21,7 @@ class CreateRoom {
       [],
       [],
       null,
-      initialData.moderator
+      { ...initialData.moderator!, online: true }
     );
 
     await this.roomRepository.saveRoom?.(newRoom);

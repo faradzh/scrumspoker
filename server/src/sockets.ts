@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import {
   estimateTask,
+  leaveRoom,
   session,
 } from "./interfaceAdapters/controllers/RoomController";
 
@@ -17,7 +18,13 @@ export function listen(io: Server) {
     });
 
     socket.on("leaveRoom", ({ user }) => {
+      console.log("Left the room");
       socket.to(roomId).emit("leaveRoom", { user });
+      const timeout = setTimeout(() => {
+        leaveRoom.execute(roomId, user);
+      }, 5000);
+      // @ts-ignore
+      global._timeout = timeout;
     });
 
     socket.on("issueSelect", ({ id }) => {

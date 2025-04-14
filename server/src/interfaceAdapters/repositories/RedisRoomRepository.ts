@@ -33,6 +33,34 @@ class RedisRoomRepository implements RoomRepository {
       `room:${roomId}:participants`,
       JSON.stringify(participant)
     );
+    await this.setParticipantOnline(roomId, participant, true);
+  }
+
+  async setParticipantOnline(
+    roomId: string,
+    participant: User,
+    online: boolean
+  ): Promise<void> {
+    console.log("SEttings the value", online);
+    await this.client.set(
+      `room:${roomId}:participant:${participant.id}:online`,
+      String(online)
+    );
+  }
+
+  async augmentParticipantsStatus(roomId: string, participants: string[]) {
+    const updatedParticipants = [];
+
+    for (let p of participants) {
+      const current = JSON.parse(p);
+      const online = await this.client.get(
+        `room:${roomId}:participant:${current.id}:online`
+      );
+      console.log("Online", online);
+      updatedParticipants.push({ ...current, online: online === "true" });
+    }
+
+    return updatedParticipants;
   }
 
   async retrieveEstimates(roomId: string): Promise<Estimates> {
@@ -51,9 +79,19 @@ class RedisRoomRepository implements RoomRepository {
 
   async findRoomById(id: string): Promise<Room | undefined> {
     const metadata = await this.client.hgetall(`room:${id}`);
-    const participants = (
-      await this.client.lrange(`room:${id}:participants`, 0, -1)
-    ).map((participant) => JSON.parse(participant));
+    const participantsWithNoStatus = await this.client.lrange(
+      `room:${id}:participants`,
+      0,
+      -1
+    );
+
+    const participants = await this.augmentParticipantsStatus(
+      id,
+      participantsWithNoStatus
+    );
+
+    console.log("FinalParticipants", participants);
+
     const estimates = await this.retrieveEstimates(id);
 
     const estimatedIssues = await this.client.smembers(
