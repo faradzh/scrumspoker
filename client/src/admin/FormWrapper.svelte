@@ -45,8 +45,6 @@
         return;
       }
 
-      console.log('Final form data', formData);
-  
       const response = await fetch('/rooms', {
         method: 'POST',
         headers: {

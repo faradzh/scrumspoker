@@ -18,7 +18,6 @@ export function listen(io: Server) {
     });
 
     socket.on("leaveRoom", ({ user }) => {
-      console.log("Left the room");
       socket.to(roomId).emit("leaveRoom", { user });
       const timeout = setTimeout(() => {
         leaveRoom.execute(roomId, user);

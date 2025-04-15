@@ -21,8 +21,6 @@ class Integration {
       headers,
     });
 
-    console.log("Reponse", response);
-
     if (response.status !== 200) {
       throw new Error("The integration connection test failed!");
     }
@@ -52,8 +50,6 @@ class Integration {
     data: any
   ): Promise<Response> {
     const integration = this.buildTokenBasedIntegration(data);
-
-    console.log("Token based", integration.getMyselfUrl());
 
     const response = await this.testIntegration(integration);
 

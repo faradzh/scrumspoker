@@ -41,7 +41,6 @@ class RedisRoomRepository implements RoomRepository {
     participant: User,
     online: boolean
   ): Promise<void> {
-    console.log("SEttings the value", online);
     await this.client.set(
       `room:${roomId}:participant:${participant.id}:online`,
       String(online)
@@ -56,7 +55,6 @@ class RedisRoomRepository implements RoomRepository {
       const online = await this.client.get(
         `room:${roomId}:participant:${current.id}:online`
       );
-      console.log("Online", online);
       updatedParticipants.push({ ...current, online: online === "true" });
     }
 
@@ -89,8 +87,6 @@ class RedisRoomRepository implements RoomRepository {
       id,
       participantsWithNoStatus
     );
-
-    console.log("FinalParticipants", participants);
 
     const estimates = await this.retrieveEstimates(id);
 

@@ -58,8 +58,6 @@ function emitRevealEvent() {
 
   socket.emit("reveal", { issueId }, ({ status }: any) => {
     if (status === "success") {
-      console.log("The estimation was revealed");
-
       if (!issueId) {
         return;
       }
@@ -101,7 +99,6 @@ export function revealHandler() {
         ...info[issueId],
         cardsAreFlipped: true,
       };
-      console.log("NewInfo", info);
       return info;
     });
 
