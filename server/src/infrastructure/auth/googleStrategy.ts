@@ -1,5 +1,5 @@
-import { Profile } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { ACCESS_TOKEN_TYPES } from "./types";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -23,6 +23,7 @@ function verifyCallback(
       picture: profile._json?.picture,
     },
     accessToken,
+    accessTokenType: ACCESS_TOKEN_TYPES.GOOGLE,
     refreshToken,
   });
 }

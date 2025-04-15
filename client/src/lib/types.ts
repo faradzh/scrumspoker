@@ -21,6 +21,7 @@ export type User = {
   picture: string;
   isModerator: boolean;
   online: boolean;
+  accessTokenType: "google" | "atlassian";
   name?: string;
 };
 

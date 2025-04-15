@@ -8,14 +8,16 @@ import { CreateRoomRequest } from "../../middleware/validationMiddleware";
 import JoinRoom from "../../useCases/JoinRoom";
 import GetAllRooms from "../../useCases/GetAllRooms";
 import EstimateTask from "../../useCases/EstimateTask";
-import RevealEstimation from "../../useCases/RevealEstimation";
 import Integration from "../../useCases/Integration";
 import { redisRoomRepository } from "./constants";
 import { RoomRepository } from "../repositories/RoomRepository";
 import { IntegrationRepository } from "../repositories/IntegrationRepository";
 import RedisRoomRepository from "../repositories/RedisRoomRepository";
 import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
-import { RequestUser } from "../../infrastructure/auth/types";
+import {
+  ACCESS_TOKEN_TYPES,
+  RequestUser,
+} from "../../infrastructure/auth/types";
 import Session from "../../useCases/Session";
 import LeaveRoom from "../../useCases/LeaveRoom";
 
@@ -44,6 +46,7 @@ class RoomController {
     res: Response
   ): Promise<void> {
     const initialData = req.validatedBody!;
+
     const user = req.user as RequestUser;
     const moderator = user.profile;
     try {
@@ -52,7 +55,10 @@ class RoomController {
         moderator,
       });
       if (initialData.integration) {
-        if (user.accessToken && user.accessTokenType) {
+        if (
+          user.accessToken &&
+          user.accessTokenType === ACCESS_TOKEN_TYPES.ATLASSIAN
+        ) {
           await this.integrationUseCases.addOauth2Integration(
             room.id,
             initialData.integration,
@@ -61,7 +67,10 @@ class RoomController {
               refreshToken: user?.refreshToken,
             }
           );
-        } else {
+        } else if (
+          user.accessToken &&
+          user.accessTokenType === ACCESS_TOKEN_TYPES.GOOGLE
+        ) {
           // assume to work with google oAuth
           await this.integrationUseCases.addTokenBasedIntegration(
             room.id,

@@ -3,13 +3,12 @@ import express from "express";
 import { roomController } from "../interfaceAdapters/controllers/RoomController";
 import {
   checkIfIdentified,
-  CreateRoomSchema,
   validateRoom,
 } from "../middleware/validationMiddleware";
 
 const roomsRouter = express.Router();
 
-roomsRouter.post("/", validateRoom(CreateRoomSchema), async (req, res) => {
+roomsRouter.post("/", validateRoom, async (req, res) => {
   roomController.createRoomHandler(req, res);
 });
 

@@ -96,6 +96,7 @@ api.get("/api/current-user", (req, res) => {
       id: user.profile.id,
       // @ts-ignore
       picture: user.profile.picture,
+      accessTokenType: user.accessTokenType,
     });
   } else if (req.session?.guestUser) {
     res.json({

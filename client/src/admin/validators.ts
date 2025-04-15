@@ -12,8 +12,12 @@ export const CreateRoomSchema = z.object({
   integration: z
     .object({
       id: z.string().min(1, "Integration ID is required."),
-      email: z.string().email().min(1, "Integration Email is required."),
-      apiToken: z.string().min(1, "API Token is required."),
+      email: z
+        .string()
+        .email()
+        .min(1, "Integration Email is required.")
+        .optional(),
+      apiToken: z.string().min(1, "API Token is required.").optional(),
       projectName: z.string().optional(),
       filterLabel: z.string().min(1, "Filter Label is required."),
     })

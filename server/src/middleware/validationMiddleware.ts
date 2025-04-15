@@ -8,32 +8,51 @@ export interface CreateRoomRequest extends Request<{ user?: RequestUser }> {
   validatedBody?: RoomData;
 }
 
-export const CreateRoomSchema = z.object({
-  name: z.string().min(1, "Room name is required."),
-  estimationMethod: EstimationMethodEnum.default("fibbonachi"),
-  moderator: ProfileSchema.optional(),
-  integration: z
-    .object({
-      id: z.string(),
-      email: z.string(),
-      apiToken: z.string(),
-      projectName: z.string(),
-      filterLabel: z.string(),
-    })
-    .optional(),
+const AtlassianIntegration = z.object({
+  id: z.string(),
+  projectName: z.string(),
+  filterLabel: z.string(),
 });
 
-export const validateRoom =
-  (schema: typeof CreateRoomSchema) =>
-  (req: CreateRoomRequest, res: Response, next: NextFunction) => {
-    try {
-      req.validatedBody = schema.parse(req.body);
-      next();
-    } catch (error) {
-      // @ts-ignore
-      res.status(400).json({ message: error.errors });
-    }
-  };
+const GoogleIntegraion = z.object({
+  id: z.string(),
+  email: z.string(),
+  apiToken: z.string(),
+  projectName: z.string(),
+  filterLabel: z.string(),
+});
+
+export const getRoomSchema = ({
+  accessTokenType,
+}: {
+  accessTokenType?: string;
+}) =>
+  z.object({
+    name: z.string().min(1, "Room name is required."),
+    estimationMethod: EstimationMethodEnum.default("fibbonachi"),
+    moderator: ProfileSchema.optional(),
+    integration:
+      accessTokenType === "google"
+        ? GoogleIntegraion.optional()
+        : AtlassianIntegration,
+  });
+
+export const validateRoom = (
+  req: CreateRoomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user as RequestUser;
+    req.validatedBody = getRoomSchema({
+      accessTokenType: user.accessTokenType,
+    }).parse(req.body);
+    next();
+  } catch (error) {
+    // @ts-ignore
+    res.status(400).json({ message: error.errors });
+  }
+};
 
 export const checkLoggedIn = (
   req: Request,

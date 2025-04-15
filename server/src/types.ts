@@ -1,14 +1,13 @@
 import { z } from "zod";
 import { Profile } from "passport";
 
-import { CreateRoomSchema } from "./middleware/validationMiddleware";
 import CreateRoom from "./useCases/CreateRoom";
 import JoinRoom from "./useCases/JoinRoom";
 import GetAllRooms from "./useCases/GetAllRooms";
 import AddIntegration from "./useCases/Integration";
 import GetAllIssues from "./useCases/GetAllIssues";
 
-export type RoomData = z.infer<typeof CreateRoomSchema>;
+export type RoomData = z.infer<any>;
 
 export const EstimationMethodEnum = z.enum([
   "fibbonachi",
