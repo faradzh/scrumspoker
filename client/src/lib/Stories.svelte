@@ -46,9 +46,9 @@
         <div class="p-4 h-full">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-950">User Stories</h2>
-                <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-md text-sm">{$issuesStore.list.length} stories</span>
+                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-sm">{$issuesStore.list.length} stories</span>
             </div>
-            <div class="space-y-2 max-h-[655px] pr-2 scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+            <div class="space-y-2 max-h-[655px] scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                 {#each $issuesStore.list as issue}
                     <Story story={issue} onSelect={() => selectIssueHandler(issue)} isSelected={issue.id === $currentIssueId} />
                 {/each}

@@ -7,16 +7,17 @@
   }
 </script>
 
-<div class="flex justify-start space-x-2">
+<div class="flex justify-center items-center space-x-2">
     <div class="flex flex-col">   
-        <div class="stats shadow rounded-lg">
+        <div class="stats shadow rounded-lg mb-2">
             <div class="stat">
                 <div class="stat-title">Total Estimate</div>
-                <div class="stat-value">{$totalEstimate}</div>
+                <div class="stat-value text-center">{$totalEstimate}</div>
             </div>
         </div>
+        {#if $isModerator} 
+          <button onclick={saveHandler} class="px-4 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition w-full">Save</button>
+        {/if}
     </div> 
-    {#if $isModerator} 
-      <button onclick={saveHandler} class="btn self-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition">Save</button>
-    {/if}
+   
 </div>

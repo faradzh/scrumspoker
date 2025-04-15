@@ -23,7 +23,7 @@
 </script>
 
 <div class="mb-4">
-    <div class="flex">
+    <div class="flex justify-center">
         {#each $participants as participant, index}
             <div class="mr-6 text-center min-w-[80px]">
                 <div class={`avatar mb-2 ${participant.online ? 'online' : 'offline'} ${!participant.picture ? 'placeholder' : ''}`}>

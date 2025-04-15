@@ -6,7 +6,7 @@
 </script>
 
 <form onsubmit={onSubmit} bind:this={formRef} class="form-control text-black w-full">
-    <h2 class="font-semibold tracking-tight text-xl text-violet-700 dark:text-violet-300 mb-4">Create Estimation Room</h2>
+    <h2 class="font-semibold tracking-tight text-xl text-violet-700 mb-4">Create Estimation Room</h2>
     <div class="mb-4">
         <Input id="name" label="Room Name" placeholder="Enter room name" bind:value={values.name} error={errors.name} />
     </div>

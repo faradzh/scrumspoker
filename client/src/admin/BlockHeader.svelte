@@ -9,7 +9,7 @@
 <div class="pb-6">
   <div class="flex justify-between items-center">
     <div class="sm:text-center lg:text-left">
-      <h1 class="text-2xl font-semibold text-black dark:text-violet-300">
+      <h1 class="text-2xl font-semibold text-black">
         Estimation Rooms
       </h1>
     </div>

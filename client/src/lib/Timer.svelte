@@ -43,7 +43,7 @@
             <span aria-live="polite" aria-label="minutes">{`${minsDigitsLen === 1 ? '0' : ''}${minutes}`}</span>:<span aria-live="polite" aria-label="seconds">{`${secsDigitsLen === 1 ? '0' : ''}${seconds}`}</span>
         </span>
     </div>
-    <div class="text-lg text-gray-600 dark:text-gray-300">
+    <div class="text-lg text-gray-600">
         Timer
     </div>
 </div>
