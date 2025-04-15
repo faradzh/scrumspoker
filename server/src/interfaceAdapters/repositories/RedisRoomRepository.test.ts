@@ -51,7 +51,7 @@ describe("RedisRoomRepository", () => {
       "1",
       "Room 1",
       "fibonacci" as EstimationMethod,
-      [{ id: "1" } as User, { id: "2" } as User],
+      [{ id: "1", online: true } as User, { id: "2", online: true } as User],
       [],
       null,
       { id: "1" } as User
@@ -68,7 +68,7 @@ describe("RedisRoomRepository", () => {
       "1",
       "Room 1",
       "fibonacci" as EstimationMethod,
-      [{ id: "1" } as User, { id: "2" } as User],
+      [{ id: "1", online: true } as User, { id: "2", online: true } as User],
       [],
       null,
       { id: "1" } as User

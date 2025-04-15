@@ -28,6 +28,9 @@ describe("JoinRoom", () => {
     const joinRoom = new JoinRoom(persistedRepo, tempRepo);
     const activeRoom = await joinRoom.execute("1", { id: "2" } as User);
 
-    expect(activeRoom.participants).toEqual([{ id: "1" }, { id: "2" }]);
+    expect(activeRoom.participants).toEqual([
+      { id: "1" },
+      { id: "2", online: true },
+    ]);
   });
 });
