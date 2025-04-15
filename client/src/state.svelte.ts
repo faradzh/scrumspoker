@@ -1,4 +1,5 @@
 import { TIMER_INIT } from "./constants";
+import { socket } from "./sockets";
 
 export const timerState = $state<{
   value: number;
@@ -24,6 +25,15 @@ export function updateTimer() {
   }
   setTimerInterval();
   timerState.interval = setInterval(setTimerInterval, 1000);
+}
+
+export function startEstimation() {
+  updateTimer();
+  socket.emit("startEstimation");
+}
+
+export function onStartEstimation() {
+  updateTimer();
 }
 
 function resetTimer() {

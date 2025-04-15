@@ -43,6 +43,10 @@ export function listen(io: Server) {
       socket.to(roomId).emit("estimation", data);
     });
 
+    socket.on("startEstimation", () => {
+      socket.to(roomId).emit("startEstimation");
+    });
+
     socket.on("reveal", ({ issueId }, callback) => {
       try {
         session.revealEstimation(roomId, issueId);

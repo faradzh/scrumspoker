@@ -13,6 +13,7 @@
   import { getCurrentUser } from "./services/userService";
   import { getRoomData } from "./services/roomService";
   import ToastWrapper from "./lib/ToastWrapper.svelte";
+  import { onStartEstimation } from "./state.svelte";
   
 
   onMount(() => {
@@ -27,6 +28,7 @@
     });
 
     socket.on('joinRoom', onRoomJoin)
+    socket.on('startEstimation', onStartEstimation);
     socket.on('estimation', estimationHandler);
     socket.on("leaveRoom", onRoomLeave);
 
@@ -59,7 +61,7 @@
 <Navbar />
 <main class="bg-gray-50 h-screen overflow-y-hidden">
   <div class="mx-auto px-8 max-w-screen-2xl h-screen">
-    <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[auto_225px] h-screen">
+    <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[auto_200px] h-screen">
       <Stories />
       <Session />
       <CardsDeck />
