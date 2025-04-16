@@ -26,23 +26,23 @@
             </div> 
         </div>
         <div class="flex items-center space-x-2 mb-3">
-            <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-violet-100">
+            <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-[var(--color-primary)]">
                 {room.estimationMethod}
             </div>
-            <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-blue-100">
+            <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-[var(--color-secondary)]">
             8 participants
             </div>
         </div> 
         <div class="text-xs text-gray-500 flex items-center mb-1">
-            <span class="inline-block w-2 h-2 rounded-full bg-teal-500 mr-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-[var(--color-success)] mr-2">
             </span>
             Jira Integration: PROD
         </div>
-        <div class="text-xs text-gray-500flex items-center">
+        <div class="text-xs text-gray-500 flex items-center">
             <svg class="w-3 h-4 text-gray-800 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961"/>
             </svg>
-            <span class="text-xs w-[85%] text-ellipsis overflow-hidden whitespace-nowrap">
+            <span class="text-xs w-[85%] text-ellipsis overflow-hidden whitespace-nowrap text-[var(--color-text)]">
                 <a href={roomLink}>{roomLink}</a>
             </span>
             <button class="p-1 text-gray-500 hover:text-violet-600 ml-auto">

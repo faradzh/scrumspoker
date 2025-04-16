@@ -26,7 +26,7 @@
 <label for={id} class="label text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-1 pl-0">{label}</label>
 <div class="flex space-x-1">
     <input id={id} type={type} placeholder={placeholder} class={`input input-bordered ${errorClassName} w-full h-9 rounded-md placeholder:text-[14px]`} bind:value={value} {...rest} />
-    <button onclick={testConnection} type="button" class="btn bg-violet-600 hover:bg-violet-700 text-white min-h-9 h-9 float-right">
+    <button onclick={testConnection} type="button" class="btn btn-primary min-h-9 h-9 float-right">
         {#if $query.isFetching}
             <span class="loading loading-spinner h-4 w-4"></span>
         {:else if $query.error}

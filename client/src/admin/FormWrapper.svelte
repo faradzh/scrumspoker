@@ -108,7 +108,7 @@
 <CurrentForm bind:formRef values={formData} onSubmit={onSubmit} errors={formErrors} onIntegrationInput={onIntegrationInput} />
 <div class="modal-action">
     <div class="flex justify-between w-full">
-        <button class="btn bg-white text-black min-h-10 h-10" onclick={leftButtonClick}>{leftButtonLabel}</button>
-        <button class="btn bg-violet-600 hover:bg-violet-700 text-white min-h-10 h-10" onclick={rightButtonClick}>{rightButtonLabel}</button>
+        <button class="btn btn-secondary min-h-10 h-10" onclick={leftButtonClick}>{leftButtonLabel}</button>
+        <button class="btn btn-primary min-h-10 h-10" onclick={rightButtonClick}>{rightButtonLabel}</button>
     </div>
 </div>

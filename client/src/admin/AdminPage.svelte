@@ -10,6 +10,7 @@
   import FormWrapper from "./FormWrapper.svelte";
   import { queryClient } from "./constants";
   import { getCurrentUser } from "../services/userService";
+  import Navbar from "../lib/Navbar.svelte";
 
   async function fetchRooms() {
     try {
@@ -32,14 +33,15 @@
   });
 </script>
 
-<QueryClientProvider client={queryClient}>
-  <div class="min-h-full">
+<Navbar />
+<main class="h-screen overflow-y-hidden px-8">
+  <QueryClientProvider client={queryClient}>
     <Main>
       <BlockHeader />
       <RoomsList />
     </Main>
-  </div>
-  <Modal>
-    <FormWrapper />
-  </Modal>
-</QueryClientProvider>
+    <Modal>
+      <FormWrapper />
+    </Modal>
+  </QueryClientProvider>
+</main>

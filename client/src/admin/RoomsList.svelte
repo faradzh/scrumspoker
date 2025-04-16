@@ -16,7 +16,7 @@
 {#if $rooms.length === 0}
   <div class="text-center">
     <img class="max-w-80 m-auto mb-6" src="/no-data-panda.svg" alt="">
-    <h3 class="text-black text-lg font-bold">No rooms available yet.</h3>
+    <h3 class="text-[var(--color-text)] text-lg font-bold">No rooms available yet.</h3>
   </div>
 {/if}
 

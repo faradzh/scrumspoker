@@ -11,8 +11,8 @@
     });
 
     const typeColors: Record<string, string[]> = {
-        success: ['bg-emerald-600', 'border-emerald-700'],
-        error: ['bg-rose-500', 'border-rose-600'],
+        success: ['var(--color-success)', 'border-emerald-700'],
+        error: ['var(--color-error)', 'border-rose-600'],
         info: ['bg-emerald-600', 'border-emerald-700'],
     };
 </script>

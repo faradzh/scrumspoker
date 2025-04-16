@@ -6,9 +6,9 @@
 </script>
 
 <form onsubmit={onSubmit} bind:this={formRef} class="form-control text-black w-full">
-    <h2 class="font-semibold tracking-tight text-xl text-violet-700 mb-4">Create Estimation Room</h2>
+    <h2 class="font-semibold tracking-tight text-xl text-[var(--color-text)] mb-4">Create Estimation Room</h2>
     <div class="mb-4">
-        <Input id="name" label="Room Name" placeholder="Enter room name" bind:value={values.name} error={errors.name} />
+        <Input id="name" label="Name" placeholder="Enter room name" bind:value={values.name} error={errors.name} />
     </div>
     <div class="mb-4">
         <Input id="maxParticipants" label="Maximum Participants" type="number" value="5" min="1" />
@@ -22,7 +22,7 @@
             type="radio"
             name=""
             aria-label="None"
-            class="btn btn-outline h-9 min-h-9 text-white radio-btn"
+            class="btn btn-radio h-9 min-h-9"
             value=""
             checked={!values.integration?.id}
             onchange={onIntegrationInput}
@@ -31,7 +31,7 @@
             type="radio"
             name={INTEGRATION_NAMES.JIRA}
             aria-label="Jira"
-            class="btn btn-outline h-9 min-h-9 text-white radio-btn"
+            class="btn btn-radio h-9 min-h-9 "
             value={INTEGRATION_NAMES.JIRA}
             checked={values.integration?.id === INTEGRATION_NAMES.JIRA}
             onchange={onIntegrationInput}
@@ -40,7 +40,7 @@
             type="radio"
             name={INTEGRATION_NAMES.ASANA}
             aria-label="Asana"
-            class="btn btn-outline h-9 min-h-9 text-white radio-btn"
+            class="btn btn-radio h-9 min-h-9"
             value={INTEGRATION_NAMES.ASANA}
             checked={values.integration?.id === INTEGRATION_NAMES.ASANA}
             onchange={onIntegrationInput}

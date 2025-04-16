@@ -18,8 +18,29 @@
   -webkit-text-size-adjust: 100%;
 
   height: 100vh;
-  overflow: hidden; 
+  overflow: hidden;
   scrollbar-width: none;
+
+  /* Primary brand color */
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+
+  /* Secondary/supporting color */
+  --color-secondary: #38bdf8;
+  --color-secondary-hover: #2aafeb;
+
+  /* Accent color for small highlights */
+  --color-accent: #f472b6;
+
+  /* Semantic colors */
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+
+  /* Neutral colors */
+  --color-bg: #f9fafb;
+  --color-bg-hover: #d9dadb;
+  --color-text: #111827;
+  --color-text-light: white;
 }
 
 @layer base {
@@ -27,6 +48,47 @@
     @apply font-sans;
 
     height: 100vh;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md transition;
+  }
+
+  .btn-primary {
+    @apply text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] border-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)];
+  }
+
+  .btn-secondary {
+    @apply text-[var(--color-text)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] border-[var(--color-bg-hover)] hover:border-[var(--color-bg-hover)];
+  }
+
+  .modal-box,
+  .input,
+  .select {
+    @apply bg-[var(--color-bg)];
+  }
+
+  .btn-radio {
+    @apply btn-secondary;
+  }
+
+  .btn-radio:is(input[type="radio"]:checked) {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    border-color: var(--color-primary-hover);
+  }
+
+  .btn-radio:is(input[type="radio"]:checked):hover {
+    background-color: var(--color-primary-hover);
+    color: var(--color-text-light);
+    border-color: var(--color-primary-hover);
+  }
+
+  .avatar.online:before {
+    background-color: var(--color-success);
+    outline-width: 1px;
   }
 }
 
@@ -43,40 +105,4 @@
   .scrollbar-visible::-webkit-scrollbar-track {
     background: #f0f0f0; /* Track color */
   }
-}
-
-.radio-btn:is(input[type="radio"]):checked {
-  --tw-border-opacity: 1;
-  --tw-bg-opacity: 1;
-  background: rgb(124 58 237 / var(--tw-bg-opacity, 1));
-  --tw-text-opacity: 1;
-  color: white;
-  border-color: rgb(124 58 237 / var(--tw-bg-opacity, 1));
-}
-
-.radio-btn:is(input[type="radio"]) {
-  --tw-border-opacity: 1;
-  --tw-bg-opacity: 1;
-  background: transparent;
-  --tw-text-opacity: 1;
-  color: black;
-  border-color: black
-}
-
-.radio-btn:is(input[type="radio"]):hover {
-  --tw-border-opacity: 1;
-  --tw-bg-opacity: 1;
-  background: rgb(124 58 237 / var(--tw-bg-opacity, 1));
-  --tw-text-opacity: 1;
-  color: white;
-  border-color: rgb(124 58 237 / var(--tw-bg-opacity, 1));
-}
-
-.radio-btn:is(input[type="radio"]:checked):hover {
-  --tw-border-opacity: 1;
-  --tw-bg-opacity: 1;
-  background: rgb(124 58 237 / var(--tw-bg-opacity, 1));
-  --tw-text-opacity: 1;
-  color: white;
-  border-color: rgb(124 58 237 / var(--tw-bg-opacity, 1));
 }

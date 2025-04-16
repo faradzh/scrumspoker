@@ -35,10 +35,10 @@
 <div class="relative cursor-pointer ">
   <div class="poker-card--selected" bind:this={cardElement}>
     <div class="front h-32">
-      <img class="rounded-lg h-full w-full" src={shouldAddRef() ? card.link : "/card-cover.svg"} alt="">
+      <img class="rounded-lg h-full w-full shadow-md" src={shouldAddRef() ? card.link : "/card-cover.svg"} alt="">
     </div>
     <div class="back absolute top-0 left-0 h-32">
-      <img class="rounded-lg h-full w-full" src={card.link} alt="">
+      <img class="rounded-lg h-full w-full shadow-md" src={card.link} alt="">
     </div>
   </div>
 </div>
