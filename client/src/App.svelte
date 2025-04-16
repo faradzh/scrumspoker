@@ -17,13 +17,13 @@
   
 
   onMount(() => {
-    getCurrentUser().then((user) => {
+    Promise.all([getCurrentUser(), getRoomData()]).then((values) => {
+      const [user, roomData] = values;
+
       currentUser.set(user);
-
+    
       socket.emit('joinRoom', {user: {...user, online: true}});
-    });
-
-    getRoomData().then((roomData) => {
+      
       initRoom(roomData);
     });
 
