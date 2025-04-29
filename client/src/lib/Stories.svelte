@@ -6,6 +6,9 @@
   import { socket } from "../sockets";
 
   import type { Issue } from "./types";
+  import StoryDetails from "./StoryDetails.svelte";
+
+  let storiesList: HTMLDivElement;
 
   async function fetchStories() {
     const data = await fetchIssues();
@@ -38,6 +41,13 @@
     });
   });
 
+  onMount(() => {
+    // Lock width
+    const rect = storiesList.getBoundingClientRect();
+    storiesList.style.width = rect.width + "px";
+    $issuesStore.initialColumnWidth = rect.width;
+  });
+
 </script>
 
 <section class="relative row-span-2">
@@ -48,11 +58,15 @@
                 <h2 class="text-xl font-semibold text-gray-950">User Stories</h2>
                 <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-sm">{$issuesStore.list.length} stories</span>
             </div>
-            <div class="space-y-2 max-h-[655px] scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-                {#each $issuesStore.list as issue}
+              <div bind:this={storiesList} id="stories-list" class="transition-name space-y-2 max-h-[655px] scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                {#if $issuesStore.expandedIssue}
+                  <StoryDetails story={$issuesStore.expandedIssue}/>
+                {:else}  
+                  {#each $issuesStore.list as issue}
                     <Story story={issue} onSelect={() => selectIssueHandler(issue)} isSelected={issue.id === $currentIssueId} />
-                {/each}
-            </div>
+                  {/each}
+                {/if}
+              </div>
         </div>
     </div>
     <div class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5"></div>

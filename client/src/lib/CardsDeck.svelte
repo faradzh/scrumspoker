@@ -18,7 +18,7 @@
         {#each POKER_CARDS as pokerCard}
           <div class="poker-card cursor-pointer mr-4 h-32">
             <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-            <img class="rounded-lg shadow-md h-full w-full transition-transform duration-200 ease-in-out hover:-translate-y-2 hover:scale-105 hover:shadow-lg" src="{pokerCard.link}" alt="" onclick={() => clickHandler(pokerCard)} />
+            <img class="rounded-lg shadow-md h-full w-full transition-transform duration-200 ease-in-out hover:-translate-y-2 hover:scale-105 hover:shadow-lg origin-center will-change-transform backface-hidden" src="{pokerCard.link}" alt="" onclick={() => clickHandler(pokerCard)} />
           </div>
         {/each}
       </div>

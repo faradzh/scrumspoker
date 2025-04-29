@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.2.5",
+    "@lucide/svelte": "^0.503.0",
     "@tanstack/svelte-query": "^5.69.0",
     "animejs": "^3.2.1",
     "socket.io-client": "^4.8.0",

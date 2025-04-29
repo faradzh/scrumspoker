@@ -9,9 +9,16 @@ import {
 
 export const selectedCards = writable<SelectedCardsByIssue>({});
 
-export const issuesStore = writable<{ list: Issue[]; current: Issue | null }>({
+export const issuesStore = writable<{
+  list: Issue[];
+  current: Issue | null;
+  expandedIssue: Issue | null;
+  initialColumnWidth: number;
+}>({
   list: [],
   current: null,
+  expandedIssue: null,
+  initialColumnWidth: 0,
 });
 
 export const currentIssueId = derived(
