@@ -53,6 +53,10 @@ class JiraIntegration implements Integration {
         "description",
         "status",
         "priority",
+        "assignee",
+        "reporter",
+        "issuetype",
+        "comment",
         this.storyPointsFieldId,
       ],
     });

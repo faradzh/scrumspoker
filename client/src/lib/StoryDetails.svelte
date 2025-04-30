@@ -12,19 +12,21 @@
         <div class="grid grid-cols-2 gap-4">
         <div>
             <p class="text-xs text-gray-500">Priority</p>
-            <p class="font-medium">Medium</p>
+            <p class="font-medium">{story.priority}</p>
         </div>
-        <div>
-            <p class="text-xs text-gray-500">Assignee</p>
-            <p class="font-medium">Jane Smith</p>
-        </div>
+        {#if story.assignee}
+            <div>
+                <p class="text-xs text-gray-500">Assignee</p>
+                <p class="font-medium">{story.assignee}</p>
+            </div>
+        {/if}
         <div>
             <p class="text-xs text-gray-500">Reporter</p>
-            <p class="font-medium">John Doe</p>
+            <p class="font-medium">{story.reporter}</p>
         </div>
         <div>
-            <p class="text-xs text-gray-500">Sprint</p>
-            <p class="font-medium">Sprint 24</p>
+            <p class="text-xs text-gray-500">Issue Type</p>
+            <p class="font-medium">{story.issuetype}</p>
         </div>
         </div>
     </div>
@@ -39,7 +41,7 @@
         <p class="text-sm">I've started working on this. Will have a prototype ready by tomorrow.</p>
         </div>
     </div>
-    
+<!--     
     <div>
         <h4 class="font-medium mb-3">Attachments</h4>
         <div class="flex gap-2 flex-wrap">
@@ -52,5 +54,5 @@
             <span>requirements.pdf</span>
         </div>
         </div>
-    </div>
+    </div> -->
 </div>

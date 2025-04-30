@@ -21,15 +21,16 @@ export interface Issue {
     iconUrl: string;
   };
   // e.g. "Medium", "High", "Low"
-  priority: {
-    name: string;
-    iconUrl: string;
-  };
+  priority: string;
   // story points field, e.g. 1, 2, 3, 5, 8, 13
   customfield_10016: number;
   summary: string;
   description: string;
   status: string;
+  assignee: string;
+  reporter: string;
+  issuetype: string;
+  comment: any[];
 }
 
 export interface JiraIssue {
@@ -59,6 +60,16 @@ export interface JiraIssue {
     };
     status: {
       name: string;
+    };
+    assignee: string;
+    reporter: {
+      displayName: string;
+    };
+    issuetype: {
+      name: string;
+    };
+    comment: {
+      comments: any[];
     };
   };
 }
