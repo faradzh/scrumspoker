@@ -28,13 +28,18 @@
 
     container.style.width = `${$issuesStore.initialColumnWidth}px`;
   }
+
+  function getStoryLink() {
+    const domainUrl = $issuesStore.domainUrl;
+    return `${domainUrl}/browse/${story.key}`;
+  }
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class={`p-3 rounded-md transition-colors ${isSelected ? 'bg-indigo-50 border-l-4 border-[var(--color-primary)]' : ''}`}>
     <div class="flex justify-between items-center">
-        <span class="text-xs font-medium text-gray-500">{story.key}</span>
+        <a target="_blank" href={getStoryLink()} class="text-xs font-medium text-gray-500 underline">{story.key}</a>
         <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800">{story.status}</span>
         {#if $issuesStore.expandedIssue}
           <span class="cursor-pointer">

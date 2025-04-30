@@ -5,12 +5,14 @@ export interface JiraArgs {
   email: string;
   apiToken: string;
   filterLabel: string;
+  domainUrl: string;
   projectName?: string;
 }
 class JiraIntegration implements Integration {
   public id = IntegrationTypeEnum.JIRA;
   public name: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].name;
-  public baseUrl: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].url;
+  public domainUrl = "";
+  public apiUrl: string = "rest/api/3";
   public storyPointsFieldId: string =
     INTEGRATIONS[IntegrationTypeEnum.JIRA].storyPointsFieldId;
 
@@ -19,8 +21,15 @@ class JiraIntegration implements Integration {
   public projectName;
   public filterLabel;
 
-  public constructor({ email, apiToken, projectName, filterLabel }: JiraArgs) {
+  public constructor({
+    email,
+    domainUrl,
+    apiToken,
+    projectName,
+    filterLabel,
+  }: JiraArgs) {
     this.email = email;
+    this.domainUrl = domainUrl;
     this.apiToken = apiToken;
     this.projectName = projectName ?? "";
     this.filterLabel = filterLabel ?? "";
@@ -36,11 +45,11 @@ class JiraIntegration implements Integration {
   }
 
   public getMyselfUrl(): string {
-    return `${this.baseUrl}/myself`;
+    return `${this.domainUrl}/${this.apiUrl}/myself`;
   }
 
   public getSearchUrl(): string {
-    return `${this.baseUrl}/search/jql`;
+    return `${this.domainUrl}/${this.apiUrl}/search/jql`;
   }
 
   public getSearchBody(): string {
@@ -71,7 +80,7 @@ class JiraIntegration implements Integration {
   }
 
   public getUpdateIssueUrl(id: string): string {
-    return `${this.baseUrl}/issue/${id}`;
+    return `${this.domainUrl}/${this.apiUrl}/issue/${id}`;
   }
 }
 export default JiraIntegration;

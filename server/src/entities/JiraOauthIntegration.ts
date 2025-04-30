@@ -2,19 +2,18 @@ import JiraIntegration from "./JiraIntegration";
 
 interface JiraOauthArgs {
   filterLabel: string;
-  projectName?: string;
   accessToken: string;
+  projectName?: string;
 }
 
 class JiraOauthIntegration extends JiraIntegration {
   private accessToken: string;
-  private apiUrl: string = "rest/api/3";
   private cloudId: string = "";
+  private baseUrl: string = "https://api.atlassian.com";
 
   public constructor({ accessToken, filterLabel, projectName }: JiraOauthArgs) {
-    super({ email: "", apiToken: "", filterLabel, projectName });
+    super({ email: "", domainUrl: "", apiToken: "", filterLabel, projectName });
     this.accessToken = accessToken;
-    this.baseUrl = "https://api.atlassian.com/ex/jira";
   }
 
   public getAuthorizationHeader(): string {
@@ -27,7 +26,7 @@ class JiraOauthIntegration extends JiraIntegration {
 
   public async fetchCloudId() {
     const response = await fetch(
-      "https://api.atlassian.com/oauth/token/accessible-resources",
+      `${this.baseUrl}/oauth/token/accessible-resources`,
       {
         headers: {
           Authorization: this.getAuthorizationHeader(),
@@ -36,23 +35,26 @@ class JiraOauthIntegration extends JiraIntegration {
       }
     );
 
-    const sites = await response.json();
+    const resources = await response.json();
 
-    if (sites.length) {
-      this.cloudId = sites[0].id;
+    if (resources.length === 1) {
+      this.cloudId = resources[0].id;
+      this.domainUrl = resources[0].url;
+    } else {
+      throw new Error("Multiple cloud IDs found");
     }
   }
 
   public getMyselfUrl(): string {
-    return `${this.baseUrl}/${this.cloudId}/${this.apiUrl}/myself`;
+    return `${this.baseUrl}/ex/jira/${this.cloudId}/${this.apiUrl}/myself`;
   }
 
   public getSearchUrl(): string {
-    return `${this.baseUrl}/${this.cloudId}/${this.apiUrl}/search/jql`;
+    return `${this.baseUrl}/ex/jira/${this.cloudId}/${this.apiUrl}/search/jql`;
   }
 
   public getUpdateIssueUrl(id: string): string {
-    return `${this.baseUrl}/${this.cloudId}/${this.apiUrl}/issue/${id}`;
+    return `${this.baseUrl}/ex/jira/${this.cloudId}/${this.apiUrl}/issue/${id}`;
   }
 }
 

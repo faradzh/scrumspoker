@@ -12,11 +12,13 @@ export const selectedCards = writable<SelectedCardsByIssue>({});
 export const issuesStore = writable<{
   list: Issue[];
   current: Issue | null;
+  domainUrl: string;
   expandedIssue: Issue | null;
   initialColumnWidth: number;
 }>({
   list: [],
   current: null,
+  domainUrl: "",
   expandedIssue: null,
   initialColumnWidth: 0,
 });
@@ -36,10 +38,11 @@ export function setCurrentIssue(issue: Issue) {
   }));
 }
 
-export function setIssuesList(list: Issue[]) {
+export function setIssues(issues: { data: Issue[]; domainUrl: string }) {
   issuesStore.update((s) => ({
     ...s,
-    list,
+    list: issues.data,
+    domainUrl: issues.domainUrl,
   }));
 }
 

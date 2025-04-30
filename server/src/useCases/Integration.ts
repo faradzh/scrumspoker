@@ -29,10 +29,12 @@ class Integration {
   }
 
   public buildTokenBasedIntegration(integrationData: any) {
-    const { id, email, apiToken, filterLabel, projectName } = integrationData;
+    const { id, email, domainUrl, apiToken, filterLabel, projectName } =
+      integrationData;
 
     const integration = new INTEGRATION_CLASSES[id as IntegrationTypeEnum]({
       email,
+      domainUrl,
       apiToken,
       filterLabel,
       projectName,

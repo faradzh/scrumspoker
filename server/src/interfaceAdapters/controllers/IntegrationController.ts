@@ -13,9 +13,10 @@ class IntegrationController {
   public async testIntegrationHandler(req: Request, res: Response) {
     try {
       const integrationRequestData = req.body as IntegrationI;
-      const integration = this.useCase.buildTokenBasedIntegration(
-        integrationRequestData
-      );
+      const integration = this.useCase.buildTokenBasedIntegration({
+        ...integrationRequestData,
+        domainUrl: "https://bishkek.atlassian.net",
+      });
       const response = await this.useCase.testIntegration(integration);
       res.status(response.status).json({ message: response.statusText });
     } catch (error) {

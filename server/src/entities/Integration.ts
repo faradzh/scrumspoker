@@ -10,13 +10,14 @@ export interface IntegrationRequestData {
 
 export interface Integration {
   id: IntegrationTypeEnum;
+  projectName: string;
+  filterLabel: string;
+  domainUrl: string;
   email?: string;
   apiToken?: string;
   accessToken?: string;
-  projectName: string;
-  filterLabel: string;
   name: string;
-  baseUrl: string;
+  baseUrl?: string;
   // e.g. "ToEstimate", the label of the issue to estimate
   getAuthorizationHeader(): string;
   getSearchUrl(): string;

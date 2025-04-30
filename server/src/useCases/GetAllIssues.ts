@@ -36,7 +36,9 @@ class GetIntegrationIssues {
     return await response.json();
   }
 
-  public async execute(roomId: string): Promise<Issue[]> {
+  public async execute(
+    roomId: string
+  ): Promise<{ data: Issue[]; domainUrl: string }> {
     const integration =
       await this.inMemoryIntegrationRepository.findIntegrationById(roomId);
 
@@ -49,12 +51,16 @@ class GetIntegrationIssues {
     );
 
     if (cachedIssues.length > 0) {
-      return cachedIssues;
+      return {
+        data: cachedIssues,
+        domainUrl: integration.domainUrl,
+      };
     }
 
     const fetchedData = (await this.fetchIssues<typeof integration.id>(
       integration
     )) as JiraIssueResponse;
+
     const TransformerClass = ISSUE_TRANSFORMERS[integration.id];
 
     if (!TransformerClass) {
@@ -67,7 +73,7 @@ class GetIntegrationIssues {
 
     this.redisRoomRepository.saveIntegrationIssues(roomId, issues);
 
-    return issues;
+    return { data: issues, domainUrl: integration.domainUrl };
   }
 }
 

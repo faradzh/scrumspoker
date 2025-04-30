@@ -26,9 +26,14 @@ class IssueController<I> {
       const roomId = req.query.roomId!.toString();
 
       const issues = await this.getAllIssuesUseCase.execute(roomId);
-      const response = issues.map((issue) =>
+      const list = issues.data.map((issue) =>
         this.apiIssuePresenter.presentIssue(issue)
       );
+
+      const response = {
+        data: list,
+        domainUrl: issues.domainUrl,
+      };
 
       res.status(200).json(response);
     } catch (error) {

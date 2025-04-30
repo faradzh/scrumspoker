@@ -72,10 +72,10 @@ class RoomController {
           user.accessTokenType === ACCESS_TOKEN_TYPES.GOOGLE
         ) {
           // assume to work with google oAuth
-          await this.integrationUseCases.addTokenBasedIntegration(
-            room.id,
-            initialData.integration
-          );
+          await this.integrationUseCases.addTokenBasedIntegration(room.id, {
+            ...initialData.integration,
+            domainUrl: "https://bishkek.atlassian.net",
+          });
         }
       }
       const roomResponse = this.roomPresenter.presentRoom(room);

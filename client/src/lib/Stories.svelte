@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import Story from "./Story.svelte";
   import { fetchIssues } from "../services/roomService";
-  import { currentIssueId, isModerator, issuesStore, setCurrentIssue, setIssuesList } from "../store";
+  import { currentIssueId, isModerator, issuesStore, setCurrentIssue, setIssues } from "../store";
   import { socket } from "../sockets";
 
   import type { Issue } from "./types";
@@ -11,10 +11,12 @@
   let storiesList: HTMLDivElement;
 
   async function fetchStories() {
-    const data = await fetchIssues();
-    setIssuesList(data);
+    const response = await fetchIssues();
+    
+    setIssues(response);
+
     if (!$issuesStore.current) {
-      setCurrentIssue(data[0]);
+      setCurrentIssue(response.data[0]);
     }
   }
 

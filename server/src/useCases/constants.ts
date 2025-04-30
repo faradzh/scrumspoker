@@ -10,12 +10,10 @@ export enum IntegrationTypeEnum {
 export const INTEGRATIONS = {
   [IntegrationTypeEnum.JIRA]: {
     name: "Jira",
-    url: "https://bishkek.atlassian.net/rest/api/3",
     storyPointsFieldId: "customfield_10016",
   },
   [IntegrationTypeEnum.ASANA]: {
     name: "Asana",
-    url: "https://asana.com",
   },
 } as const;
 
