@@ -1,4 +1,5 @@
 import passport from "passport";
+
 import googleStrategy from "./googleStrategy";
 import atlassianStrategy from "./atlassianStrategy";
 

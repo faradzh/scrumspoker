@@ -4,8 +4,8 @@ import { Profile } from "passport";
 import CreateRoom from "./useCases/CreateRoom";
 import JoinRoom from "./useCases/JoinRoom";
 import GetAllRooms from "./useCases/GetAllRooms";
-import AddIntegration from "./useCases/Integration";
 import GetAllIssues from "./useCases/GetAllIssues";
+import TestIntegration from "./useCases/TestIntegration";
 
 export type RoomData = z.infer<any>;
 
@@ -17,7 +17,7 @@ export const EstimationMethodEnum = z.enum([
 
 export type RoomUseCase = CreateRoom | JoinRoom | GetAllRooms;
 
-export type IntegrationUseCase = AddIntegration;
+export type IntegrationUseCase = TestIntegration;
 
 export type IssueUseCase = GetAllIssues;
 

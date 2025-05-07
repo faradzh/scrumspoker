@@ -20,7 +20,7 @@ class LeaveRoom {
     const room = await this.tempRepo.joinRoom?.(roomSettings)!;
 
     if (!room.hasParticipant(participant)) {
-      throw new Error("Participant is NOT in the room.");
+      return;
     }
 
     room.setParticipantOnline(participant, false);

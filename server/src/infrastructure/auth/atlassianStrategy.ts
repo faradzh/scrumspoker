@@ -1,5 +1,6 @@
 // @ts-ignore until the types are installed
 import { Strategy as AtlassianStrategy } from "passport-atlassian-oauth2";
+import refresh from "passport-oauth2-refresh";
 
 import { ACCESS_TOKEN_TYPES } from "./types";
 
@@ -38,11 +39,12 @@ async function verifyCallback(
 
     const userProfile = await response.json();
 
+    console.log("Refresh Token", refreshToken);
+
     done(null, {
       accessToken,
       accessTokenType: ACCESS_TOKEN_TYPES.ATLASSIAN,
       params,
-      refreshToken,
       profile: {
         id: userProfile.account_id,
         email: userProfile.email,
@@ -55,4 +57,11 @@ async function verifyCallback(
   }
 }
 
-export default new AtlassianStrategy(AUTH_OPTIONS, verifyCallback);
+const atlassianStrategy = new AtlassianStrategy(AUTH_OPTIONS, verifyCallback);
+
+atlassianStrategy.name = "atlassian";
+
+// use refresh token strategy
+refresh.use(atlassianStrategy);
+
+export default atlassianStrategy;

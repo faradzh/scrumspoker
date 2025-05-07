@@ -60,7 +60,7 @@ class Room {
   }
 
   public hasParticipant(participant: User): boolean {
-    return !!this.participants.find((p) => p.id === participant.id);
+    return !!this.participants.find((p) => p.id === participant?.id);
   }
 
   public addEstimate(estimation: Estimation): void {

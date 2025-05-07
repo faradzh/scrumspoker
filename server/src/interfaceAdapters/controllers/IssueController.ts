@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import GetAllIssues from "../../useCases/GetAllIssues";
 import ApiIssuePresenter from "../presenters/ApiIssuePresenter";
 import { redisRoomRepository } from "./constants";
-import { inMemoryIntegrationRepository } from "./RoomController";
 import SaveEstimation from "../../useCases/SaveEstimation";
+import { mongoIntegrationRepository } from "./RoomController";
 
 class IssueController<I> {
   private getAllIssuesUseCase;
@@ -12,12 +12,10 @@ class IssueController<I> {
 
   public constructor(private apiIssuePresenter: ApiIssuePresenter) {
     this.getAllIssuesUseCase = new GetAllIssues(
-      inMemoryIntegrationRepository,
+      mongoIntegrationRepository,
       redisRoomRepository
     );
-    this.saveEstimationUseCase = new SaveEstimation(
-      inMemoryIntegrationRepository
-    );
+    this.saveEstimationUseCase = new SaveEstimation(mongoIntegrationRepository);
     this.apiIssuePresenter = apiIssuePresenter;
   }
 

@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 
 import { IntegrationUseCase } from "../../types";
 import { Integration as IntegrationI } from "../../entities/Integration";
-import Integration from "../../useCases/Integration";
-import { inMemoryIntegrationRepository } from "./RoomController";
+import TestIntegration from "../../useCases/TestIntegration";
 
 class IntegrationController {
   public constructor(private useCase: IntegrationUseCase) {
@@ -17,7 +16,7 @@ class IntegrationController {
         ...integrationRequestData,
         domainUrl: "https://bishkek.atlassian.net",
       });
-      const response = await this.useCase.testIntegration(integration);
+      const response = await this.useCase.execute(integration);
       res.status(response.status).json({ message: response.statusText });
     } catch (error) {
       // @ts-ignore
@@ -27,7 +26,7 @@ class IntegrationController {
 }
 
 export const integrationController = new IntegrationController(
-  new Integration(inMemoryIntegrationRepository)
+  new TestIntegration()
 );
 
 export default IntegrationController;

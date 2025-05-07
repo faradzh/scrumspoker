@@ -1,15 +1,15 @@
 import { Integration } from "../entities/Integration";
-import InMemoryIntegrationRepository from "../interfaceAdapters/repositories/InMemoryIntegrationRepository";
+import MongoIntegrationRepository from "../interfaceAdapters/repositories/MongoIntegrationRepository";
 
 class SaveEstimation {
-  private inMemoryIntegrationRepository: InMemoryIntegrationRepository;
+  private integrationRepository: MongoIntegrationRepository;
 
-  constructor(inMemoryIntegrationRepository: InMemoryIntegrationRepository) {
-    this.inMemoryIntegrationRepository = inMemoryIntegrationRepository;
+  constructor(integrationRepository: MongoIntegrationRepository) {
+    this.integrationRepository = integrationRepository;
   }
 
   private async saveEstimation(
-    integration: Integration | undefined,
+    integration: any | undefined,
     issueId: string,
     value: number
   ): Promise<void> {
@@ -31,13 +31,12 @@ class SaveEstimation {
   }
 
   async execute(roomId: string, issueId: string, value: number): Promise<void> {
-    const integration =
-      await this.inMemoryIntegrationRepository.findIntegrationById(roomId);
+    const integrationDoc = await this.integrationRepository.findById(roomId);
 
-    if (!integration) {
+    if (!integrationDoc) {
       throw new Error("Integration not found");
     }
-    await this.saveEstimation(integration, issueId, value);
+    await this.saveEstimation(integrationDoc, issueId, value);
   }
 }
 

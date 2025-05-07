@@ -2,40 +2,41 @@ import { Request, Response } from "express";
 
 import CreateRoom from "../../useCases/CreateRoom";
 import RoomPresenter from "../presenters/RoomPresenter";
-import InMemoryRoomRepository from "../repositories/InMemoryRoomRepository";
+// import InMemoryRoomRepository from "../repositories/InMemoryRoomRepository";
 import ApiRoomPresenter from "../presenters/ApiRoomPresenter";
 import { CreateRoomRequest } from "../../middleware/validationMiddleware";
 import JoinRoom from "../../useCases/JoinRoom";
 import GetAllRooms from "../../useCases/GetAllRooms";
 import EstimateTask from "../../useCases/EstimateTask";
-import Integration from "../../useCases/Integration";
+// import Integration from "../../useCases/AddIntegration";
 import { redisRoomRepository } from "./constants";
 import { RoomRepository } from "../repositories/RoomRepository";
 import { IntegrationRepository } from "../repositories/IntegrationRepository";
 import RedisRoomRepository from "../repositories/RedisRoomRepository";
-import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
-import {
-  ACCESS_TOKEN_TYPES,
-  RequestUser,
-} from "../../infrastructure/auth/types";
+// import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
+import { RequestUser } from "../../infrastructure/auth/types";
 import Session from "../../useCases/Session";
 import LeaveRoom from "../../useCases/LeaveRoom";
+import { MongoRoomRepository } from "../repositories/MongoRoomRepository";
+import MongoIntegrationRepository from "../repositories/MongoIntegrationRepository";
 
 class RoomController {
   private createRoomUseCase;
-  private integrationUseCases;
+  // private integrationUseCases;
   private getAllRoomsUseCase;
   private joinRoomUseCase;
   private roomPresenter;
 
   public constructor(
     roomRepository: RoomRepository,
-    redisRoomRepository: RedisRoomRepository,
     integrationRepository: IntegrationRepository,
     roomPresenter: RoomPresenter
   ) {
-    this.createRoomUseCase = new CreateRoom(roomRepository);
-    this.integrationUseCases = new Integration(integrationRepository);
+    this.createRoomUseCase = new CreateRoom(
+      roomRepository,
+      integrationRepository
+    );
+    // this.integrationUseCases = new Integration(integrationRepository);
     this.getAllRoomsUseCase = new GetAllRooms(roomRepository);
     this.joinRoomUseCase = new JoinRoom(roomRepository, redisRoomRepository);
     this.roomPresenter = roomPresenter;
@@ -49,35 +50,16 @@ class RoomController {
 
     const user = req.user as RequestUser;
     const moderator = user.profile;
+
     try {
-      const room = await this.createRoomUseCase.execute({
-        ...initialData,
-        moderator,
-      });
-      if (initialData.integration) {
-        if (
-          user.accessToken &&
-          user.accessTokenType === ACCESS_TOKEN_TYPES.ATLASSIAN
-        ) {
-          await this.integrationUseCases.addOauth2Integration(
-            room.id,
-            initialData.integration,
-            {
-              accessToken: user?.accessToken,
-              refreshToken: user?.refreshToken,
-            }
-          );
-        } else if (
-          user.accessToken &&
-          user.accessTokenType === ACCESS_TOKEN_TYPES.GOOGLE
-        ) {
-          // assume to work with google oAuth
-          await this.integrationUseCases.addTokenBasedIntegration(room.id, {
-            ...initialData.integration,
-            domainUrl: "https://bishkek.atlassian.net",
-          });
-        }
-      }
+      const room = await this.createRoomUseCase.execute(
+        {
+          ...initialData,
+          moderator,
+        },
+        user
+      );
+
       const roomResponse = this.roomPresenter.presentRoom(room);
       res.status(201).json(roomResponse);
     } catch (error) {
@@ -116,21 +98,19 @@ class RoomController {
   }
 }
 
-const inMemoryRoomRepository = new InMemoryRoomRepository();
+const mongoRoomRepository = new MongoRoomRepository();
 const apiRoomPresenter = new ApiRoomPresenter();
-export const inMemoryIntegrationRepository =
-  new InMemoryIntegrationRepository();
+export const mongoIntegrationRepository = new MongoIntegrationRepository();
 
 export const roomController = new RoomController(
-  inMemoryRoomRepository,
-  redisRoomRepository,
-  inMemoryIntegrationRepository,
+  mongoRoomRepository,
+  mongoIntegrationRepository,
   apiRoomPresenter
 );
 
 export const estimateTask = new EstimateTask(redisRoomRepository);
 export const leaveRoom = new LeaveRoom(
-  inMemoryRoomRepository,
+  mongoRoomRepository,
   redisRoomRepository
 );
 export const session = new Session(redisRoomRepository);

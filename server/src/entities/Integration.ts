@@ -16,6 +16,7 @@ export interface Integration {
   email?: string;
   apiToken?: string;
   accessToken?: string;
+  refreshToken?: string;
   name: string;
   baseUrl?: string;
   // e.g. "ToEstimate", the label of the issue to estimate

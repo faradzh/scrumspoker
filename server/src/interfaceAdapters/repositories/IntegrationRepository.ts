@@ -1,7 +1,8 @@
 import { Integration } from "../../entities/Integration";
+import { IntegrationDocument } from "../../infrastructure/database/mongodb/schemas/IntegrationSchema";
 
 export interface IntegrationRepository {
-  saveIntegration(roomId: string, data: any): Promise<Integration | void>;
-  findIntegrationById(id: string): Promise<Integration | undefined>;
-  deleteIntegration(id: string): Promise<void>;
+  save(data: any): Promise<IntegrationDocument>;
+  findById(id: string): Promise<IntegrationDocument | null>;
+  delete(id: string): Promise<void>;
 }

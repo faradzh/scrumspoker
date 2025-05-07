@@ -1,21 +1,21 @@
 import { Integration } from "../entities/Integration";
 import { Issue, IssueResponse, JiraIssueResponse } from "../entities/types";
 import JiraIssueTransformer from "../interfaceAdapters/presenters/JiraIssueTransformer";
-import InMemoryIntegrationRepository from "../interfaceAdapters/repositories/InMemoryIntegrationRepository";
+import MongoIntegrationRepository from "../interfaceAdapters/repositories/MongoIntegrationRepository";
 import RedisRoomRepository from "../interfaceAdapters/repositories/RedisRoomRepository";
-import { ISSUE_TRANSFORMERS } from "./constants";
+import { ISSUE_TRANSFORMERS, OAUTH2INTEGRATION_CLASSES } from "./constants";
 
 class GetIntegrationIssues {
   constructor(
-    private inMemoryIntegrationRepository: InMemoryIntegrationRepository,
-    private redisRoomRepository: RedisRoomRepository
+    private integrationRepository: MongoIntegrationRepository,
+    private roomRepository: RedisRoomRepository
   ) {
-    this.inMemoryIntegrationRepository = inMemoryIntegrationRepository;
-    this.redisRoomRepository = redisRoomRepository;
+    this.integrationRepository = integrationRepository;
+    this.roomRepository = roomRepository;
   }
 
   private async fetchIssues<T extends keyof IssueResponse>(
-    integration: Integration | undefined
+    integration: any | undefined
   ): Promise<IssueResponse[T]> {
     if (!integration) {
       throw new Error("Integration not found");
@@ -39,14 +39,24 @@ class GetIntegrationIssues {
   public async execute(
     roomId: string
   ): Promise<{ data: Issue[]; domainUrl: string }> {
-    const integration =
-      await this.inMemoryIntegrationRepository.findIntegrationById(roomId);
+    const integrationDoc = await this.integrationRepository.findById(roomId);
+
+    const integration = new OAUTH2INTEGRATION_CLASSES[
+      integrationDoc?.type as keyof typeof OAUTH2INTEGRATION_CLASSES
+    ]({
+      accessToken: integrationDoc?.accessToken ?? "",
+      refreshToken: integrationDoc?.refreshToken ?? "",
+      filterLabel: integrationDoc?.filterLabel ?? "",
+      projectName: integrationDoc?.projectName,
+    });
+
+    await integration.fetchAvailableResources();
 
     if (!integration) {
       throw new Error("Integration not found");
     }
 
-    const cachedIssues = await this.redisRoomRepository.findIntegrationIssues(
+    const cachedIssues = await this.roomRepository.findIntegrationIssues(
       roomId
     );
 
@@ -61,6 +71,8 @@ class GetIntegrationIssues {
       integration
     )) as JiraIssueResponse;
 
+    console.log("Fetched data", fetchedData);
+
     const TransformerClass = ISSUE_TRANSFORMERS[integration.id];
 
     if (!TransformerClass) {
@@ -71,7 +83,7 @@ class GetIntegrationIssues {
 
     const issues = issueTransformer.transform(fetchedData);
 
-    this.redisRoomRepository.saveIntegrationIssues(roomId, issues);
+    this.roomRepository.saveIntegrationIssues(roomId, issues);
 
     return { data: issues, domainUrl: integration.domainUrl };
   }
