@@ -1,5 +1,6 @@
 import Room from "../../entities/Room";
 import { User } from "../../entities/types";
+import { RequestUser } from "../../infrastructure/auth/types";
 import { Estimation } from "../../types";
 
 export interface RoomRepository {
@@ -12,6 +13,7 @@ export interface RoomRepository {
   ): Promise<void>;
   joinRoom?(room: Room): Promise<Room>;
   findRoomById?(roomId: string): Promise<Room | undefined>;
+  findRefreshToken?(user: RequestUser): Promise<string | undefined | null>;
   deleteRoom?(roomId: string): Promise<void>;
   getAllRooms?(): Promise<Room[]>;
   addEstimate?(roomId: string, estimation: Estimation): Promise<void>;

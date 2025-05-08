@@ -54,12 +54,14 @@ class CreateRoom {
       return null;
     }
 
+    const refreshToken = await this.roomRepository.findRefreshToken?.(user);
+
     switch (user.accessTokenType) {
       case ACCESS_TOKEN_TYPES.ATLASSIAN:
-        return await this.handleAtlassianIntegration(
-          integration,
-          user.accessToken
-        );
+        return await this.handleAtlassianIntegration(user, integration, {
+          accessToken: user.accessToken,
+          refreshToken,
+        });
       case ACCESS_TOKEN_TYPES.GOOGLE:
         // Google integration is commented out in original code
         // return await this.handleGoogleIntegration(integration, user.accessToken);
@@ -73,15 +75,21 @@ class CreateRoom {
    * Handles Atlassian-specific integration
    */
   private async handleAtlassianIntegration(
+    user: RequestUser,
     integration: Integration,
-    accessToken: string
+    {
+      accessToken,
+      refreshToken,
+    }: { accessToken: string; refreshToken: string | undefined | null }
   ): Promise<string | null> {
     const oauth2Integration = this.buildOauth2Integration({
       ...integration,
       accessToken,
+      refreshToken,
     });
 
     const integrationDocument = await this.saveOauth2Integration(
+      user,
       oauth2Integration
     );
     return integrationDocument?._id || null;
@@ -131,6 +139,7 @@ class CreateRoom {
     });
 
     if (response.status !== 200) {
+      console.log("Failed Token", integration.accessToken);
       throw new Error("The integration connection test failed!");
     }
 
@@ -153,11 +162,13 @@ class CreateRoom {
   }
 
   public buildOauth2Integration(integrationData: any) {
-    const { id, accessToken, filterLabel, projectName } = integrationData;
+    const { id, accessToken, refreshToken, filterLabel, projectName } =
+      integrationData;
     const integration = new OAUTH2INTEGRATION_CLASSES[
       id as IntegrationTypeEnum
     ]({
       accessToken,
+      refreshToken,
       filterLabel,
       projectName,
     });
@@ -180,33 +191,50 @@ class CreateRoom {
   }
 
   public async requestNewAccessToken(
-    integration: JiraOauthIntegration,
-    refreshToken: string
+    user: RequestUser,
+    integration: JiraOauthIntegration
   ) {
-    refresh.requestNewAccessToken(
-      "atlassian",
-      refreshToken,
-      async function (err, accessToken, refreshToken) {
-        if (err) {
-          console.error("Refresh failed:", err);
-          return;
+    return new Promise((resolve, reject) => {
+      refresh.requestNewAccessToken(
+        "atlassian",
+        integration.refreshToken!,
+        async (err, accessToken, refreshToken) => {
+          if (err) {
+            console.error("Refresh failed:", err);
+            reject(err);
+          }
+          console.log("Token refreshed:", accessToken);
+          if (accessToken) {
+            integration.refreshAccessToken(accessToken, refreshToken);
+            if (refreshToken) {
+              this.updateRefreshToken(user, { refreshToken });
+            }
+            await integration.fetchAvailableResources();
+            resolve(integration);
+          }
         }
-        console.log("Token refreshed:", accessToken);
-        if (accessToken) {
-          integration.refreshAccessToken(accessToken, refreshToken);
-          await integration.fetchAvailableResources();
-        }
-      }
+      );
+    });
+  }
+
+  private async updateRefreshToken(
+    user: RequestUser,
+    { refreshToken }: { refreshToken: string }
+  ) {
+    await UserModel.findOneAndUpdate(
+      { id: user.profile.id },
+      { $set: { refreshToken } }
     );
   }
 
   public async saveOauth2Integration(
+    user: RequestUser,
     integration: JiraOauthIntegration
   ): Promise<IntegrationDocument> {
     const resources = await integration.fetchAvailableResources();
 
     if (resources.code === 401) {
-      this.requestNewAccessToken(integration, "refreshToken");
+      await this.requestNewAccessToken(user, integration);
     }
 
     await this.test(integration);

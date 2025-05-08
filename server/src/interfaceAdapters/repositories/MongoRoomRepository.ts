@@ -1,8 +1,11 @@
+import UserModel from "../../infrastructure/database/mongodb/schemas/UserSchema";
+
 import Room from "../../entities/Room";
 import { RoomRepository } from "./RoomRepository";
 import RoomModel from "../../infrastructure/database/mongodb/schemas/RoomSchema";
 import { EstimationMethod } from "../../entities/types";
 import { RoomData } from "../../types";
+import { RequestUser } from "../../infrastructure/auth/types";
 
 export class MongoRoomRepository implements RoomRepository {
   public async saveRoom(roomData: RoomData): Promise<void> {
@@ -61,5 +64,21 @@ export class MongoRoomRepository implements RoomRepository {
           doc.moderator
         )
     );
+  }
+
+  public findRefreshToken(
+    user: RequestUser
+  ): Promise<string | null | undefined> {
+    return UserModel.findOne({ id: user.profile.id })
+      .then((user) => {
+        if (!user) {
+          throw new Error("User not found");
+        }
+        return user.refreshToken;
+      })
+      .catch((error) => {
+        console.error("Error finding user:", error);
+        throw error;
+      });
   }
 }
