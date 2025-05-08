@@ -2,41 +2,35 @@ import { Request, Response } from "express";
 
 import CreateRoom from "../../useCases/CreateRoom";
 import RoomPresenter from "../presenters/RoomPresenter";
-// import InMemoryRoomRepository from "../repositories/InMemoryRoomRepository";
-import ApiRoomPresenter from "../presenters/ApiRoomPresenter";
 import { CreateRoomRequest } from "../../middleware/validationMiddleware";
 import JoinRoom from "../../useCases/JoinRoom";
 import GetAllRooms from "../../useCases/GetAllRooms";
 import EstimateTask from "../../useCases/EstimateTask";
-// import Integration from "../../useCases/AddIntegration";
-import { redisRoomRepository } from "./constants";
+import {
+  apiRoomPresenter,
+  mongoIntegrationRepository,
+  mongoRoomRepository,
+  redisRoomRepository,
+} from "./constants";
 import { RoomRepository } from "../repositories/RoomRepository";
-import { IntegrationRepository } from "../repositories/IntegrationRepository";
-import RedisRoomRepository from "../repositories/RedisRoomRepository";
-// import InMemoryIntegrationRepository from "../repositories/InMemoryIntegrationRepository";
 import { RequestUser } from "../../infrastructure/auth/types";
 import Session from "../../useCases/Session";
 import LeaveRoom from "../../useCases/LeaveRoom";
-import { MongoRoomRepository } from "../repositories/MongoRoomRepository";
-import MongoIntegrationRepository from "../repositories/MongoIntegrationRepository";
 
 class RoomController {
   private createRoomUseCase;
-  // private integrationUseCases;
   private getAllRoomsUseCase;
   private joinRoomUseCase;
   private roomPresenter;
 
   public constructor(
     roomRepository: RoomRepository,
-    integrationRepository: IntegrationRepository,
     roomPresenter: RoomPresenter
   ) {
     this.createRoomUseCase = new CreateRoom(
       roomRepository,
-      integrationRepository
+      mongoIntegrationRepository
     );
-    // this.integrationUseCases = new Integration(integrationRepository);
     this.getAllRoomsUseCase = new GetAllRooms(roomRepository);
     this.joinRoomUseCase = new JoinRoom(roomRepository, redisRoomRepository);
     this.roomPresenter = roomPresenter;
@@ -46,7 +40,7 @@ class RoomController {
     req: CreateRoomRequest,
     res: Response
   ): Promise<void> {
-    const initialData = req.validatedBody!;
+    const formData = req.validatedBody!;
 
     const user = req.user as RequestUser;
     const moderator = user.profile;
@@ -54,12 +48,11 @@ class RoomController {
     try {
       const room = await this.createRoomUseCase.execute(
         {
-          ...initialData,
+          ...formData,
           moderator,
         },
         user
       );
-
       const roomResponse = this.roomPresenter.presentRoom(room);
       res.status(201).json(roomResponse);
     } catch (error) {
@@ -98,13 +91,8 @@ class RoomController {
   }
 }
 
-const mongoRoomRepository = new MongoRoomRepository();
-const apiRoomPresenter = new ApiRoomPresenter();
-export const mongoIntegrationRepository = new MongoIntegrationRepository();
-
 export const roomController = new RoomController(
   mongoRoomRepository,
-  mongoIntegrationRepository,
   apiRoomPresenter
 );
 

@@ -1,8 +1,9 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { InferSchemaType, Schema } from "mongoose";
 
 import { IntegrationTypeEnum } from "../../../../useCases/constants";
 
 export interface IntegrationDocument extends Document {
+  _id: string;
   type: IntegrationTypeEnum;
   projectName: string;
   filterLabel: string;
@@ -33,9 +34,7 @@ const IntegrationSchema = new Schema<IntegrationDocument>(
   { timestamps: true }
 );
 
-export const IntegrationModel = mongoose.model<IntegrationDocument>(
+export default mongoose.model<IntegrationDocument>(
   "Integration",
   IntegrationSchema
 );
-
-export default IntegrationSchema;

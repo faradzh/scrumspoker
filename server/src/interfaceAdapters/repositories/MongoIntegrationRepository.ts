@@ -1,10 +1,8 @@
 import { Types } from "mongoose";
 import { Integration } from "../../entities/Integration";
-import {
-  IntegrationDocument,
-  IntegrationModel,
-} from "../../infrastructure/database/mongodb/schemas/IntegrationSchema";
+import { IntegrationDocument } from "../../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import RoomModel from "../../infrastructure/database/mongodb/schemas/RoomSchema";
+import IntegrationModel from "../../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import { IntegrationRepository } from "./IntegrationRepository";
 
 class MongoIntegrationRepository implements IntegrationRepository {

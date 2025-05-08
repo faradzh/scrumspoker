@@ -2,9 +2,8 @@ import { Request, Response } from "express";
 
 import GetAllIssues from "../../useCases/GetAllIssues";
 import ApiIssuePresenter from "../presenters/ApiIssuePresenter";
-import { redisRoomRepository } from "./constants";
+import { mongoIntegrationRepository, redisRoomRepository } from "./constants";
 import SaveEstimation from "../../useCases/SaveEstimation";
-import { mongoIntegrationRepository } from "./RoomController";
 
 class IssueController<I> {
   private getAllIssuesUseCase;

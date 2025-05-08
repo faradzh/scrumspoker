@@ -6,10 +6,15 @@ import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository
 import { RoomData } from "../types";
 import { ACCESS_TOKEN_TYPES, RequestUser } from "../infrastructure/auth/types";
 
-import { IntegrationTypeEnum, OAUTH2INTEGRATION_CLASSES } from "./constants";
+import {
+  INTEGRATION_CLASSES,
+  IntegrationTypeEnum,
+  OAUTH2INTEGRATION_CLASSES,
+} from "./constants";
 import { IntegrationDocument } from "../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import { IntegrationRepository } from "../interfaceAdapters/repositories/IntegrationRepository";
 import JiraOauthIntegration from "../entities/JiraOauthIntegration";
+import { Integration } from "../entities/Integration";
 
 class CreateRoom {
   private roomRepository;
@@ -23,53 +28,95 @@ class CreateRoom {
     this.integrationRepository = integrationRepository;
   }
 
-  public async execute(
-    initialData: RoomData,
-    user: RequestUser
-  ): Promise<Room> {
+  public async execute(data: RoomData, user: RequestUser): Promise<Room> {
     const roomId = uuidv4();
-    let integrationDocument: IntegrationDocument | null = null;
 
-    if (initialData.integration) {
-      // TODO: add access token type check
-      if (user.accessToken) {
-        const integration = this.buildOauth2Integration({
-          ...initialData.integration,
-          accessToken: user.accessToken,
-        });
-        integrationDocument = await this.saveOauth2Integration(integration);
-      } else if (
-        user.accessToken &&
-        user.accessTokenType === ACCESS_TOKEN_TYPES.GOOGLE
-      ) {
-        // // assume to work with google oAuth
-        // await this.addTokenBasedIntegration(room.id, {
-        //   ...initialData.integration,
-        //   domainUrl: "https://bishkek.atlassian.net",
-        // });
-      }
+    // Handle integration separately
+    const integrationId = await this.handleIntegration(data.integration, user);
+
+    // Create new room instance
+    const newRoom = this.createRoomInstance(roomId, data);
+
+    // Prepare and save room data
+    await this.saveRoomData(roomId, data, integrationId);
+
+    return newRoom;
+  }
+
+  /**
+   * Handles integration based on user token type
+   */
+  private async handleIntegration(
+    integration: Integration | undefined,
+    user: RequestUser
+  ): Promise<string | null> {
+    if (!integration || !user.accessToken) {
+      return null;
     }
 
-    const newRoom = new Room(
-      roomId,
-      initialData.name,
-      initialData.estimationMethod,
-      [],
-      [],
-      null,
-      { ...initialData.moderator!, online: true }
-    );
+    switch (user.accessTokenType) {
+      case ACCESS_TOKEN_TYPES.ATLASSIAN:
+        return await this.handleAtlassianIntegration(
+          integration,
+          user.accessToken
+        );
+      case ACCESS_TOKEN_TYPES.GOOGLE:
+        // Google integration is commented out in original code
+        // return await this.handleGoogleIntegration(integration, user.accessToken);
+        return null;
+      default:
+        return null;
+    }
+  }
 
+  /**
+   * Handles Atlassian-specific integration
+   */
+  private async handleAtlassianIntegration(
+    integration: Integration,
+    accessToken: string
+  ): Promise<string | null> {
+    const oauth2Integration = this.buildOauth2Integration({
+      ...integration,
+      accessToken,
+    });
+
+    const integrationDocument = await this.saveOauth2Integration(
+      oauth2Integration
+    );
+    return integrationDocument?._id || null;
+  }
+
+  /**
+   * Creates a room instance with provided data
+   */
+  private createRoomInstance(roomId: string, data: RoomData): Room {
+    return new Room(
+      roomId,
+      data.name,
+      data.estimationMethod,
+      [], // Empty array for initial state
+      [], // Empty array for initial state
+      null,
+      { ...data.moderator!, online: true }
+    );
+  }
+
+  /**
+   * Prepares and saves room data to repository
+   */
+  private async saveRoomData(
+    roomId: string,
+    data: RoomData,
+    integrationId: string | null
+  ): Promise<void> {
     const roomData = {
-      ...initialData,
+      ...data,
       id: roomId,
-      // @ts-ignore
-      integration: integrationDocument?._id,
+      integration: integrationId,
     };
 
     await this.roomRepository.saveRoom?.(roomData);
-
-    return newRoom;
   }
 
   public async test(integration: any): Promise<Response> {
@@ -90,20 +137,20 @@ class CreateRoom {
     return response;
   }
 
-  // public buildTokenBasedIntegration(integrationData: any) {
-  //   const { id, email, domainUrl, apiToken, filterLabel, projectName } =
-  //     integrationData;
+  public buildTokenBasedIntegration(integrationData: any) {
+    const { id, email, domainUrl, apiToken, filterLabel, projectName } =
+      integrationData;
 
-  //   const integration = new INTEGRATION_CLASSES[id as IntegrationTypeEnum]({
-  //     email,
-  //     domainUrl,
-  //     apiToken,
-  //     filterLabel,
-  //     projectName,
-  //   });
+    const integration = new INTEGRATION_CLASSES[id as IntegrationTypeEnum]({
+      email,
+      domainUrl,
+      apiToken,
+      filterLabel,
+      projectName,
+    });
 
-  //   return integration;
-  // }
+    return integration;
+  }
 
   public buildOauth2Integration(integrationData: any) {
     const { id, accessToken, filterLabel, projectName } = integrationData;
@@ -117,18 +164,20 @@ class CreateRoom {
     return integration;
   }
 
-  // public async addTokenBasedIntegration(
-  //   roomId: string,
-  //   data: any
-  // ): Promise<Response> {
-  //   const integration = this.buildTokenBasedIntegration(data);
+  public async saveTokenBasedIntegration(
+    roomId: string,
+    data: any
+  ): Promise<Response> {
+    const integration = this.buildTokenBasedIntegration(data);
 
-  //   const response = await this.test(integration);
+    const response = await this.test(integration);
 
-  //   // this.save(integration);
+    await this.test(integration);
 
-  //   return response;
-  // }
+    await this.integrationRepository.save(integration);
+
+    return response;
+  }
 
   public async requestNewAccessToken(
     integration: JiraOauthIntegration,
