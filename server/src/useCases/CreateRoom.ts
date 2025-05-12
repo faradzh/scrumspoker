@@ -5,6 +5,7 @@ import Room from "../entities/Room";
 import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
 import { RoomData } from "../types";
 import { ACCESS_TOKEN_TYPES, RequestUser } from "../infrastructure/auth/types";
+import UserModel from "../infrastructure/database/mongodb/schemas/UserSchema";
 
 import {
   INTEGRATION_CLASSES,
