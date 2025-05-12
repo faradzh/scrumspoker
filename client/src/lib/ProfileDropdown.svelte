@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { logout } from "../services/userService";
   import { currentUser } from "../store";
+  import { getAbbreviation } from "./utils";
 
     let isOpen = $state(false);
     let button: HTMLButtonElement | null = null;
@@ -32,7 +33,14 @@
     <button bind:this={button} type="button" class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
         <span class="absolute -inset-1.5"></span>
         <span class="sr-only">Open user menu</span>
-        <img class="size-8 rounded-full" src={$currentUser.picture} alt="">
+        <!-- <img class=" rounded-full" src={$currentUser?.picture} alt=""> -->
+        {#if $currentUser?.picture}
+              <img class="size-8 rounded-full" src={$currentUser.picture} alt="profile avatar"/>
+        {:else}
+            <div class="bg-gray-800 text-neutral-content size-8 rounded-full items-center">
+                <span class="text-2xl">{getAbbreviation($currentUser?.name)}</span>
+            </div>
+        {/if}
     </button>
 </div>
 

@@ -14,6 +14,7 @@ passport.serializeUser((user: any, done) => {
   done(null, {
     profile: {
       id: user.profile.id,
+      name: user.profile.name,
       picture: user.profile.picture,
     },
     accessToken: user.accessToken,

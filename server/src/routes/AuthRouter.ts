@@ -16,7 +16,7 @@ function redirectCallback(req: Request, res: Response) {
 
 authRouter.get(
   "/google",
-  passport.authenticate("google", { scope: ["email"] })
+  passport.authenticate("google", { scope: ["email", "profile"] })
 );
 
 authRouter.get(

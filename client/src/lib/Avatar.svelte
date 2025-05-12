@@ -1,13 +1,7 @@
 <script lang="ts">
-    const {participant, index} = $props();
+  import { getAbbreviation } from "./utils";
 
-    function getAbbreviation(name: string) {
-        const parts = name.trim().split(' ');
-        if (parts.length > 1) {
-            return parts[0][0] + parts[1][0];
-        }
-        return parts[0][0];
-    }
+  const {participant, index} = $props();
 </script>
 <div class={`avatar mb-2 ${participant.online ? 'online' : 'offline'} ${!participant.picture ? 'placeholder' : ''}`}>
     {#if participant.picture}

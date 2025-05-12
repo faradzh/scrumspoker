@@ -105,6 +105,7 @@ api.get("/api/current-user", (req, res) => {
     // Passport attaches the user object to req.user
     res.json({
       id: user.profile.id,
+      name: user.profile.name,
       // @ts-ignore
       picture: user.profile.picture,
       accessTokenType: user.accessTokenType,

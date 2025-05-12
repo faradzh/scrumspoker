@@ -20,6 +20,7 @@ function verifyCallback(
   done(null, {
     profile: {
       id: profile.id,
+      name: profile.displayName,
       picture: profile._json?.picture,
     },
     accessToken,
