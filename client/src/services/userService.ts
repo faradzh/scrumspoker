@@ -6,3 +6,10 @@ export const getCurrentUser = async () => {
     credentials: "include",
   });
 };
+
+export const logout = async () => {
+  return apiClient("POST", "/logout", undefined, {
+    headers: { Accept: "application/json" },
+    credentials: "include",
+  });
+};

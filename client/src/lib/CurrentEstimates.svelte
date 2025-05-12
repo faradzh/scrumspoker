@@ -5,6 +5,7 @@
   import Card from "./Card.svelte";
   import { socket } from "../sockets";
   import { revealHandler } from "./utils";
+  import Avatar from "./Avatar.svelte";
 
     onMount(() => {
         socket.on('reveal', revealHandler);
@@ -26,17 +27,7 @@
     <div class="flex justify-center">
         {#each $participants as participant, index}
             <div class="mr-6 text-center min-w-[80px]">
-                <div class={`avatar mb-2 ${participant.online ? 'online' : 'offline'} ${!participant.picture ? 'placeholder' : ''}`}>
-                    {#if participant.picture}
-                        <div class="w-16 rounded-full">
-                            <img src={participant.picture} alt={`Participant #${index}`} />
-                        </div>
-                    {:else}
-                        <div class="bg-gray-800 text-neutral-content w-16 rounded-full">
-                            <span class="text-xl">AI</span>
-                        </div>
-                    {/if}
-                </div>
+                <Avatar participant={participant} index={index} />
                 <span class="block mb-2 font-semibold min-h-6 w-20 overflow-hidden whitespace-nowrap text-ellipsis text-center">
                     {getFirstName(participant)}
                 </span>

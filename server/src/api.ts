@@ -84,6 +84,17 @@ api.post("/login", (req, res) => {
   return res.redirect(redirectUrl);
 });
 
+api.post("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error("Error during logout:", err);
+      return res.status(500).json({ error: "Logout failed" });
+    }
+    res.status(200).json({ message: "Logged out successfully" });
+  });
+  req.session = null;
+});
+
 api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
 });
