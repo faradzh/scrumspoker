@@ -8,6 +8,12 @@ export const getRoomData = async () => {
   });
 };
 
+export const fetchRooms = async () => {
+  return apiClient("GET", "/rooms", undefined, {
+    credentials: "include",
+  });
+};
+
 export const fetchIssues = async () => {
   const roomId = location.pathname.split("/").pop();
   return apiClient("GET", `/issues?roomId=${roomId}`, undefined, {

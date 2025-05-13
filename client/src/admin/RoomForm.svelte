@@ -1,7 +1,7 @@
 <script lang="ts">
     import { INTEGRATION_NAMES } from "./constants";
     import Input from "./Input.svelte";
-    import Select from "./Select.svelte";
+    // import Select from "./Select.svelte";
     let {formRef = $bindable(), values, errors, onSubmit, onIntegrationInput} = $props<{onIntegrationInput?: any}>();
 </script>
 
@@ -10,15 +10,15 @@
     <div class="mb-4">
         <Input id="name" label="Name" placeholder="Enter room name" bind:value={values.name} error={errors.name} />
     </div>
-    <div class="mb-4">
+    <!-- <div class="mb-4">
         <Input id="maxParticipants" label="Maximum Participants" type="number" value="5" min="1" />
-    </div>
-    <div class="mb-4">
+    </div> -->
+    <!-- <div class="mb-4">
         <Select value={values.estimationMethod} error={errors.estimationMethod} />
-    </div>
+    </div> -->
     <div class="mb-4">
         <div class="label text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-1 pl-0">Integration</div>
-        <input
+        <!-- <input
             type="radio"
             name=""
             aria-label="None"
@@ -26,7 +26,7 @@
             value=""
             checked={!values.integration?.id}
             onchange={onIntegrationInput}
-        />
+        /> -->
         <input
             type="radio"
             name={INTEGRATION_NAMES.JIRA}
@@ -36,7 +36,7 @@
             checked={values.integration?.id === INTEGRATION_NAMES.JIRA}
             onchange={onIntegrationInput}
         />
-        <input
+        <!-- <input
             type="radio"
             name={INTEGRATION_NAMES.ASANA}
             aria-label="Asana"
@@ -44,6 +44,6 @@
             value={INTEGRATION_NAMES.ASANA}
             checked={values.integration?.id === INTEGRATION_NAMES.ASANA}
             onchange={onIntegrationInput}
-        />
+        /> -->
     </div>
 </form>

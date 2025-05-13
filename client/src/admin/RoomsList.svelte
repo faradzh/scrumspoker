@@ -2,14 +2,15 @@
     import { onMount } from "svelte";
     import {rooms} from "../store";
     import RoomCard from "./RoomCard.svelte";
+    import { fetchRooms } from "../services/roomService";
 
-    async function fetchRooms() {
-        const response =  await fetch('/rooms');
-        const data = await response.json();
-        rooms.set(data);
+    async function getData() {
+      const data = await fetchRooms();
+      rooms.set(data);
     }
+    
     onMount(() => {
-        fetchRooms();
+      getData();
     });
 </script>
 
