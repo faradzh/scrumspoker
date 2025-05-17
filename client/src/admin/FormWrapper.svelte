@@ -1,13 +1,11 @@
 <script lang="ts">
-    import { modalStore, rooms } from "../store";
-    import IntegrationForm from "./IntegrationForm.svelte";
-    import FormService from "./FormService.svelte";
-    import RoomForm from "./RoomForm.svelte";
-    import { FORM_BUTTONS, INTEGRATION_NAMES } from "./constants";
+    import { modalStore } from "../store";
+    import { FORM_BUTTONS, formService, INTEGRATION_NAMES } from "./constants";
     import { CreateRoomSchema} from "./validators";
     import { formData } from "./state.svelte";
-    
-    const formService = new FormService([RoomForm, IntegrationForm]);
+
+    const props = $props();
+
     const CurrentForm = $derived(formService.getCurrentPage());
 
     let formErrors = $state({});
@@ -44,17 +42,7 @@
         console.log('formErrors', formErrors);
         return;
       }
-
-      const response = await fetch('/rooms', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-  
-      const room = await response.json();
-      rooms.update((prevRooms) => [...prevRooms, room]);
+      props.onSubmit(formData);
     };
   
     function onAction() {
@@ -101,8 +89,11 @@
         if (formService.isFirstPage() && isIntegrationAdded) {
             return FORM_BUTTONS.NEXT;
         }
+        if (props.buttonLabels?.create) {
+            return props.buttonLabels.create;
+        }
         return FORM_BUTTONS.CREATE
-    })
+    });
 </script>
 
 <CurrentForm bind:formRef values={formData} onSubmit={onSubmit} errors={formErrors} onIntegrationInput={onIntegrationInput} />

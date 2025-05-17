@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import refresh from "passport-oauth2-refresh";
 
 import Room from "../entities/Room";
@@ -12,12 +11,11 @@ import {
   IntegrationTypeEnum,
   OAUTH2INTEGRATION_CLASSES,
 } from "./constants";
-import { IntegrationDocument } from "../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import { IntegrationRepository } from "../interfaceAdapters/repositories/IntegrationRepository";
 import JiraOauthIntegration from "../entities/JiraOauthIntegration";
 import { Integration } from "../entities/Integration";
 
-class CreateRoom {
+class UpdateRoom {
   private roomRepository;
   private integrationRepository;
 
@@ -29,19 +27,16 @@ class CreateRoom {
     this.integrationRepository = integrationRepository;
   }
 
-  public async execute(data: RoomData, user: RequestUser): Promise<Room> {
-    const roomId = uuidv4();
-
+  public async execute(
+    roomId: string,
+    data: RoomData,
+    user: RequestUser
+  ): Promise<Room | undefined> {
     // Handle integration separately
-    const integrationDoc = await this.handleIntegration(data.integration, user);
-
-    // Create new room instance
-    const newRoom = this.createRoomInstance(roomId, data);
+    await this.handleIntegration(data.integration, user);
 
     // Prepare and save room data
-    await this.saveRoomData(roomId, data, integrationDoc?._id!);
-
-    return newRoom;
+    return await this.updateRoomData(roomId, data);
   }
 
   /**
@@ -50,7 +45,7 @@ class CreateRoom {
   private async handleIntegration(
     integration: Integration | undefined,
     user: RequestUser
-  ): Promise<IntegrationDocument | null> {
+  ): Promise<void | null> {
     if (!integration || !user.accessToken) {
       return null;
     }
@@ -82,18 +77,14 @@ class CreateRoom {
       accessToken,
       refreshToken,
     }: { accessToken: string; refreshToken: string | undefined | null }
-  ): Promise<IntegrationDocument | null> {
+  ): Promise<void> {
     const oauth2Integration = this.buildOauth2Integration({
       ...integration,
       accessToken,
       refreshToken,
     });
 
-    const integrationDocument = await this.saveOauth2Integration(
-      user,
-      oauth2Integration
-    );
-    return integrationDocument || null;
+    await this.checkOauth2Integration(user, oauth2Integration);
   }
 
   /**
@@ -114,18 +105,16 @@ class CreateRoom {
   /**
    * Prepares and saves room data to repository
    */
-  private async saveRoomData(
+  private async updateRoomData(
     roomId: string,
-    data: RoomData,
-    integrationId: string | null
-  ): Promise<void> {
+    data: RoomData
+  ): Promise<Room | undefined> {
     const roomData = {
-      ...data,
       id: roomId,
-      integration: integrationId,
+      ...data,
     };
 
-    await this.roomRepository.saveRoom?.(roomData);
+    return await this.roomRepository.updateRoom?.(roomData);
   }
 
   public async test(integration: any): Promise<Response> {
@@ -228,20 +217,20 @@ class CreateRoom {
     );
   }
 
-  public async saveOauth2Integration(
+  public async checkOauth2Integration(
     user: RequestUser,
     integration: JiraOauthIntegration
-  ): Promise<IntegrationDocument> {
+  ): Promise<void> {
     const resources = await integration.fetchAvailableResources();
 
     if (resources.code === 401) {
       await this.requestNewAccessToken(user, integration);
     }
 
-    await this.test(integration);
+    // await this.test(integration);
 
-    return await this.integrationRepository.save(integration);
+    // return await this.integrationRepository.update(integration);
   }
 }
 
-export default CreateRoom;
+export default UpdateRoom;

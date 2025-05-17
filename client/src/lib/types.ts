@@ -26,6 +26,7 @@ export type User = {
 };
 
 export type Room = {
+  id: string;
   name: string;
   estimationMethod: string;
   link: string;

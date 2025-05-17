@@ -27,6 +27,17 @@ class MongoIntegrationRepository implements IntegrationRepository {
     return room?.integration as IntegrationDocument | null;
   }
 
+  public async update(data: Integration): Promise<IntegrationDocument | null> {
+    return await IntegrationModel.findByIdAndUpdate(
+      data.id,
+      {
+        filterLabel: data.filterLabel,
+        projectName: data.projectName,
+      },
+      { new: true, runValidators: true }
+    );
+  }
+
   public async delete(roomId: string): Promise<void> {
     const room = await RoomModel.findById(roomId);
 

@@ -12,10 +12,12 @@ type FormDataType = {
   };
 };
 
-export let formData = $state<FormDataType>({
+export const INITIAL_FORM_DATA: FormDataType = {
   name: "",
   estimationMethod: "fibbonachi",
   integration: {
     id: INTEGRATION_NAMES.JIRA,
   },
-});
+};
+
+export let formData = $state<FormDataType>(INITIAL_FORM_DATA);

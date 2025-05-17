@@ -1,8 +1,27 @@
 <script lang="ts">
-  import { modalStore } from "../store";
+  import { Plus } from "@lucide/svelte";
+  import { modalStore, rooms } from "../store";
+  import FormWrapper from "./FormWrapper.svelte";
+  import { formData, INITIAL_FORM_DATA } from "./state.svelte";
+  import { formService } from "./constants";
+  import { CreateRoomSchema } from "./validators";
+  import { createRoom } from "../services/roomService";
+
+  function resetFormData() {
+    formData.name = INITIAL_FORM_DATA.name;
+    formData.estimationMethod = INITIAL_FORM_DATA.estimationMethod;
+    formData.integration = INITIAL_FORM_DATA.integration;
+  }
+
+  async function onSubmit(formData: FormData) {
+    const newRoom = await createRoom(formData);
+    rooms.update((prevRooms) => [...prevRooms, newRoom]);
+  };
 
   function openModal() {
-    modalStore.update((store) => ({ ...store, isOpen: true }));
+    formService.setCurrentPageIdx(0);
+    resetFormData();
+    modalStore.set({isOpen: true, Content: FormWrapper, props: {onSubmit} });
   }
 </script>
 
@@ -15,17 +34,8 @@
     </div>
 
     <button class="btn btn-primary" onclick={openModal}>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span> 
-        Create Room
-      </span>
+      <Plus size="20" />
+      <span>Create Room</span>
     </button>
   </div>
 </div>

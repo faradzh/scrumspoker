@@ -5,6 +5,8 @@ import { MongoRoomRepository } from "../repositories/MongoRoomRepository";
 import RedisRoomRepository from "../repositories/RedisRoomRepository";
 
 export const redisRoomRepository = new RedisRoomRepository(RedisClient);
-export const mongoRoomRepository = new MongoRoomRepository();
-export const apiRoomPresenter = new ApiRoomPresenter();
 export const mongoIntegrationRepository = new MongoIntegrationRepository();
+export const mongoRoomRepository = new MongoRoomRepository(
+  mongoIntegrationRepository
+);
+export const apiRoomPresenter = new ApiRoomPresenter();

@@ -1,3 +1,4 @@
+import { Integration } from "../../entities/Integration";
 import Room from "../../entities/Room";
 import RoomPresenter, { RoomResponse } from "./RoomPresenter";
 
@@ -13,6 +14,12 @@ class ApiRoomPresenter implements RoomPresenter {
       estimates: room.estimates,
       estimatedIssues: room.estimatedIssues ?? [],
       currentIssue: room.currentIssue,
+      integration: {
+        // @ts-ignore
+        id: room.integration?.type ?? "",
+        filterLabel: room.integration?.filterLabel ?? "",
+        projectName: room.integration?.projectName ?? "",
+      } as Integration,
     };
   }
 }

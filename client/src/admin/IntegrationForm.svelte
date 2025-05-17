@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { currentUser } from "../store";
+//   import { currentUser } from "../store";
 import Input from "./Input.svelte";
-  import SecretField from "./SecretField.svelte";
+//   import SecretField from "./SecretField.svelte";
   
   let {formRef = $bindable(), values, errors, onSubmit} = $props();
 </script>

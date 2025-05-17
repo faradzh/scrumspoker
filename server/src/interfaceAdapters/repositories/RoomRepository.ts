@@ -15,6 +15,7 @@ export interface RoomRepository {
   findRoomById?(roomId: string): Promise<Room | undefined>;
   findRefreshToken?(user: RequestUser): Promise<string | undefined | null>;
   deleteRoom?(roomId: string): Promise<void>;
+  updateRoom?(data: unknown): Promise<Room | undefined>;
   getAllRooms?(): Promise<Room[]>;
   addEstimate?(roomId: string, estimation: Estimation): Promise<void>;
   addEstimateByIssue?(roomId: string, estimation: Estimation): Promise<void>;

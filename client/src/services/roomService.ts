@@ -1,7 +1,13 @@
 import { apiClient } from "./apiClient";
 import ToastService from "./toastService";
 
-export const getRoomData = async () => {
+export const createRoom = async (data: any) => {
+  return apiClient("POST", `/rooms`, data, {
+    credentials: "include",
+  });
+};
+
+export const fetchRoomData = async () => {
   const roomId = location.pathname.split("/").pop();
   return apiClient("GET", `/rooms/${roomId}`, undefined, {
     credentials: "include",
@@ -10,6 +16,19 @@ export const getRoomData = async () => {
 
 export const fetchRooms = async () => {
   return apiClient("GET", "/rooms", undefined, {
+    credentials: "include",
+  });
+};
+
+export const updateRoom = async (data: any) => {
+  const { id } = data;
+  return apiClient("PUT", `/rooms/${id}`, data, {
+    credentials: "include",
+  });
+};
+
+export const deleteRoom = async (id: string) => {
+  return apiClient("DELETE", `/rooms/${id}`, undefined, {
     credentials: "include",
   });
 };

@@ -1,4 +1,5 @@
 import { Estimation } from "../types";
+import { Integration } from "./Integration";
 import { Estimates, EstimationMethod, User } from "./types";
 
 class Room {
@@ -10,6 +11,7 @@ class Room {
   public estimates: Estimates;
   public estimatedIssues: string[];
   public currentIssue: string | null;
+  public integration: Integration | null;
 
   constructor(
     id: string,
@@ -18,7 +20,8 @@ class Room {
     participants: User[] = [],
     estimatedIssues = [],
     currentIssue: any,
-    moderator?: User
+    moderator?: User,
+    integration: Integration | null = null
   ) {
     this.id = id;
     this.name = name;
@@ -28,6 +31,7 @@ class Room {
     this.estimates = {};
     this.estimatedIssues = estimatedIssues;
     this.currentIssue = currentIssue;
+    this.integration = integration;
   }
 
   public addParticipant(participant: User): void {

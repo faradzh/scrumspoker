@@ -1,5 +1,11 @@
 <script lang="ts">
   import { Check, Copy, Link, Settings, Trash } from "@lucide/svelte";
+  import { modalStore, rooms } from "../store";
+  import { formData } from "./state.svelte";
+  import FormWrapper from "./FormWrapper.svelte";
+  import { formService } from "./constants";
+  import DeleteRoomDialog from "./DeleteRoomDialog.svelte";
+  import { updateRoom } from "../services/roomService";
 
     let { room } = $props();
     let copiedToClipboard = $state(false);
@@ -7,7 +13,6 @@
     const origin = window.location.origin;
     const roomLink = `${origin}/join/${room.id}`;
     
-
     function copyToClipboard(text: string) {
         navigator.clipboard.writeText(text)
             .then(() => {
@@ -18,6 +23,36 @@
                 console.error('Failed to copy: ', err);
             });
     }
+
+    function prepopulateFormData() {
+        formData.name = room.name;
+        formData.integration = {
+            id: room.integration.id,
+            filterLabel: room.integration.filterLabel,
+            projectName: room.integration.projectName
+        }
+    }
+
+    async function onSubmit(formData: FormData) {
+        const updatedRoom = await updateRoom({id: room.id, ...formData});
+        rooms.update((prevRooms) => {
+            const index = prevRooms.findIndex(r => r.id === updatedRoom.id);
+            if (index !== -1) {
+                prevRooms[index] = updatedRoom;
+            }
+            return [...prevRooms];
+        });
+    };
+
+    function openEditDialog() {
+        formService.setCurrentPageIdx(0);
+        prepopulateFormData();
+        modalStore.set({ isOpen: true, Content: FormWrapper, props: {buttonLabels: {create: 'Update'}, onSubmit} });
+    }
+
+    function openDeleteDialog() {
+        modalStore.set({ isOpen: true, Content: DeleteRoomDialog, props: {roomId: room.id}});
+    }
 </script>
 
 <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
@@ -26,10 +61,10 @@
             <h3 class="font-medium text-lg text-black">{room.name}</h3>
             <div class="flex space-x-1">
             <button class="p-1 text-gray-500 hover:text-violet-600">
-                <Settings size="16" />
+                <Settings size="16" onclick={openEditDialog}/>
             </button>
             <button class="p-1 text-gray-500 hover:text-red-600">
-                <Trash size="16" />
+                <Trash size="16" onclick={openDeleteDialog}/>
             </button>
             </div> 
         </div>

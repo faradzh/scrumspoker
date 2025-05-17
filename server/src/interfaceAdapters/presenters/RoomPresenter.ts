@@ -1,3 +1,4 @@
+import { Integration } from "../../entities/Integration";
 import { Estimates, User } from "../../entities/types";
 
 interface RoomPresenter {
@@ -14,6 +15,7 @@ export type RoomResponse = {
   estimates?: Estimates;
   estimatedIssues?: string[];
   currentIssue: null | string;
+  integration: Integration | null;
 };
 
 export default RoomPresenter;

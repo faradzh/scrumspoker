@@ -7,41 +7,33 @@
   import { currentUser, rooms } from "../store";
   import Main from "./Main.svelte";
   import BlockHeader from "./BlockHeader.svelte";
-  import FormWrapper from "./FormWrapper.svelte";
   import { queryClient } from "./constants";
-  import { getCurrentUser } from "../services/userService";
+  import { fetchCurrentUser } from "../services/userService";
   import Navbar from "../lib/Navbar.svelte";
+  import { fetchRooms } from "../services/roomService";
+  import ToastWrapper from "../lib/ToastWrapper.svelte";
 
-  async function fetchRooms() {
-    try {
-      const response =  await fetch('/rooms');
-      if (!response.ok) {
-        throw new Error('Failed to fetch rooms');
-      }
-      const data = await response.json();
-      rooms.set(data);
-    } catch (error) {
-      console.error(error);
-    }
+  async function getData() {
+    const user = await fetchCurrentUser();
+    currentUser.set(user)
+
+    const data = await fetchRooms();
+    rooms.set(data);
   }
-
+  
   onMount(() => {
-      fetchRooms();
-      getCurrentUser().then((user) => {
-        currentUser.set(user)}
-      );
+    getData();
   });
 </script>
 
 <Navbar />
-<main class="h-screen overflow-y-hidden px-8">
+<main class="h-screen px-8">
   <QueryClientProvider client={queryClient}>
     <Main>
       <BlockHeader />
       <RoomsList />
     </Main>
-    <Modal>
-      <FormWrapper />
-    </Modal>
+    <Modal />
   </QueryClientProvider>
 </main>
+<ToastWrapper />

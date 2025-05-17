@@ -55,7 +55,17 @@ export const isModerator = derived(
   ($currentUser) => $currentUser?.isModerator
 );
 
-export const modalStore = writable({ isOpen: false });
+interface ModalStore {
+  isOpen: boolean;
+  Content: any;
+  props?: any;
+}
+
+export const modalStore = writable<ModalStore>({
+  isOpen: false,
+  Content: null,
+  props: {},
+});
 
 export const rooms = writable<Room[]>([]);
 

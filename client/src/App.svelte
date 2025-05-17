@@ -10,14 +10,14 @@
   import Stories from "./lib/Stories.svelte";
   import Session from "./lib/Session.svelte";
   import { estimationHandler, onRoomJoin, onRoomLeave } from "./lib/utils";
-  import { getCurrentUser } from "./services/userService";
-  import { getRoomData } from "./services/roomService";
+  import { fetchCurrentUser } from "./services/userService";
+  import { fetchRoomData } from "./services/roomService";
   import ToastWrapper from "./lib/ToastWrapper.svelte";
   import { onStartEstimation } from "./state.svelte";
   
 
   onMount(() => {
-    Promise.all([getCurrentUser(), getRoomData()]).then((values) => {
+    Promise.all([fetchCurrentUser(), fetchRoomData()]).then((values) => {
       const [user, roomData] = values;
 
       currentUser.set(user);

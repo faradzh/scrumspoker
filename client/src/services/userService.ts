@@ -1,6 +1,6 @@
 import { apiClient } from "./apiClient";
 
-export const getCurrentUser = async () => {
+export const fetchCurrentUser = async () => {
   return apiClient("GET", "/api/current-user", undefined, {
     headers: { Accept: "application/json" },
     credentials: "include",
