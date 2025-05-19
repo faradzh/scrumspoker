@@ -7,12 +7,12 @@
   const { roomId } = $props();
 
   function leftButtonClick() {
-    modalStore.update((store) => ({ ...store, isOpen: false }));
+    modalStore.update((store) => ({ ...store, isOpen: false, Content: null }));
   }
 
   async function rightButtonClick() {
     rooms.update((rooms) => rooms.filter((room) => room.id !== roomId));
-    modalStore.update((store) => ({ ...store, isOpen: false }));
+    modalStore.update((store) => ({ ...store, isOpen: false, Content: null, key: Date.now() }));
 
     await deleteRoom(roomId)
         .then(() => {

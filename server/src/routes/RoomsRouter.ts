@@ -1,10 +1,10 @@
 import express from "express";
 
-import { roomController } from "../interfaceAdapters/controllers/RoomController";
 import {
   checkIfIdentified,
   validateRoom,
 } from "../middleware/validationMiddleware";
+import { roomController } from "../interfaceAdapters/controllers/constants";
 
 const roomsRouter = express.Router();
 

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-import { IntegrationUseCase } from "../../types";
-import { Integration as IntegrationI } from "../../entities/Integration";
-import TestIntegration from "../../useCases/TestIntegration";
+import { IntegrationRequestData, IntegrationUseCase } from "../../types";
+import { RequestUser } from "../../infrastructure/auth/types";
+import { testIntegrationUseCase } from "./constants";
 
 class IntegrationController {
   public constructor(private useCase: IntegrationUseCase) {
@@ -10,14 +10,11 @@ class IntegrationController {
   }
 
   public async testIntegrationHandler(req: Request, res: Response) {
+    const user = req.user as RequestUser;
     try {
-      const integrationRequestData = req.body as IntegrationI;
-      const integration = this.useCase.buildTokenBasedIntegration({
-        ...integrationRequestData,
-        domainUrl: "https://bishkek.atlassian.net",
-      });
-      const response = await this.useCase.execute(integration);
-      res.status(response.status).json({ message: response.statusText });
+      const { issues } = await this.useCase.execute(req.body, user);
+
+      res.status(200).json({ issues: { total: issues.length } });
     } catch (error) {
       // @ts-ignore
       res.status(400).json({ message: error.message });
@@ -26,7 +23,7 @@ class IntegrationController {
 }
 
 export const integrationController = new IntegrationController(
-  new TestIntegration()
+  testIntegrationUseCase
 );
 
 export default IntegrationController;

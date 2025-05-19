@@ -17,9 +17,11 @@ export class MongoRoomRepository implements RoomRepository {
   }
 
   public async saveRoom(roomData: RoomData): Promise<void> {
+    // @ts-ignore
     const existing = await RoomModel.findOne({ id: roomData.id });
 
     if (existing) {
+      // @ts-ignore
       await RoomModel.updateOne({ id: roomData.id }, roomData);
     } else {
       try {
@@ -37,6 +39,7 @@ export class MongoRoomRepository implements RoomRepository {
 
     try {
       const updatedRoom = await RoomModel.findOneAndUpdate(
+        // @ts-ignore
         { id: roomData.id },
         {
           $set: {
@@ -51,6 +54,7 @@ export class MongoRoomRepository implements RoomRepository {
       }
 
       const roomWithIntegration = await RoomModel.findOne({
+        // @ts-ignore
         id: roomData.id,
       }).populate("integration");
 
@@ -122,21 +126,5 @@ export class MongoRoomRepository implements RoomRepository {
           doc.integration
         )
     );
-  }
-
-  public findRefreshToken(
-    user: RequestUser
-  ): Promise<string | null | undefined> {
-    return UserModel.findOne({ id: user.profile.id })
-      .then((user) => {
-        if (!user) {
-          throw new Error("User not found");
-        }
-        return user.refreshToken;
-      })
-      .catch((error) => {
-        console.error("Error finding user:", error);
-        throw error;
-      });
   }
 }

@@ -44,6 +44,7 @@ export const validateRoom = (
 ) => {
   try {
     const user = req.user as RequestUser;
+    // @ts-ignore
     req.validatedBody = getRoomSchema({
       accessTokenType: user.accessTokenType,
     }).parse(req.body);

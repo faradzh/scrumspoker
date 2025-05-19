@@ -1,7 +1,7 @@
 <script>
   import ProfileDropdown from "./ProfileDropdown.svelte";
-
 </script>
+
 <nav class="w-full top-0 absolute bg-gray-800 h-40">
   <div class="mx-auto px-2 sm:px-6 lg:px-8">
     <div class="relative flex h-16 items-center justify-between max-w-screen-2xl m-auto px-8">
@@ -35,7 +35,7 @@
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex space-x-4">
             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-            <a href="#" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Moderation</a>
+            <!-- <a href="#" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Moderation</a> -->
           </div>
         </div>
       </div>

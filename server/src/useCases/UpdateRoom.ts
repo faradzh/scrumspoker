@@ -33,7 +33,7 @@ class UpdateRoom {
     user: RequestUser
   ): Promise<Room | undefined> {
     // Handle integration separately
-    await this.handleIntegration(data.integration, user);
+    await this.handleIntegration(data.integration as any, user);
 
     // Prepare and save room data
     return await this.updateRoomData(roomId, data);
@@ -50,7 +50,7 @@ class UpdateRoom {
       return null;
     }
 
-    const refreshToken = await this.roomRepository.findRefreshToken?.(user);
+    const refreshToken = "";
 
     switch (user.accessTokenType) {
       case ACCESS_TOKEN_TYPES.ATLASSIAN:
@@ -90,16 +90,16 @@ class UpdateRoom {
   /**
    * Creates a room instance with provided data
    */
-  private createRoomInstance(roomId: string, data: RoomData): Room {
-    return new Room(
-      roomId,
-      data.name,
-      data.estimationMethod,
-      [], // Empty array for initial state
-      [], // Empty array for initial state
-      null,
-      { ...data.moderator!, online: true }
-    );
+  private createRoomInstance(roomId: string, data: RoomData) {
+    // return new Room(
+    //   roomId,
+    //   data.name,
+    //   data.estimationMethod,
+    //   [], // Empty array for initial state
+    //   [], // Empty array for initial state
+    //   null,
+    //   { ...data.moderator!, online: true }
+    // );
   }
 
   /**
@@ -195,7 +195,7 @@ class UpdateRoom {
           }
           console.log("Token refreshed:", accessToken);
           if (accessToken) {
-            integration.refreshAccessToken(accessToken, refreshToken);
+            // integration.refreshAccessToken(accessToken, refreshToken);
             if (refreshToken) {
               this.updateRefreshToken(user, { refreshToken });
             }

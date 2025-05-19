@@ -1,37 +1,92 @@
-import { INTEGRATION_CLASSES, IntegrationTypeEnum } from "./constants";
+import { Integration } from "../entities/Integration";
+import JiraOauthIntegration from "../entities/JiraOauthIntegration";
+import { RequestUser } from "../infrastructure/auth/types";
+import { IntegrationRequestData } from "../types";
+import { IntegrationTypeEnum, OAUTH2INTEGRATION_CLASSES } from "./constants";
+import GetIntegrationIssues from "./GetAllIssues";
 
 class TestIntegration {
-  public async execute(integration: any): Promise<Response> {
-    const headers = {
-      Authorization: integration.getAuthorizationHeader(),
-      "Content-Type": "application/json",
-    };
-
-    // test if integration setup is a success
-    const response = await fetch(integration.getMyselfUrl(), {
-      headers,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("The integration connection test failed!");
-    }
-
-    return response;
+  constructor(
+    private userRepository: any,
+    private issuesUseCase: GetIntegrationIssues
+  ) {
+    this.issuesUseCase = issuesUseCase;
+    this.userRepository = userRepository;
   }
 
-  public buildTokenBasedIntegration(integrationData: any) {
-    const { id, email, domainUrl, apiToken, filterLabel, projectName } =
-      integrationData;
+  public async execute(
+    data: IntegrationRequestData,
+    user: RequestUser
+  ): Promise<any> {
+    const refreshToken = await this.userRepository.findRefreshToken?.(user);
 
-    const integration = new INTEGRATION_CLASSES[id as IntegrationTypeEnum]({
-      email,
-      domainUrl,
-      apiToken,
+    const integration = this.buildIntegration({
+      accessToken: user.accessToken,
+      refreshToken,
+      ...data,
+    });
+
+    // update integration properties, e.g. cloudId, domainUrl and accessToken with refreshToken, if needed
+    await this.updateResourceAttributes(
+      user,
+      integration as JiraOauthIntegration
+    );
+
+    const issues = await this.issuesUseCase.fetchIssues(
+      integration as JiraOauthIntegration
+    );
+
+    return issues;
+  }
+
+  public buildIntegration(
+    data: IntegrationRequestData & { accessToken: string; refreshToken: string }
+  ): Integration {
+    const { id, accessToken, refreshToken, filterLabel, projectName } = data;
+    const integration = new OAUTH2INTEGRATION_CLASSES[
+      id as IntegrationTypeEnum
+    ]({
+      accessToken,
+      refreshToken,
       filterLabel,
       projectName,
     });
-
     return integration;
+  }
+
+  public async refreshAccessToken(
+    user: RequestUser,
+    integration: JiraOauthIntegration
+  ) {
+    try {
+      const { accessToken, refreshToken } =
+        await this.userRepository.requestNewAccessToken(
+          integration.refreshToken
+        );
+
+      if (accessToken) {
+        integration.accessToken = accessToken;
+      }
+
+      if (refreshToken) {
+        integration.refreshToken = refreshToken;
+        this.userRepository.updateRefreshToken(user, refreshToken);
+      }
+    } catch (error) {
+      throw new Error("Failed to refresh access token");
+    }
+  }
+
+  public async updateResourceAttributes(
+    user: RequestUser,
+    integration: JiraOauthIntegration
+  ): Promise<void> {
+    const resources = await integration.fetchAvailableResources();
+
+    if (resources.code === 401) {
+      await this.refreshAccessToken(user, integration);
+      await integration.fetchAvailableResources();
+    }
   }
 }
 

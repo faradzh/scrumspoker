@@ -3,9 +3,11 @@
   import { modalStore, rooms } from "../store";
   import { formData } from "./state.svelte";
   import FormWrapper from "./FormWrapper.svelte";
-  import { formService } from "./constants";
+  import { formService, queryClient } from "./constants";
   import DeleteRoomDialog from "./DeleteRoomDialog.svelte";
   import { updateRoom } from "../services/roomService";
+  import Toast from "../lib/Toast.svelte";
+  import ToastService from "../services/toastService";
 
     let { room } = $props();
     let copiedToClipboard = $state(false);
@@ -34,24 +36,32 @@
     }
 
     async function onSubmit(formData: FormData) {
-        const updatedRoom = await updateRoom({id: room.id, ...formData});
-        rooms.update((prevRooms) => {
-            const index = prevRooms.findIndex(r => r.id === updatedRoom.id);
-            if (index !== -1) {
-                prevRooms[index] = updatedRoom;
-            }
-            return [...prevRooms];
-        });
+        try {
+            const updatedRoom = await updateRoom({id: room.id, ...formData});
+            rooms.update((prevRooms) => {
+                const index = prevRooms.findIndex(r => r.id === updatedRoom.id);
+                if (index !== -1) {
+                    prevRooms[index] = updatedRoom;
+                }
+                return [...prevRooms];
+            });
+            ToastService.showToast('Room has been updated successfully.', {type: 'success'});
+        } catch (error) {
+            console.error('Error updating room:', error);
+        } finally {
+            modalStore.set({ isOpen: false, key: Date.now() });
+        }
     };
 
     function openEditDialog() {
+        queryClient.removeQueries({ queryKey: ['connectionTest'] });
         formService.setCurrentPageIdx(0);
         prepopulateFormData();
-        modalStore.set({ isOpen: true, Content: FormWrapper, props: {buttonLabels: {create: 'Update'}, onSubmit} });
+        modalStore.set({ isOpen: true, Content: FormWrapper, props: {buttonLabels: {create: 'Update'}, onSubmit}, key: Date.now() });
     }
 
     function openDeleteDialog() {
-        modalStore.set({ isOpen: true, Content: DeleteRoomDialog, props: {roomId: room.id}});
+        modalStore.set({ isOpen: true, Content: DeleteRoomDialog, props: {roomId: room.id}, key: Date.now() });
     }
 </script>
 

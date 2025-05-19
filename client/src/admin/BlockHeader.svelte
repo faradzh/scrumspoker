@@ -3,8 +3,7 @@
   import { modalStore, rooms } from "../store";
   import FormWrapper from "./FormWrapper.svelte";
   import { formData, INITIAL_FORM_DATA } from "./state.svelte";
-  import { formService } from "./constants";
-  import { CreateRoomSchema } from "./validators";
+  import { formService, queryClient } from "./constants";
   import { createRoom } from "../services/roomService";
 
   function resetFormData() {
@@ -19,9 +18,10 @@
   };
 
   function openModal() {
+    queryClient.removeQueries({ queryKey: ['connectionTest'] });
     formService.setCurrentPageIdx(0);
     resetFormData();
-    modalStore.set({isOpen: true, Content: FormWrapper, props: {onSubmit} });
+    modalStore.set({isOpen: true, Content: FormWrapper, props: {onSubmit}, key: Date.now() });
   }
 </script>
 

@@ -5,17 +5,14 @@ import RoomPresenter from "../presenters/RoomPresenter";
 import { CreateRoomRequest } from "../../middleware/validationMiddleware";
 import JoinRoom from "../../useCases/JoinRoom";
 import GetAllRooms from "../../useCases/GetAllRooms";
-import EstimateTask from "../../useCases/EstimateTask";
 import {
-  apiRoomPresenter,
   mongoIntegrationRepository,
-  mongoRoomRepository,
+  mongoUserRepository,
   redisRoomRepository,
+  testIntegrationUseCase,
 } from "./constants";
 import { RoomRepository } from "../repositories/RoomRepository";
 import { RequestUser } from "../../infrastructure/auth/types";
-import Session from "../../useCases/Session";
-import LeaveRoom from "../../useCases/LeaveRoom";
 import DeleteRoom from "../../useCases/DeleteRoom";
 import UpdateRoom from "../../useCases/UpdateRoom";
 
@@ -33,7 +30,9 @@ class RoomController {
   ) {
     this.createRoomUseCase = new CreateRoom(
       roomRepository,
-      mongoIntegrationRepository
+      mongoIntegrationRepository,
+      mongoUserRepository,
+      testIntegrationUseCase
     );
     this.getAllRoomsUseCase = new GetAllRooms(roomRepository);
     this.joinRoomUseCase = new JoinRoom(roomRepository, redisRoomRepository);
@@ -50,18 +49,10 @@ class RoomController {
     res: Response
   ): Promise<void> {
     const formData = req.validatedBody!;
-
     const user = req.user as RequestUser;
-    const moderator = user.profile;
 
     try {
-      const room = await this.createRoomUseCase.execute(
-        {
-          ...formData,
-          moderator,
-        },
-        user
-      );
+      const room = await this.createRoomUseCase.execute(formData, user);
       const roomResponse = this.roomPresenter.presentRoom(room);
       res.status(201).json(roomResponse);
     } catch (error) {
@@ -125,17 +116,5 @@ class RoomController {
     }
   }
 }
-
-export const roomController = new RoomController(
-  mongoRoomRepository,
-  apiRoomPresenter
-);
-
-export const estimateTask = new EstimateTask(redisRoomRepository);
-export const leaveRoom = new LeaveRoom(
-  mongoRoomRepository,
-  redisRoomRepository
-);
-export const session = new Session(redisRoomRepository);
 
 export default RoomController;

@@ -9,8 +9,8 @@ interface JiraOauthArgs {
 
 class JiraOauthIntegration extends JiraIntegration {
   public accessToken: string;
+  public baseUrl: string = "https://api.atlassian.com";
   private cloudId: string = "";
-  private baseUrl: string = "https://api.atlassian.com";
   public refreshToken?: string;
 
   public constructor({
@@ -45,6 +45,8 @@ class JiraOauthIntegration extends JiraIntegration {
 
     const resources = await response.json();
 
+    console.log("Resources:", resources);
+
     if (resources.length === 1) {
       this.cloudId = resources[0].id;
       this.domainUrl = resources[0].url;
@@ -53,14 +55,6 @@ class JiraOauthIntegration extends JiraIntegration {
     }
 
     return resources;
-  }
-
-  public refreshAccessToken(accessToken: string, refreshToken?: string): void {
-    this.accessToken = accessToken;
-
-    if (refreshToken) {
-      this.refreshToken = refreshToken;
-    }
   }
 
   public getMyselfUrl(): string {

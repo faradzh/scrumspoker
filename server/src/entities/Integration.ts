@@ -1,13 +1,5 @@
 import { IntegrationTypeEnum } from "../useCases/constants";
 
-export interface IntegrationRequestData {
-  id: IntegrationTypeEnum;
-  email: string;
-  apiToken: string;
-  projectName: string;
-  filterLabel: string;
-}
-
 export interface Integration {
   id: IntegrationTypeEnum;
   projectName: string;

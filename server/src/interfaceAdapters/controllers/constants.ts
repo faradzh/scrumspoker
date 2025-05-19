@@ -1,12 +1,41 @@
 import RedisClient from "../../infrastructure/redis/RedisClient";
+import EstimateTask from "../../useCases/EstimateTask";
+import GetAllIssues from "../../useCases/GetAllIssues";
+import LeaveRoom from "../../useCases/LeaveRoom";
+import Session from "../../useCases/Session";
+import TestIntegration from "../../useCases/TestIntegration";
 import ApiRoomPresenter from "../presenters/ApiRoomPresenter";
 import MongoIntegrationRepository from "../repositories/MongoIntegrationRepository";
 import { MongoRoomRepository } from "../repositories/MongoRoomRepository";
+import MongoUserRepository from "../repositories/MongoUserRepository";
 import RedisRoomRepository from "../repositories/RedisRoomRepository";
+import RoomController from "./RoomController";
 
 export const redisRoomRepository = new RedisRoomRepository(RedisClient);
 export const mongoIntegrationRepository = new MongoIntegrationRepository();
 export const mongoRoomRepository = new MongoRoomRepository(
   mongoIntegrationRepository
 );
+export const mongoUserRepository = new MongoUserRepository();
+export const getAllIssuesUseCase = new GetAllIssues(
+  mongoIntegrationRepository,
+  redisRoomRepository
+);
+
+export const testIntegrationUseCase = new TestIntegration(
+  mongoUserRepository,
+  getAllIssuesUseCase
+);
 export const apiRoomPresenter = new ApiRoomPresenter();
+
+export const roomController = new RoomController(
+  mongoRoomRepository,
+  apiRoomPresenter
+);
+
+export const estimateTask = new EstimateTask(redisRoomRepository);
+export const leaveRoom = new LeaveRoom(
+  mongoRoomRepository,
+  redisRoomRepository
+);
+export const session = new Session(redisRoomRepository);

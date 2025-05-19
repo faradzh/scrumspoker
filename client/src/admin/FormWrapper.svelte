@@ -3,6 +3,7 @@
     import { FORM_BUTTONS, formService, INTEGRATION_NAMES } from "./constants";
     import { CreateRoomSchema} from "./validators";
     import { formData } from "./state.svelte";
+  import TestConnectionButton from "./TestConnectionButton.svelte";
 
     const props = $props();
 
@@ -51,7 +52,7 @@
     }
 
     function closeModal() {
-      modalStore.update((store) => ({...store, isOpen: false}));
+      modalStore.update((store) => ({...store, isOpen: false, Content: null, key: Date.now()}));
     }
 
     function onBack() {
@@ -100,6 +101,9 @@
 <div class="modal-action">
     <div class="flex justify-between w-full">
         <button class="btn btn-secondary min-h-10 h-10" onclick={leftButtonClick}>{leftButtonLabel}</button>
+        {#if !formService.isFirstPage() && formData.integration?.filterLabel}
+          <TestConnectionButton />
+        {/if}
         <button class="btn btn-primary min-h-10 h-10" onclick={rightButtonClick}>{rightButtonLabel}</button>
     </div>
 </div>

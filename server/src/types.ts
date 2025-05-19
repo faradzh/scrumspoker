@@ -6,8 +6,19 @@ import JoinRoom from "./useCases/JoinRoom";
 import GetAllRooms from "./useCases/GetAllRooms";
 import GetAllIssues from "./useCases/GetAllIssues";
 import TestIntegration from "./useCases/TestIntegration";
+import { IntegrationTypeEnum } from "./useCases/constants";
 
-export type RoomData = z.infer<any>;
+export interface RoomData {
+  name: string;
+  estimationMethod: typeof EstimationMethodEnum;
+  integration: IntegrationRequestData;
+}
+
+export interface IntegrationRequestData {
+  id: IntegrationTypeEnum;
+  filterLabel: string;
+  projectName: string;
+}
 
 export const EstimationMethodEnum = z.enum([
   "fibbonachi",

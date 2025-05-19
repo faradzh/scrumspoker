@@ -21,7 +21,7 @@ class GetIntegrationIssues {
   /**
    * Fetches issues from the integration API
    */
-  private async fetchIssues<T extends keyof IssueResponse>(
+  public async fetchIssues<T extends keyof IssueResponse>(
     integration: JiraOauthIntegration
   ): Promise<IssueResponse[T]> {
     if (!integration) {
@@ -112,6 +112,7 @@ class GetIntegrationIssues {
     const cachedIssues = await this.roomRepository.findIntegrationIssues(
       roomId
     );
+
     if (cachedIssues.length > 0) {
       return {
         data: cachedIssues,

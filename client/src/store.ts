@@ -57,14 +57,16 @@ export const isModerator = derived(
 
 interface ModalStore {
   isOpen: boolean;
-  Content: any;
+  Content?: any;
   props?: any;
+  key: number;
 }
 
 export const modalStore = writable<ModalStore>({
   isOpen: false,
   Content: null,
   props: {},
+  key: 0,
 });
 
 export const rooms = writable<Room[]>([]);
