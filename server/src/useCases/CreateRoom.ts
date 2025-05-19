@@ -31,13 +31,16 @@ class CreateRoom {
     // Handle integration separately
     // const integration = await this.handleIntegration(data.integration, user);
 
-    const integration = await this.testIntegration.execute(
+    const { integration } = await this.testIntegration.execute(
       data.integration,
       user
     );
 
     // Create new room instance
-    const newRoom = this.createRoomInstance(roomId, data);
+    const newRoom = this.createRoomInstance(roomId, {
+      ...data,
+      moderator: user.profile,
+    });
 
     // Prepare and save room data
     await this.roomRepository.saveRoom?.({
@@ -99,16 +102,11 @@ class CreateRoom {
   /**
    * Creates a room instance with provided data
    */
-  private createRoomInstance(roomId: string, data: RoomData) {
-    // return new Room(
-    //   roomId,
-    //   data.name,
-    //   data.estimationMethod,
-    //   [], // Empty array for initial state
-    //   [], // Empty array for initial state
-    //   null,
-    //   { ...data.moderator!, online: true }
-    // );
+  private createRoomInstance(roomId: string, data: RoomData): Room {
+    return new Room(roomId, data.name, data.estimationMethod, [], [], null, {
+      ...data.moderator,
+      online: true,
+    });
   }
 
   /**

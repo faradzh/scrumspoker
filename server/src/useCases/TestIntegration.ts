@@ -1,5 +1,6 @@
 import { Integration } from "../entities/Integration";
 import JiraOauthIntegration from "../entities/JiraOauthIntegration";
+import { Issue } from "../entities/types";
 import { RequestUser } from "../infrastructure/auth/types";
 import { IntegrationRequestData } from "../types";
 import { IntegrationTypeEnum, OAUTH2INTEGRATION_CLASSES } from "./constants";
@@ -17,7 +18,7 @@ class TestIntegration {
   public async execute(
     data: IntegrationRequestData,
     user: RequestUser
-  ): Promise<any> {
+  ): Promise<{ issues: Issue[]; integration: Integration }> {
     const refreshToken = await this.userRepository.findRefreshToken?.(user);
 
     const integration = this.buildIntegration({
@@ -32,11 +33,15 @@ class TestIntegration {
       integration as JiraOauthIntegration
     );
 
-    const issues = await this.issuesUseCase.fetchIssues(
+    const response = await this.issuesUseCase.fetchIssues(
       integration as JiraOauthIntegration
     );
 
-    return issues;
+    return {
+      // @ts-ignore
+      issues: response.issues,
+      integration,
+    };
   }
 
   public buildIntegration(

@@ -7,11 +7,13 @@ import GetAllRooms from "./useCases/GetAllRooms";
 import GetAllIssues from "./useCases/GetAllIssues";
 import TestIntegration from "./useCases/TestIntegration";
 import { IntegrationTypeEnum } from "./useCases/constants";
+import { EstimationMethod } from "./entities/types";
 
 export interface RoomData {
   name: string;
-  estimationMethod: typeof EstimationMethodEnum;
+  estimationMethod: EstimationMethod;
   integration: IntegrationRequestData;
+  moderator: Profile;
 }
 
 export interface IntegrationRequestData {
