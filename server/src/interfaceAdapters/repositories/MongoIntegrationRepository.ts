@@ -12,8 +12,6 @@ class MongoIntegrationRepository implements IntegrationRepository {
       projectName: data.projectName,
       filterLabel: data.filterLabel,
       domainUrl: data.domainUrl,
-      email: data.email,
-      apiToken: data.apiToken,
       accessToken: data.accessToken,
       refreshToken: data.refreshToken,
     });

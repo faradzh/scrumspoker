@@ -36,10 +36,7 @@ class RoomController {
     );
     this.getAllRoomsUseCase = new GetAllRooms(roomRepository);
     this.joinRoomUseCase = new JoinRoom(roomRepository, redisRoomRepository);
-    this.updateRoomUseCase = new UpdateRoom(
-      roomRepository,
-      mongoIntegrationRepository
-    );
+    this.updateRoomUseCase = new UpdateRoom(roomRepository);
     this.deleteRoomUseCase = new DeleteRoom(roomRepository);
     this.roomPresenter = roomPresenter;
   }
@@ -64,10 +61,9 @@ class RoomController {
   public async updateRoomHandler(req: Request, res: Response): Promise<void> {
     const roomId = req.params.id;
     const formData = req.body;
-    const user = req.user as RequestUser;
 
     try {
-      const room = await this.updateRoomUseCase.execute(roomId, formData, user);
+      const room = await this.updateRoomUseCase.execute(roomId, formData);
       const roomResponse = this.roomPresenter.presentRoom(room);
       res.status(200).json(roomResponse);
     } catch (error) {

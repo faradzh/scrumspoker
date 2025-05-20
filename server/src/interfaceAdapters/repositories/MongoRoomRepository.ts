@@ -1,11 +1,8 @@
-import UserModel from "../../infrastructure/database/mongodb/schemas/UserSchema";
-
 import Room from "../../entities/Room";
 import { RoomRepository } from "./RoomRepository";
 import RoomModel from "../../infrastructure/database/mongodb/schemas/RoomSchema";
 import { EstimationMethod } from "../../entities/types";
 import { RoomData } from "../../types";
-import { RequestUser } from "../../infrastructure/auth/types";
 import mongoose, { mongo } from "mongoose";
 import { IntegrationRepository } from "./IntegrationRepository";
 
@@ -47,20 +44,15 @@ export class MongoRoomRepository implements RoomRepository {
           },
         },
         { new: true, runValidators: true, session }
-      );
+      ).populate("integration");
 
       if (!updatedRoom) {
         throw new Error("Room not found");
       }
 
-      const roomWithIntegration = await RoomModel.findOne({
-        // @ts-ignore
-        id: roomData.id,
-      }).populate("integration");
-
-      this.integrationRepository.update({
+      const updatedIntegration = await this.integrationRepository.update({
         ...roomData.integration,
-        id: roomWithIntegration?.integration?._id,
+        id: updatedRoom?.integration?._id,
       });
 
       await session.commitTransaction();
@@ -74,7 +66,7 @@ export class MongoRoomRepository implements RoomRepository {
         null,
         // @ts-ignore
         updatedRoom.moderator,
-        updatedRoom.integration
+        updatedIntegration
       );
     } catch (error) {
       console.error("Error updating room", error);
