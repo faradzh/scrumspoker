@@ -1,41 +1,87 @@
 <script lang="ts">
     import { createQuery } from '@tanstack/svelte-query';
-    // import { extractErrorMessage } from "./validators";
+    import { Cable, CircleX } from '@lucide/svelte';
     import { testIntegration } from '../services/integrationService';
-    import { formData } from './state.svelte';
-     import { Cable, Check, CircleX } from '@lucide/svelte';
+    import { formData, formStateSinceLastTest } from './state.svelte';
+    import { FORM_BUTTONS, formService, INTEGRATION_NAMES } from './constants';
+    import { modalStore } from '../store';
 
-    // let {id, label, value = $bindable(), type = 'text', placeholder, error, ...rest} = $props();
+    const {formRef, label} = $props();
 
-    // const errorClassName = $derived(error ? 'input-error' : '');
-    // const errorMessage = $derived(extractErrorMessage(error));
+    const isIntegrationAdded = $derived(formData.integration?.id === INTEGRATION_NAMES.JIRA);
 
     const query = createQuery({
         queryKey: ['connectionTest'],
-        queryFn: () => testIntegration({id: formData.integration?.id, filterLabel: formData.integration?.filterLabel, projectName: formData.integration?.projectName}),
+        queryFn: () => testIntegration({
+            id: formData.integration?.id,
+            filterLabel: formData.integration?.filterLabel,
+            projectName: formData.integration?.projectName
+        }).then((response) => {
+            formStateSinceLastTest.modified = false;
+            return response;
+        }),
         enabled: false,
         retry: 1,
         staleTime: Infinity
     });
+    
+    function closeModal() {
+      modalStore.update((store) => ({...store, isOpen: false, Content: null, key: Date.now()}));
+    }
+
+    const triggerFormSubmit = () => {
+      if (formRef) {
+        formRef.requestSubmit(); // Triggers the form's submit event
+      }
+    };
+
+    function onAction() {
+      closeModal();
+      triggerFormSubmit();
+    }
 
     const testConnection = (e: MouseEvent) => {
-        e.preventDefault();
-        $query.refetch();
+      e.preventDefault();
+      $query.refetch();
     };
+
+    function onClick() {
+      if (formService.isFirstPage() && isIntegrationAdded) {
+        formService.nextPage();
+      } else {
+        onAction(); 
+      }
+    }
+
+    const buttonLabel = $derived.by(() => {
+        if (formService.isFirstPage() && isIntegrationAdded) {
+            return FORM_BUTTONS.NEXT;
+        }
+
+        if (label) {
+            return label;
+        }
+        
+        return FORM_BUTTONS.CREATE;
+    });
+
+    const shouldShowTestButton = $derived.by(() => {
+        if (formService.isFirstPage()) {
+            return false;
+        } else if (!$query.isSuccess || formStateSinceLastTest.modified) {
+            return true;
+        }
+        return false;
+    });
 </script>
 
-<!-- <label for={id} class="label text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-1 pl-0">{label}</label> -->
-<!-- <div class="flex space-x-1"> -->
-    <button onclick={testConnection} type="button" class="btn btn-secondary min-h-10 h-10">
+{#if shouldShowTestButton}
+    <button onclick={testConnection} type="button" class="btn btn-primary min-h-10 h-10">
         {#if $query.isFetching}
             <span class="loading loading-spinner h-4 w-4"></span>
         {:else if $query.error}
             <span class="text-[var(--color-error)]">
                 <CircleX class="h-4 w-4" />
-            </span>
-        {:else if $query.isSuccess}
-            <span class="text-[var(--color-success)]">
-                <Check class="h-4 w-4" />
             </span>
         {:else}
             <Cable class="h-4 w-4" />
@@ -44,7 +90,6 @@
             Test
         </span>
     </button>
-<!-- </div> -->
-<!-- {#if error}
-    <p class="text-xs text-red-500 mt-2">{errorMessage}</p>
-{/if} -->
+{:else}
+    <button class="btn btn-primary min-h-10 h-10" onclick={onClick}>{buttonLabel}</button>
+{/if}
