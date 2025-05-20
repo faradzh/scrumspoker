@@ -2,7 +2,7 @@
   import { Plus } from "@lucide/svelte";
   import { modalStore, rooms } from "../store";
   import FormWrapper from "./FormWrapper.svelte";
-  import { formData, INITIAL_FORM_DATA } from "./state.svelte";
+  import { connectionState, formData, INITIAL_FORM_DATA } from "./state.svelte";
   import { formService, queryClient } from "./constants";
   import { createRoom } from "../services/roomService";
 
@@ -19,6 +19,7 @@
 
   function openModal() {
     queryClient.removeQueries({ queryKey: ['connectionTest'] });
+    Object.assign(connectionState, {status: 'idle'});
     formService.setCurrentPageIdx(0);
     resetFormData();
     modalStore.set({isOpen: true, Content: FormWrapper, props: {onSubmit}, key: Date.now() });
