@@ -1,6 +1,10 @@
 <script lang="ts">
+    import { useIsFetching } from "@tanstack/svelte-query";
     import {rooms} from "../store";
     import RoomCard from "./RoomCard.svelte";
+    import RoomCardSkeleton from "./RoomCardSkeleton.svelte";
+
+    const isCreatingNewRoom = useIsFetching({queryKey: ['createRoom']});
 </script>
 
 {#if $rooms.length === 0}
@@ -14,4 +18,7 @@
   {#each $rooms as room}
     <RoomCard room={room} />
   {/each}
+  {#if $isCreatingNewRoom > 0}
+    <RoomCardSkeleton />
+  {/if}
 </div>

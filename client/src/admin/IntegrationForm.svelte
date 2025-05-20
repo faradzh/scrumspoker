@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import { queryClient } from "./constants";
   import Input from "./Input.svelte";
   import { connectionState, formStateSinceLastTest } from "./state.svelte";
+  import queryClient from "./queryClient";
   
   let {formRef = $bindable(), values, errors, onSubmit} = $props();
 

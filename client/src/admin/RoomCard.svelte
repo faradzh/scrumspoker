@@ -3,11 +3,11 @@
   import { formErrors, modalStore, rooms } from "../store";
   import { formData } from "./state.svelte";
   import FormWrapper from "./FormWrapper.svelte";
-  import { formService, queryClient } from "./constants";
+  import { formService } from "./constants";
   import DeleteRoomDialog from "./DeleteRoomDialog.svelte";
   import { updateRoom } from "../services/roomService";
-  import Toast from "../lib/Toast.svelte";
   import ToastService from "../services/toastService";
+  import queryClient from "./queryClient";
 
     let { room } = $props();
     let copiedToClipboard = $state(false);

@@ -3,8 +3,18 @@
   import { modalStore, rooms } from "../store";
   import FormWrapper from "./FormWrapper.svelte";
   import { connectionState, formData, INITIAL_FORM_DATA } from "./state.svelte";
-  import { formService, queryClient } from "./constants";
+  import { formService } from "./constants";
+  import queryClient from "./queryClient";
+  import { createQuery } from "@tanstack/svelte-query";
   import { createRoom } from "../services/roomService";
+
+  export const createRoomQuery = createQuery({
+    queryKey: ["createRoom"],
+    queryFn: () => createRoom(formData),
+    enabled: false,
+    retry: 0,
+    staleTime: Infinity,
+  });
 
   function resetFormData() {
     formData.name = INITIAL_FORM_DATA.name;
@@ -12,9 +22,9 @@
     formData.integration = INITIAL_FORM_DATA.integration;
   }
 
-  async function onSubmit(formData: FormData) {
-    const newRoom = await createRoom(formData);
-    rooms.update((prevRooms) => [...prevRooms, newRoom]);
+  async function onSubmit() {
+    const {data} = await $createRoomQuery.refetch();
+    rooms.update((prevRooms) => [...prevRooms, data]);
   };
 
   function openModal() {

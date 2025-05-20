@@ -7,18 +7,18 @@
   import { currentUser, rooms } from "../store";
   import Main from "./Main.svelte";
   import BlockHeader from "./BlockHeader.svelte";
-  import { queryClient } from "./constants";
   import { fetchCurrentUser } from "../services/userService";
   import Navbar from "../lib/Navbar.svelte";
   import { fetchRooms } from "../services/roomService";
   import ToastWrapper from "../lib/ToastWrapper.svelte";
+  import queryClient from "./queryClient";
 
   async function getData() {
-    const user = await fetchCurrentUser();
-    currentUser.set(user)
-
     const data = await fetchRooms();
     rooms.set(data);
+
+    const user = await fetchCurrentUser();
+    currentUser.set(user)
   }
   
   onMount(() => {
