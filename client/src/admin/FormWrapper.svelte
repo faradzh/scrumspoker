@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { modalStore } from "../store";
+    import { modalStore, formErrors } from "../store";
     import { FORM_BUTTONS, formService, INTEGRATION_NAMES } from "./constants";
     import { CreateRoomSchema} from "./validators";
     import { formData } from "./state.svelte";
@@ -11,8 +11,6 @@
 
     const isIntegrationAdded = $derived(formData.integration?.id === INTEGRATION_NAMES.JIRA);
 
-    let formErrors = $state({});
-  
     let formRef: HTMLFormElement | null = $state(null);
 
     const onIntegrationInput = (event: Event) => {
@@ -33,8 +31,7 @@
       const parsed = CreateRoomSchema.safeParse(formData);
 
       if (!parsed.success) {
-        formErrors = parsed.error.format();
-        console.log('formErrors', formErrors);
+        formErrors.set(parsed.error.format());
         return;
       }
       props.onSubmit(formData);
@@ -64,7 +61,7 @@
     })
 </script>
 
-<CurrentForm bind:formRef values={formData} onSubmit={onSubmit} errors={formErrors} onIntegrationInput={onIntegrationInput} />
+<CurrentForm bind:formRef values={formData} onSubmit={onSubmit} errors={$formErrors} onIntegrationInput={onIntegrationInput} />
 <div class="modal-action">
     <div class="flex justify-between w-full">
         <button class="btn btn-secondary min-h-10 h-10" onclick={leftButtonClick}>{leftButtonLabel}</button>

@@ -4,7 +4,7 @@
     import { testIntegration } from '../services/integrationService';
     import { formData, formStateSinceLastTest } from './state.svelte';
     import { FORM_BUTTONS, formService, INTEGRATION_NAMES } from './constants';
-    import { modalStore } from '../store';
+    import { modalStore, formErrors } from '../store';
 
     const {formRef, label} = $props();
 
@@ -36,12 +36,17 @@
     };
 
     function onAction() {
-      closeModal();
       triggerFormSubmit();
+      console.log('Errors', formErrors);
+      if (Object.keys($formErrors).length) {
+        return;
+      }
+      closeModal();
     }
 
     const testConnection = (e: MouseEvent) => {
       e.preventDefault();
+      formErrors.set({}); // Clear previous errors
       $query.refetch();
     };
 
@@ -68,7 +73,7 @@
     const shouldShowTestButton = $derived.by(() => {
         if (formService.isFirstPage()) {
             return false;
-        } else if (!$query.isSuccess || formStateSinceLastTest.modified) {
+        } else if ((!$query.isSuccess || formStateSinceLastTest.modified) && formData.integration?.filterLabel) {
             return true;
         }
         return false;

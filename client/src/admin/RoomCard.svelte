@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Check, Copy, Link, Settings, Trash } from "@lucide/svelte";
-  import { modalStore, rooms } from "../store";
+  import { formErrors, modalStore, rooms } from "../store";
   import { formData } from "./state.svelte";
   import FormWrapper from "./FormWrapper.svelte";
   import { formService, queryClient } from "./constants";
@@ -54,6 +54,7 @@
     };
 
     function openEditDialog() {
+        formErrors.set({});
         queryClient.removeQueries({ queryKey: ['connectionTest'] });
         formService.setCurrentPageIdx(0);
         prepopulateFormData();

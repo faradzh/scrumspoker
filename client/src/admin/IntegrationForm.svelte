@@ -42,5 +42,4 @@
             {issuesTotal} matching issues
         </div>
     {/if}
-
 </form>

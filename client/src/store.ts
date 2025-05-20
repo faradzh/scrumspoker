@@ -69,6 +69,8 @@ export const modalStore = writable<ModalStore>({
   key: 0,
 });
 
+export let formErrors = writable({});
+
 export const rooms = writable<Room[]>([]);
 
 export const sessionInfo = writable<any>({});
