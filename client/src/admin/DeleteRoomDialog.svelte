@@ -1,8 +1,10 @@
 <script lang="ts">
   import { CircleX } from "@lucide/svelte";
-  import { modalStore, rooms } from "../store";
-  import { deleteRoom, fetchRooms } from "../services/roomService";
+  import { modalStore } from "../store";
+  import { deleteRoom } from "../services/roomService";
   import ToastService from "../services/toastService";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
+  import type { Room } from "../lib/types";
 
   const { roomId } = $props();
 
@@ -10,21 +12,41 @@
     modalStore.update((store) => ({ ...store, isOpen: false, Content: null }));
   }
 
-  async function rightButtonClick() {
-    rooms.update((rooms) => rooms.filter((room) => room.id !== roomId));
-    modalStore.update((store) => ({ ...store, isOpen: false, Content: null, key: Date.now() }));
+  const queryClient = useQueryClient();
 
-    await deleteRoom(roomId)
-        .then(() => {
-            // Handle successful deletion
-            ToastService.showToast("The room was deleted.", {type: "success"});
-        })
-        .catch(async (error) => {
-            const data = await fetchRooms();
-            rooms.set(data);
-            // Handle error
-            console.error("Error deleting room:", error);
-        });
+  const query = createMutation({
+    mutationKey: ['deleteRoom'],
+    mutationFn: () => deleteRoom(roomId),
+    onMutate: async (id: string) => {
+      queryClient.cancelQueries({ queryKey: ['rooms'] });
+
+      const prevRooms = queryClient.getQueryData(['rooms']);
+
+      queryClient.setQueryData(['rooms'], (old: Room[]) => {
+        const oldRooms = old || [];
+        return oldRooms.filter((room) => room.id !== id);
+      });
+
+      return prevRooms;
+    },
+
+    onSuccess: () => {
+        ToastService.showToast("The room was deleted.", {type: "success"});
+    },
+
+    onError: (_, newRoom, context: any) => {
+      queryClient.setQueryData(['rooms'], context.prevRooms);
+      ToastService.showToast("Error deleting the room.", {type: "error"});
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+    },
+  });
+
+  async function rightButtonClick() {
+    modalStore.update((store) => ({ ...store, isOpen: false, Content: null, key: Date.now() }));
+    $query.mutate(roomId);
   }
 </script>
 

@@ -37,7 +37,6 @@
 
     function onAction() {
       triggerFormSubmit();
-      console.log('Errors', formErrors);
       if (Object.keys($formErrors).length) {
         return;
       }

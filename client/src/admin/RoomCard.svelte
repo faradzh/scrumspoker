@@ -1,13 +1,14 @@
 <script lang="ts">
   import { Check, Copy, Link, Settings, Trash } from "@lucide/svelte";
-  import { formErrors, modalStore, rooms } from "../store";
+  import { formErrors, modalStore } from "../store";
   import { formData } from "./state.svelte";
   import FormWrapper from "./FormWrapper.svelte";
   import { formService } from "./constants";
   import DeleteRoomDialog from "./DeleteRoomDialog.svelte";
   import { updateRoom } from "../services/roomService";
   import ToastService from "../services/toastService";
-  import queryClient from "./queryClient";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
+  import type { Room } from "../lib/types";
 
     let { room } = $props();
     let copiedToClipboard = $state(false);
@@ -35,22 +36,39 @@
         }
     }
 
-    async function onSubmit(formData: FormData) {
-        try {
-            const updatedRoom = await updateRoom({id: room.id, ...formData});
-            rooms.update((prevRooms) => {
-                const index = prevRooms.findIndex(r => r.id === updatedRoom.id);
+    const queryClient = useQueryClient();
+
+    const query = createMutation({
+        mutationKey: ['editRoom'],
+        mutationFn: () => updateRoom({id: room.id, ...formData}),
+        onMutate: async () => {
+            queryClient.cancelQueries({ queryKey: ['rooms'] });
+        },
+
+        onSuccess: (updatedRoom: Room) => {
+            ToastService.showToast("The room was updated.", {type: "success"});
+
+            queryClient.setQueryData(['rooms'], (old: Room[]) => {
+                const oldRooms = [...old];
+                const index = oldRooms.findIndex(r => r.id === updatedRoom.id);
                 if (index !== -1) {
-                    prevRooms[index] = updatedRoom;
+                    oldRooms[index] = updatedRoom;
                 }
-                return [...prevRooms];
+                return oldRooms;
             });
-            ToastService.showToast('Room has been updated successfully.', {type: 'success'});
-        } catch (error) {
-            console.error('Error updating room:', error);
-        } finally {
-            modalStore.set({ isOpen: false, key: Date.now() });
-        }
+        },
+
+        onError: (_, newRoom, context: any) => {
+            ToastService.showToast("Error updating the room.", {type: "error"});
+        },
+
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['rooms'] });
+        },
+    });
+
+    async function onSubmit(formData: FormData) {
+        $query.mutate();
     };
 
     function openEditDialog() {

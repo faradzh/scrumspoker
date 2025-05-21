@@ -1,19 +1,38 @@
 <script lang="ts">
   import { Plus } from "@lucide/svelte";
-  import { modalStore, rooms } from "../store";
+  import { modalStore } from "../store";
   import FormWrapper from "./FormWrapper.svelte";
   import { connectionState, formData, INITIAL_FORM_DATA } from "./state.svelte";
   import { formService } from "./constants";
-  import queryClient from "./queryClient";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { createRoom } from "../services/roomService";
 
-  export const createRoomQuery = createQuery({
-    queryKey: ["createRoom"],
-    queryFn: () => createRoom(formData),
-    enabled: false,
-    retry: 0,
-    staleTime: Infinity,
+  const queryClient = useQueryClient();
+
+  export const createRoomMutation = createMutation({
+    mutationKey: ['createRoom'],
+    mutationFn: () => createRoom(formData),
+    onSuccess: async (newRoom) => {
+      console.log('NewRoom:', newRoom);
+      queryClient.cancelQueries({ queryKey: ['rooms'] });
+
+      const prevRooms = queryClient.getQueryData(['rooms']);
+
+      queryClient.setQueryData(['rooms'], (old: []) => {
+        const oldRooms = old || [];
+        return [...oldRooms, newRoom];
+      });
+
+      return prevRooms;
+    },
+
+    onError: (_, newRoom, context: any) => {
+      queryClient.setQueryData(['rooms'], context.prevRooms);
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+    },
   });
 
   function resetFormData() {
@@ -23,8 +42,7 @@
   }
 
   async function onSubmit() {
-    const {data} = await $createRoomQuery.refetch();
-    rooms.update((prevRooms) => [...prevRooms, data]);
+    $createRoomMutation.mutate();
   };
 
   function openModal() {
