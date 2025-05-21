@@ -10,8 +10,11 @@ const redisClient = new Redis({
     return true;
   },
   retryStrategy: (times) => {
-    return Math.min(times * 50, 2000);
+    return Math.min(times * 100, 3000);
   },
+  connectTimeout: 10000,
+  autoResubscribe: true,
+  maxRetriesPerRequest: 5,
 });
 
 redisClient.on("connect", () => {
