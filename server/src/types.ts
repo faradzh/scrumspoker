@@ -10,6 +10,7 @@ import { IntegrationTypeEnum } from "./useCases/constants";
 import { EstimationMethod } from "./entities/types";
 
 export interface RoomData {
+  id?: string;
   name: string;
   estimationMethod: EstimationMethod;
   integration: IntegrationRequestData;

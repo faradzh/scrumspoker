@@ -29,7 +29,7 @@
 {/if}
 
 {#if $query.isSuccess}
-  {#if $query.data.length === 0}
+  {#if $query.data.length === 0 && $isCreatingNewRoom === 0}
     <div class="text-center">
       <img class="max-w-80 m-auto mb-2" src="/no-rooms-data.png" alt="">
       <h3 class="text-[var(--color-text)] text-lg font-bold">No rooms created yet.</h3>

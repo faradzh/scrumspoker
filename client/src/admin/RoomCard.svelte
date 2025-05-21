@@ -21,7 +21,6 @@
         navigator.clipboard.writeText(text)
             .then(() => {
                 copiedToClipboard = true;
-                console.log('Text copied to clipboard');
             })
             .catch(err => {
                 console.error('Failed to copy: ', err);

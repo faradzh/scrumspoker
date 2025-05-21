@@ -17,6 +17,6 @@
     };
 </script>
 
-<div class={`alert text-white rounded-lg ${typeColors[toast.type].join(' ')}`}>
+<div class={`alert rounded-lg ${typeColors[toast.type].join(' ')}`}>
     <span>{toast.message}</span>
 </div>

@@ -6,6 +6,7 @@
   import { formService } from "./constants";
   import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { createRoom } from "../services/roomService";
+  import ToastService from "../services/toastService";
 
   const queryClient = useQueryClient();
 
@@ -13,7 +14,6 @@
     mutationKey: ['createRoom'],
     mutationFn: () => createRoom(formData),
     onSuccess: async (newRoom) => {
-      console.log('NewRoom:', newRoom);
       queryClient.cancelQueries({ queryKey: ['rooms'] });
 
       const prevRooms = queryClient.getQueryData(['rooms']);
@@ -23,10 +23,13 @@
         return [...oldRooms, newRoom];
       });
 
+      ToastService.showToast("The room was created.", {type: "success"});
+
       return prevRooms;
     },
 
     onError: (_, newRoom, context: any) => {
+      ToastService.showToast("Error creating the room.", {type: "error"});
       queryClient.setQueryData(['rooms'], context.prevRooms);
     },
 
