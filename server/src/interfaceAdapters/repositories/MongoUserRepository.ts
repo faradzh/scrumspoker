@@ -4,6 +4,19 @@ import { RequestUser } from "../../infrastructure/auth/types";
 import UserModel from "../../infrastructure/database/mongodb/schemas/UserSchema";
 
 class MongoUserRepository {
+  public async findOrSaveUser(user: { id: string; refreshToken: string }) {
+    const existingUser = await UserModel.findOne({ id: user.id });
+
+    if (!existingUser) {
+      await UserModel.create({
+        id: user.id,
+        refreshToken: user.refreshToken,
+      });
+    } else {
+      return existingUser;
+    }
+  }
+
   public async updateRefreshToken(user: RequestUser, refreshToken: string) {
     await UserModel.findOneAndUpdate(
       { id: user.profile.id },

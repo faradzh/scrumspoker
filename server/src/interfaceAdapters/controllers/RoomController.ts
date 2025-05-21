@@ -85,7 +85,7 @@ class RoomController {
 
   public async getAllRoomsHandler(req: Request, res: Response): Promise<void> {
     const user = req.user as RequestUser;
-    const moderator = user.profile;
+    const moderator = user?.profile;
     try {
       const allRooms = await this.getAllRoomsUseCase.execute(moderator);
       const response = allRooms?.map((room) =>

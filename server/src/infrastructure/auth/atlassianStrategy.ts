@@ -3,7 +3,7 @@ import { Strategy as AtlassianStrategy } from "passport-atlassian-oauth2";
 import refresh from "passport-oauth2-refresh";
 
 import { ACCESS_TOKEN_TYPES } from "./types";
-import UserModel from "../database/mongodb/schemas/UserSchema";
+import { mongoUserRepository } from "../../interfaceAdapters/controllers/constants";
 
 const CALLBACK_URL =
   process.env.NODE_ENV === "production"
@@ -40,16 +40,9 @@ async function verifyCallback(
 
     const userProfile = await response.json();
 
-    UserModel.updateOne(
-      {
-        id: userProfile.account_id,
-      },
-      {
-        $set: { refreshToken },
-      },
-      { upsert: true }
-    ).catch((error) => {
-      console.error("Error creating user:", error);
+    mongoUserRepository.findOrSaveUser({
+      id: userProfile.account_id,
+      refreshToken,
     });
 
     done(null, {

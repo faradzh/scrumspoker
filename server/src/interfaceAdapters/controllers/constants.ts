@@ -13,10 +13,11 @@ import RoomController from "./RoomController";
 
 export const redisRoomRepository = new RedisRoomRepository(RedisClient);
 export const mongoIntegrationRepository = new MongoIntegrationRepository();
-export const mongoRoomRepository = new MongoRoomRepository(
-  mongoIntegrationRepository
-);
 export const mongoUserRepository = new MongoUserRepository();
+export const mongoRoomRepository = new MongoRoomRepository(
+  mongoIntegrationRepository,
+  mongoUserRepository
+);
 export const getAllIssuesUseCase = new GetAllIssues(
   mongoIntegrationRepository,
   redisRoomRepository

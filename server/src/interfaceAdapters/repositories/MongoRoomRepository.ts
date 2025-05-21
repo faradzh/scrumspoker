@@ -3,27 +3,35 @@ import { RoomRepository } from "./RoomRepository";
 import RoomModel from "../../infrastructure/database/mongodb/schemas/RoomSchema";
 import { EstimationMethod } from "../../entities/types";
 import { RoomData } from "../../types";
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import { IntegrationRepository } from "./IntegrationRepository";
+import UserModel from "../../infrastructure/database/mongodb/schemas/UserSchema";
 
 export class MongoRoomRepository implements RoomRepository {
   private integrationRepository;
+  private userRepository;
 
-  constructor(integrationRepository: IntegrationRepository) {
+  constructor(
+    integrationRepository: IntegrationRepository,
+    userRepository: any
+  ) {
     this.integrationRepository = integrationRepository;
+    this.userRepository = userRepository;
   }
 
   public async saveRoom(roomData: RoomData): Promise<void> {
-    // @ts-ignore
-    const existing = await RoomModel.findOne({ id: roomData.id });
+    const { moderator } = roomData;
 
+    const user = await this.userRepository.findOrSaveUser({
+      id: moderator.id,
+    });
+
+    const existing = await RoomModel.findOne({ id: roomData.id });
     if (existing) {
-      // @ts-ignore
       await RoomModel.updateOne({ id: roomData.id }, roomData);
     } else {
       try {
-        console.log("Creating new room with data", roomData);
-        await RoomModel.create(roomData);
+        await RoomModel.create({ ...roomData, moderator: user._id });
       } catch (error) {
         console.error("Error creating room", error);
       }
@@ -36,7 +44,6 @@ export class MongoRoomRepository implements RoomRepository {
 
     try {
       const updatedRoom = await RoomModel.findOneAndUpdate(
-        // @ts-ignore
         { id: roomData.id },
         {
           $set: {
@@ -101,7 +108,9 @@ export class MongoRoomRepository implements RoomRepository {
   }
 
   public async getAllRooms(): Promise<Room[]> {
-    const docs = await RoomModel.find().populate("integration").lean();
+    const docs = await RoomModel.find()
+      .populate(["integration", "moderator"])
+      .lean();
     if (!docs) return [];
 
     return docs.map(
