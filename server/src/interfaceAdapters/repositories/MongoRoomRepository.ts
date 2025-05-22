@@ -85,6 +85,7 @@ export class MongoRoomRepository implements RoomRepository {
   }
 
   public async deleteRoom(roomId: string): Promise<void> {
+    await this.integrationRepository.delete(roomId);
     const deleted = await RoomModel.findOneAndDelete({ id: roomId });
     if (!deleted) {
       throw new Error("The room doesn't exist!");

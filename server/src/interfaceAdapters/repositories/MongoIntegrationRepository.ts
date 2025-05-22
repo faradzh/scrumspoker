@@ -37,7 +37,7 @@ class MongoIntegrationRepository implements IntegrationRepository {
   }
 
   public async delete(roomId: string): Promise<void> {
-    const room = await RoomModel.findById(roomId);
+    const room = await RoomModel.findOne({ id: roomId });
 
     if (!room?.integration) {
       throw new Error("The integration doesn't exist!");
@@ -46,7 +46,6 @@ class MongoIntegrationRepository implements IntegrationRepository {
     const integrationId = room.integration as Types.ObjectId;
 
     await IntegrationModel.findByIdAndDelete(integrationId);
-    await RoomModel.findByIdAndUpdate(roomId, { $unset: { integration: 1 } });
   }
 }
 
