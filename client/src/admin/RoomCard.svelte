@@ -94,7 +94,7 @@
     <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
         <div class="p-4 border-l-4 border-violet-500 hover:bg-violet-50">
             <div class="flex justify-between items-start mb-2">
-                <h3 class="font-medium text-lg text-black">{room.name}</h3>
+                <h3 class="font-medium text-lg text-black w-[70%] text-ellipsis overflow-hidden whitespace-nowrap">{room.name}</h3>
                 <div class="flex space-x-1">
                 <button class="p-1 text-gray-500 hover:text-violet-600">
                     <Settings size="16" onclick={openEditDialog}/>
@@ -122,7 +122,7 @@
                     <Link size="10" />
                 </span>
                 <span class="text-xs w-[85%] text-ellipsis overflow-hidden whitespace-nowrap text-[var(--color-text)]">
-                    <a href={roomLink} class="underline">{roomLink}</a>
+                    <a href={roomLink} target="_blank" class="underline">{roomLink}</a>
                 </span>
                 <button class="p-1 text-gray-500 hover:text-violet-600 ml-auto">
                     {#if copiedToClipboard}

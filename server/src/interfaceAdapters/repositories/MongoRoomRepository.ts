@@ -93,7 +93,9 @@ export class MongoRoomRepository implements RoomRepository {
   }
 
   public async findRoomById(roomId: string): Promise<Room | undefined> {
-    const doc = await RoomModel.findOne<Room>({ id: roomId }).lean();
+    const doc = await RoomModel.findOne<Room>({ id: roomId })
+      .populate("moderator")
+      .lean();
     if (!doc) return;
 
     return new Room(

@@ -4,7 +4,7 @@ import RoomPresenter, { RoomResponse } from "./RoomPresenter";
 
 class ApiRoomPresenter implements RoomPresenter {
   public presentRoom(room: Room): RoomResponse {
-    return {
+    const response = {
       id: room.id,
       name: room?.name ?? "",
       estimationMethod: room?.estimationMethod ?? "",
@@ -14,13 +14,18 @@ class ApiRoomPresenter implements RoomPresenter {
       estimates: room.estimates,
       estimatedIssues: room.estimatedIssues ?? [],
       currentIssue: room.currentIssue,
-      integration: {
+    } as RoomResponse;
+
+    if (room.integration) {
+      response.integration = {
         // @ts-ignore
         id: room.integration?.type ?? "",
         filterLabel: room.integration?.filterLabel ?? "",
         projectName: room.integration?.projectName ?? "",
-      } as Integration,
-    };
+      } as Integration;
+    }
+
+    return response;
   }
 }
 
