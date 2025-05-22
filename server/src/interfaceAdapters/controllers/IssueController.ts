@@ -26,6 +26,7 @@ class IssueController<I> {
       const response = {
         data: list,
         domainUrl: issues.domainUrl,
+        currentIssue: issues.currentIssue,
       };
 
       res.status(200).json(response);

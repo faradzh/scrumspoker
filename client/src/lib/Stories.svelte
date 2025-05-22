@@ -2,23 +2,34 @@
   import { onMount } from "svelte";
   import Story from "./Story.svelte";
   import { fetchIssues } from "../services/roomService";
-  import { currentIssueId, isModerator, issuesStore, setCurrentIssue, setIssues } from "../store";
+  import { currentIssueId, isModerator, issuesStore, setCurrentIssue } from "../store";
   import { socket } from "../sockets";
 
   import type { Issue } from "./types";
   import StoryDetails from "./StoryDetails.svelte";
+  import { createQuery } from "@tanstack/svelte-query";
+  import StorySkeleton from "./StorySkeleton.svelte";
 
   let storiesList: HTMLDivElement;
 
-  async function fetchStories() {
-    const response = await fetchIssues();
-    
-    setIssues(response);
+  const query = createQuery({
+    queryKey: ["issues"],
+    queryFn: fetchIssues,
+    refetchInterval: Infinity,
+  });
 
-    if (!$issuesStore.current) {
-      setCurrentIssue(response.data[0]);
+  const issues: Issue[] = $derived($query.data?.data ?? []);
+
+  $effect(() => {
+    if (issues) {
+      if ($query.data?.currentIssue) {
+        const currentIssue = issues.find((issue: any) => issue.id === $query.data?.currentIssue);
+        currentIssue && setCurrentIssue(currentIssue);
+      } else {
+        setCurrentIssue(issues[0]);
+      }
     }
-  }
+  })
 
   function selectIssueHandler(issue: Issue) {
     if (!$isModerator) {
@@ -33,10 +44,8 @@
   }
 
   onMount(() => {
-    fetchStories();
-
     socket.on('issueSelect', ({id}) => {
-      const issue = $issuesStore.list.find((issue) => issue.id === id);
+      const issue = issues.find((issue) => issue.id === id);
       if (issue) {
         setCurrentIssue(issue);
       }
@@ -58,13 +67,18 @@
         <div class="p-4 h-full">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-950">User Stories</h2>
-                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-sm">{$issuesStore.list.length} stories</span>
+                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-sm">{issues.length} stories</span>
             </div>
               <div bind:this={storiesList} id="stories-list" class="transition-name space-y-2 max-h-[700px] scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                {#if $query.isLoading}
+                  <StorySkeleton />
+                  <StorySkeleton />
+                  <StorySkeleton />
+                {/if}
                 {#if $issuesStore.expandedIssue}
                   <StoryDetails story={$issuesStore.expandedIssue}/>
-                {:else}  
-                  {#each $issuesStore.list as issue}
+                {:else if $query.isSuccess}  
+                  {#each issues as issue}
                     <Story story={issue} onSelect={() => selectIssueHandler(issue)} isSelected={issue.id === $currentIssueId} />
                   {/each}
                 {/if}

@@ -4,14 +4,10 @@ import { Issue } from "../entities/types";
 import { RequestUser } from "../infrastructure/auth/types";
 import { IntegrationRequestData } from "../types";
 import { IntegrationTypeEnum, OAUTH2INTEGRATION_CLASSES } from "./constants";
-import GetIntegrationIssues from "./GetAllIssues";
+import { fetchIssues } from "./shared";
 
 class TestIntegration {
-  constructor(
-    private userRepository: any,
-    private issuesUseCase: GetIntegrationIssues
-  ) {
-    this.issuesUseCase = issuesUseCase;
+  constructor(private userRepository: any) {
     this.userRepository = userRepository;
   }
 
@@ -33,9 +29,7 @@ class TestIntegration {
       integration as JiraOauthIntegration
     );
 
-    const response = await this.issuesUseCase.fetchIssues(
-      integration as JiraOauthIntegration
-    );
+    const response = await fetchIssues(integration as JiraOauthIntegration);
 
     return {
       // @ts-ignore
@@ -75,7 +69,9 @@ class TestIntegration {
 
       if (refreshToken) {
         integration.refreshToken = refreshToken;
-        this.userRepository.updateRefreshToken(user, refreshToken);
+        if (user.profile) {
+          this.userRepository.updateRefreshToken(user, refreshToken);
+        }
       }
     } catch (error) {
       throw new Error("Failed to refresh access token");

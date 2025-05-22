@@ -45,7 +45,10 @@ class JiraOauthIntegration extends JiraIntegration {
 
     const resources = await response.json();
 
+    console.log("Resources:", resources);
+
     if (resources.length === 1) {
+      console.log("DomainUrl:", resources[0].url);
       this.cloudId = resources[0].id;
       this.domainUrl = resources[0].url;
     } else if (resources.length > 1) {

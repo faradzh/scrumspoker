@@ -152,6 +152,10 @@ class RedisRoomRepository implements RoomRepository {
     await this.client.set(`room:${roomId}:currentIssue`, issueId);
   }
 
+  async getCurrentIssue(roomId: string): Promise<string | null> {
+    return await this.client.get(`room:${roomId}:currentIssue`);
+  }
+
   async saveIntegrationIssues(roomId: string, issues: Issue[]): Promise<void> {
     for (const issue of issues) {
       await this.client.rpush(

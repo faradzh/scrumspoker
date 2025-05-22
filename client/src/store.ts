@@ -10,13 +10,11 @@ import {
 export const selectedCards = writable<SelectedCardsByIssue>({});
 
 export const issuesStore = writable<{
-  list: Issue[];
   current: Issue | null;
   domainUrl: string;
   expandedIssue: Issue | null;
   initialColumnWidth: number;
 }>({
-  list: [],
   current: null,
   domainUrl: "",
   expandedIssue: null,

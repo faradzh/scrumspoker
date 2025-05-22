@@ -14,6 +14,8 @@
   import { fetchRoomData } from "./services/roomService";
   import ToastWrapper from "./lib/ToastWrapper.svelte";
   import { onStartEstimation } from "./state.svelte";
+  import { QueryClientProvider } from "@tanstack/svelte-query";
+  import queryClient from "./admin/queryClient";
   
 
   onMount(() => {
@@ -59,13 +61,15 @@
 </script>
 
 <Navbar />
-<main class="bg-gray-50 h-screen overflow-y-hidden">
-  <div class="mx-auto px-8 max-w-screen-2xl h-screen">
-    <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[auto_200px] h-screen">
-      <Stories />
-      <Session />
-      <CardsDeck />
+<QueryClientProvider client={queryClient}>
+  <main class="bg-gray-50 h-screen overflow-y-hidden">
+    <div class="mx-auto px-8 max-w-screen-2xl h-screen">
+      <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[auto_200px] h-screen">
+        <Stories />
+        <Session />
+        <CardsDeck />
+      </div>
     </div>
-  </div>
-</main>
+  </main>
+</QueryClientProvider>
 <ToastWrapper />

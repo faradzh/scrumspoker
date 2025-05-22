@@ -1,5 +1,7 @@
+import { Integration } from "../entities/Integration";
 import JiraOauthIntegration from "../entities/JiraOauthIntegration";
-import { Issue, IssueResponse } from "../entities/types";
+import { Issue, IssueResponse, User } from "../entities/types";
+import { RequestUser } from "../infrastructure/auth/types";
 import { IntegrationDocument } from "../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import MongoIntegrationRepository from "../interfaceAdapters/repositories/MongoIntegrationRepository";
 import RedisRoomRepository from "../interfaceAdapters/repositories/RedisRoomRepository";
@@ -8,45 +10,18 @@ import {
   ISSUE_TRANSFORMERS,
   OAUTH2INTEGRATION_CLASSES,
 } from "./constants";
+import { fetchIssues } from "./shared";
+import TestIntegration from "./TestIntegration";
 
 class GetIntegrationIssues {
   constructor(
     private integrationRepository: MongoIntegrationRepository,
-    private roomRepository: RedisRoomRepository
+    private roomRepository: RedisRoomRepository,
+    private testIntegration: TestIntegration
   ) {
     this.integrationRepository = integrationRepository;
     this.roomRepository = roomRepository;
-  }
-
-  /**
-   * Fetches issues from the integration API
-   */
-  public async fetchIssues<T extends keyof IssueResponse>(
-    integration: JiraOauthIntegration
-  ): Promise<IssueResponse[T]> {
-    if (!integration) {
-      throw new Error("Integration not found");
-    }
-
-    const headers = {
-      Authorization: integration.getAuthorizationHeader(),
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
-
-    const response = await fetch(integration.getSearchUrl(), {
-      method: "POST",
-      headers,
-      body: integration.getSearchBody(),
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch issues: ${response.status} ${response.statusText}`
-      );
-    }
-
-    return await response.json();
+    this.testIntegration = testIntegration;
   }
 
   /**
@@ -98,32 +73,45 @@ class GetIntegrationIssues {
   /**
    * Main execution method to fetch and process issues for a room
    */
-  public async execute(
-    roomId: string
-  ): Promise<{ data: Issue[]; domainUrl: string }> {
+  public async execute(roomId: string): Promise<{
+    data: Issue[];
+    domainUrl: string;
+    currentIssue?: string | null;
+  }> {
     // Fetch integration document
     const integrationDoc = await this.integrationRepository.findById(roomId);
 
     // Create and initialize integration
     const integration = this.createIntegrationFromDocument(integrationDoc);
-    await integration.fetchAvailableResources();
+
+    await this.testIntegration.updateResourceAttributes(
+      { accessToken: integration.accessToken } as RequestUser,
+      integration
+    );
+
+    await this.integrationRepository.update({
+      id: integrationDoc?._id,
+      accessToken: integration.accessToken,
+      refreshToken: integration.refreshToken,
+    } as Integration);
 
     // Check for cached issues first
     const cachedIssues = await this.roomRepository.findIntegrationIssues(
       roomId
     );
 
+    const currentIssue = await this.roomRepository.getCurrentIssue(roomId);
+
     if (cachedIssues.length > 0) {
       return {
         data: cachedIssues,
         domainUrl: integration.domainUrl,
+        currentIssue,
       };
     }
 
     // Fetch new issues if cache is empty
-    const fetchedData = await this.fetchIssues<typeof integration.id>(
-      integration
-    );
+    const fetchedData = await fetchIssues<typeof integration.id>(integration);
 
     // Transform response data into standardized issues
     const issues = this.transformIssues(fetchedData, integration.id);

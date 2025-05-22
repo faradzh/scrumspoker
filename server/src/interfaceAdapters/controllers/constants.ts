@@ -14,19 +14,20 @@ import RoomController from "./RoomController";
 export const redisRoomRepository = new RedisRoomRepository(RedisClient);
 export const mongoIntegrationRepository = new MongoIntegrationRepository();
 export const mongoUserRepository = new MongoUserRepository();
+
 export const mongoRoomRepository = new MongoRoomRepository(
   mongoIntegrationRepository,
   mongoUserRepository
 );
+
+export const testIntegrationUseCase = new TestIntegration(mongoUserRepository);
+
 export const getAllIssuesUseCase = new GetAllIssues(
   mongoIntegrationRepository,
-  redisRoomRepository
+  redisRoomRepository,
+  testIntegrationUseCase
 );
 
-export const testIntegrationUseCase = new TestIntegration(
-  mongoUserRepository,
-  getAllIssuesUseCase
-);
 export const apiRoomPresenter = new ApiRoomPresenter();
 
 export const roomController = new RoomController(

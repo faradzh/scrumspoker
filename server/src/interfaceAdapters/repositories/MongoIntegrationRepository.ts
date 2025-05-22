@@ -31,6 +31,9 @@ class MongoIntegrationRepository implements IntegrationRepository {
       {
         filterLabel: data.filterLabel,
         projectName: data.projectName,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        domainUrl: data.domainUrl,
       },
       { new: true, runValidators: true }
     );

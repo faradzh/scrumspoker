@@ -1,14 +1,6 @@
-import { get } from "svelte/store";
 import { POKER_CARDS } from "./constants";
 import type { Card } from "./lib/types";
-import {
-  currentUser,
-  issuesStore,
-  participants,
-  selectedCards,
-  sessionInfo,
-  setCurrentIssue,
-} from "./store";
+import { currentUser, participants, selectedCards, sessionInfo } from "./store";
 import type { IssueEstimates, UserEstimate } from "./types";
 
 export function getCardByValue(value: number): Card | undefined {
@@ -20,16 +12,6 @@ export async function initRoom(data: any) {
     ...prevUser,
     isModerator: prevUser.id === data.moderatorId,
   }));
-
-  if (data.currentIssue) {
-    const issuesList = get(issuesStore).list;
-    const issue = issuesList.find((issue) => issue.id === data.currentIssue);
-    if (issue) {
-      setCurrentIssue(issue);
-    } else if (issuesList.length) {
-      setCurrentIssue(issuesList[0]);
-    }
-  }
 
   const initialSelectedCards: IssueEstimates = {};
 
