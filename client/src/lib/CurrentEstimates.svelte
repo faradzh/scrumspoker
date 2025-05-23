@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
 
   import { currentIssueId, currentUser, participants, selectedCards } from "../store";
-  import Card from "./Card.svelte";
+  import Card from "./EstimationCard.svelte";
   import { socket } from "../sockets";
   import { revealHandler } from "./utils";
   import Avatar from "./Avatar.svelte";

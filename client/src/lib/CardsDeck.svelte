@@ -1,6 +1,8 @@
 <script lang="ts">
   import { POKER_CARDS } from "../constants";
-  import PokerCard from "./PokerCard.svelte";
+  import { socket } from "../sockets";
+  import BaseCard from "./BaseCard.svelte";
+  import { selectCard } from "./utils";
 </script>
 
 <section class="relative">
@@ -9,7 +11,7 @@
       <h2 class="text-xl font-semibold text-gray-950">Your Estimation</h2>
       <div class="flex overflow-x-auto pt-4 justify-center">
         {#each POKER_CARDS as pokerCard}
-          <PokerCard card={pokerCard} />
+          <BaseCard card={pokerCard} onSelect={() => selectCard(socket, pokerCard)} class="relative cursor-pointer mr-4 h-32 transition-transform duration-200 ease-in-out hover:-translate-y-2 hover:scale-105 hover:shadow-lg will-change-transform backface-hidden" />
         {/each}
       </div>
     </div>
