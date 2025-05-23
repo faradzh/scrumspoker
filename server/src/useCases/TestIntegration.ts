@@ -65,6 +65,9 @@ class TestIntegration {
 
       if (accessToken) {
         integration.accessToken = accessToken;
+        if (user.profile) {
+          this.userRepository.updateAccessToken(user, accessToken);
+        }
       }
 
       if (refreshToken) {

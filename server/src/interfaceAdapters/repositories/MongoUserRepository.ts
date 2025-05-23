@@ -24,6 +24,13 @@ class MongoUserRepository {
     );
   }
 
+  public async updateAccessToken(user: RequestUser, accessToken: string) {
+    await UserModel.findOneAndUpdate(
+      { id: user.profile.id },
+      { $set: { accessToken } }
+    );
+  }
+
   public async requestNewAccessToken(refreshToken: string) {
     return new Promise((resolve, reject) => {
       refresh.requestNewAccessToken(
