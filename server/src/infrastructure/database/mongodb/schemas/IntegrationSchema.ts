@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 import { IntegrationTypeEnum } from "../../../../useCases/constants";
 
@@ -8,6 +8,7 @@ export interface IntegrationDocument extends Document {
   projectName: string;
   filterLabel: string;
   domainUrl: string;
+  cloudId: string;
   email?: string;
   apiToken?: string;
   accessToken?: string;
@@ -26,6 +27,7 @@ const IntegrationSchema = new Schema<IntegrationDocument>(
     projectName: { type: String, required: true },
     filterLabel: { type: String, required: true },
     domainUrl: { type: String, required: true },
+    cloudId: { type: String, required: true },
     email: { type: String },
     apiToken: { type: String },
     accessToken: { type: String },

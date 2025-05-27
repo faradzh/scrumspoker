@@ -24,13 +24,13 @@
 </script>
 
 <div class="mb-4">
-    <div class="flex justify-center">
+    <div class="flex justify-center space-x-4">
         {#each $participants as participant, index}
-            <div class="mr-6 text-center min-w-[80px]">
+            <div class="text-center min-w-[80px]">
                 <Avatar participant={participant} index={index} />
-                <span class="block mb-2 font-semibold min-h-6 w-20 overflow-hidden whitespace-nowrap text-ellipsis text-center">
+                <h2 class="block mx-auto mb-2 font-semibold min-h-6 w-20 overflow-hidden whitespace-nowrap text-ellipsis">
                     {getFirstName(participant)}
-                </span>
+                </h2>
                 {#if $currentIssueId && $selectedCards[$currentIssueId]?.[participant.id]}
                     <Card card={$selectedCards[$currentIssueId][participant.id]} />
                 {/if}

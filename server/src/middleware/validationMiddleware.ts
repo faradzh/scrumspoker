@@ -81,6 +81,10 @@ export const checkIfIdentified = (
     next();
   } else {
     req.session!.returnTo = req.originalUrl;
+    console.log(
+      "Redirecting to login from checkIfIdentified:",
+      req.session!.returnTo
+    );
     return res.redirect("/login");
   }
 };

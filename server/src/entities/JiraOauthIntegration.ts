@@ -5,12 +5,14 @@ interface JiraOauthArgs {
   accessToken: string;
   refreshToken?: string;
   projectName?: string;
+  domainUrl?: string;
+  cloudId?: string;
 }
 
 class JiraOauthIntegration extends JiraIntegration {
   public accessToken: string;
   public baseUrl: string = "https://api.atlassian.com";
-  private cloudId: string = "";
+  public cloudId: string = "";
   public refreshToken?: string;
 
   public constructor({
@@ -18,10 +20,13 @@ class JiraOauthIntegration extends JiraIntegration {
     refreshToken,
     filterLabel,
     projectName,
+    domainUrl = "",
+    cloudId,
   }: JiraOauthArgs) {
-    super({ email: "", domainUrl: "", apiToken: "", filterLabel, projectName });
+    super({ email: "", domainUrl, apiToken: "", filterLabel, projectName });
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
+    this.cloudId = cloudId ?? "";
   }
 
   public getAuthorizationHeader(): string {
