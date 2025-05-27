@@ -90,6 +90,10 @@ class RedisRoomRepository implements RoomRepository {
 
     const estimates = await this.retrieveEstimates(id);
 
+    const revealedIssues = await this.client.smembers(
+      `room:${id}:revealedIssues`
+    );
+
     const estimatedIssues = await this.client.smembers(
       `room:${id}:estimatedIssues`
     );
@@ -107,15 +111,22 @@ class RedisRoomRepository implements RoomRepository {
       metadata.estimationMethod as EstimationMethod,
       participants,
       [],
+      [],
       currentIssue,
       { id: metadata.moderatorId } as User
     );
 
     room.estimates = estimates;
 
+    if (revealedIssues.length) {
+      revealedIssues?.forEach((issueId) => {
+        room.setRevealedIssue(issueId);
+      });
+    }
+
     if (estimatedIssues.length) {
       estimatedIssues?.forEach((issueId) => {
-        room.setEstimatedIssues(issueId);
+        room.setEstimatedIssue(issueId);
       });
     }
 
@@ -145,6 +156,10 @@ class RedisRoomRepository implements RoomRepository {
   }
 
   async revealEstimation(roomId: string, issueId: string): Promise<void> {
+    await this.client.sadd(`room:${roomId}:revealedIssues`, issueId);
+  }
+
+  async addEstimatedIssue(roomId: string, issueId: string): Promise<void> {
     await this.client.sadd(`room:${roomId}:estimatedIssues`, issueId);
   }
 

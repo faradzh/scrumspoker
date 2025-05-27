@@ -1,7 +1,7 @@
 import Room from "../../entities/Room";
 import { RoomRepository } from "./RoomRepository";
 import RoomModel from "../../infrastructure/database/mongodb/schemas/RoomSchema";
-import { EstimationMethod } from "../../entities/types";
+import { EstimationMethod, User } from "../../entities/types";
 import { RoomData } from "../../types";
 import mongoose from "mongoose";
 import { IntegrationRepository } from "./IntegrationRepository";
@@ -70,6 +70,7 @@ export class MongoRoomRepository implements RoomRepository {
         updatedRoom.estimationMethod as EstimationMethod,
         [],
         [],
+        [],
         null,
         // @ts-ignore
         updatedRoom.moderator,
@@ -104,6 +105,7 @@ export class MongoRoomRepository implements RoomRepository {
       doc.estimationMethod as EstimationMethod,
       [],
       [],
+      [],
       null,
       // @ts-ignore
       doc.moderator
@@ -117,15 +119,15 @@ export class MongoRoomRepository implements RoomRepository {
     if (!docs) return [];
 
     return docs.map(
-      (doc) =>
+      (doc: any) =>
         new Room(
           doc.id,
           doc.name,
           doc.estimationMethod as EstimationMethod,
           [],
           [],
+          [],
           null,
-          // @ts-ignore
           doc.moderator,
           doc.integration
         )

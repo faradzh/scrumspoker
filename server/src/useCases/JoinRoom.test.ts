@@ -13,6 +13,7 @@ describe("JoinRoom", () => {
       "fibbonachi",
       [{ id: "1" } as User],
       [],
+      [],
       null
     );
 
@@ -20,9 +21,18 @@ describe("JoinRoom", () => {
 
     const tempRepo = { joinRoom: vi.fn() };
     tempRepo.joinRoom.mockResolvedValue(
-      new Room("1", "New room", "fibbonachi", [{ id: "1" } as User], [], null, {
-        id: "1",
-      } as User)
+      new Room(
+        "1",
+        "New room",
+        "fibbonachi",
+        [{ id: "1" } as User],
+        [],
+        [],
+        null,
+        {
+          id: "1",
+        } as User
+      )
     );
 
     const joinRoom = new JoinRoom(persistedRepo, tempRepo);

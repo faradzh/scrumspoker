@@ -13,6 +13,7 @@ export type RoomResponse = {
   link: string;
   moderatorId: string;
   estimates?: Estimates;
+  revealedIssues?: string[];
   estimatedIssues?: string[];
   currentIssue: null | string;
   integration: Integration | null;

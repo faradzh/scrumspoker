@@ -13,11 +13,13 @@ export const issuesStore = writable<{
   current: Issue | null;
   domainUrl: string;
   expandedIssue: Issue | null;
+  estimated: string[];
   initialColumnWidth: number;
 }>({
   current: null,
   domainUrl: "",
   expandedIssue: null,
+  estimated: [],
   initialColumnWidth: 0,
 });
 

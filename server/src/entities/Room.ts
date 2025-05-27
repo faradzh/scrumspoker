@@ -10,6 +10,7 @@ class Room {
   public moderator;
   public estimates: Estimates;
   public estimatedIssues: string[];
+  public revealedIssues: string[];
   public currentIssue: string | null;
   public integration: Integration | null;
 
@@ -18,6 +19,7 @@ class Room {
     name: string,
     estimationMethod: EstimationMethod,
     participants: User[] = [],
+    revealedIssues = [],
     estimatedIssues = [],
     currentIssue: any,
     moderator?: User,
@@ -29,6 +31,7 @@ class Room {
     this.participants = participants;
     this.moderator = moderator;
     this.estimates = {};
+    this.revealedIssues = revealedIssues;
     this.estimatedIssues = estimatedIssues;
     this.currentIssue = currentIssue;
     this.integration = integration;
@@ -83,7 +86,11 @@ class Room {
     return !!this.estimates[issueId]?.[userId];
   }
 
-  public setEstimatedIssues(issueId: string) {
+  public setRevealedIssue(issueId: string) {
+    this.revealedIssues.push(issueId);
+  }
+
+  public setEstimatedIssue(issueId: string) {
     this.estimatedIssues.push(issueId);
   }
 }

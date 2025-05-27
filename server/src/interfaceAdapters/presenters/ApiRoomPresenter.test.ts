@@ -18,6 +18,7 @@ describe("ApiRoomPresenter", () => {
       roomData.estimationMethod,
       [],
       [],
+      [],
       null
     );
 

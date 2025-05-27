@@ -64,10 +64,19 @@ class CreateRoom {
   }
 
   private createRoomInstance(roomId: string, data: RoomData): Room {
-    return new Room(roomId, data.name, data.estimationMethod, [], [], null, {
-      ...data.moderator,
-      online: true,
-    });
+    return new Room(
+      roomId,
+      data.name,
+      data.estimationMethod,
+      [],
+      [],
+      [],
+      null,
+      {
+        ...data.moderator,
+        online: true,
+      }
+    );
   }
 }
 

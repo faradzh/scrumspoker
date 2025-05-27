@@ -1,21 +1,26 @@
-import { Integration } from "../entities/Integration";
 import JiraOauthIntegration from "../entities/JiraOauthIntegration";
 import { IntegrationDocument } from "../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import MongoIntegrationRepository from "../interfaceAdapters/repositories/MongoIntegrationRepository";
+import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
 import { OAUTH2INTEGRATION_CLASSES } from "./constants";
 
 class SaveEstimation {
   private integrationRepository: MongoIntegrationRepository;
+  private roomRepository: RoomRepository;
 
-  constructor(integrationRepository: MongoIntegrationRepository) {
+  constructor(
+    integrationRepository: MongoIntegrationRepository,
+    roomRepository: RoomRepository
+  ) {
     this.integrationRepository = integrationRepository;
+    this.roomRepository = roomRepository;
   }
 
   private async saveEstimation(
     integration: any | undefined,
     issueId: string,
     value: number
-  ): Promise<void> {
+  ): Promise<{ status: number }> {
     if (!integration) {
       throw new Error("Integration not found");
     }
@@ -26,13 +31,11 @@ class SaveEstimation {
       "Content-Type": "application/json",
     };
 
-    const res = await fetch(integration.getUpdateIssueUrl(issueId), {
+    return await fetch(integration.getUpdateIssueUrl(issueId), {
       method: "PUT",
       headers,
       body: integration.getUpdateIssueBody(value),
     });
-
-    console.log("Result", res);
   }
 
   /**
@@ -71,7 +74,10 @@ class SaveEstimation {
     }
 
     const integration = this.createIntegrationFromDocument(integrationDoc);
-    await this.saveEstimation(integration, issueId, value);
+    const response = await this.saveEstimation(integration, issueId, value);
+    if (response.status === 204) {
+      await this.roomRepository.addEstimatedIssue?.(roomId, issueId);
+    }
   }
 }
 

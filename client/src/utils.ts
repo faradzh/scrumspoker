@@ -1,6 +1,12 @@
 import { POKER_CARDS } from "./constants";
 import type { Card } from "./lib/types";
-import { currentUser, participants, selectedCards, sessionInfo } from "./store";
+import {
+  currentUser,
+  issuesStore,
+  participants,
+  selectedCards,
+  sessionInfo,
+} from "./store";
 import type { IssueEstimates, UserEstimate } from "./types";
 
 export function getCardByValue(value: number): Card | undefined {
@@ -33,18 +39,25 @@ export async function initRoom(data: any) {
 
   selectedCards.set(initialSelectedCards);
 
-  if (data.estimatedIssues?.length) {
-    for (let estimatedIssueId of data.estimatedIssues) {
+  if (data.revealedIssues?.length) {
+    for (let revealedIssueId of data.revealedIssues) {
       sessionInfo.update((prevSession) => {
         return {
           ...prevSession,
-          [estimatedIssueId]: {
+          [revealedIssueId]: {
             cardsAreFlipped: true,
             estimationIsRevealed: true,
           },
         };
       });
     }
+  }
+
+  if (data.estimatedIssues?.length) {
+    issuesStore.update((state) => ({
+      ...state,
+      estimated: data.estimatedIssues,
+    }));
   }
 
   participants.set(data.participants);

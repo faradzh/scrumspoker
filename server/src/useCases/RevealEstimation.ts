@@ -14,7 +14,7 @@ class RevealEstimation {
       throw new Error("Room was not found");
     }
 
-    room.setEstimatedIssues(issueId);
+    room.setRevealedIssue(issueId);
     await this.temporaryRepository.revealEstimation?.(roomId, issueId);
 
     return room;

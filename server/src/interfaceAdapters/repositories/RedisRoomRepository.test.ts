@@ -24,6 +24,7 @@ describe("RedisRoomRepository", () => {
       "fibonacci" as EstimationMethod,
       [{ id: "1" } as User, { id: "2" } as User],
       [],
+      [],
       null,
       { id: "1" } as User
     );
@@ -53,6 +54,7 @@ describe("RedisRoomRepository", () => {
       "fibonacci" as EstimationMethod,
       [{ id: "1", online: true } as User, { id: "2", online: true } as User],
       [],
+      [],
       null,
       { id: "1" } as User
     );
@@ -70,8 +72,10 @@ describe("RedisRoomRepository", () => {
       "fibonacci" as EstimationMethod,
       [{ id: "1", online: true } as User, { id: "2", online: true } as User],
       [],
+      [],
       null,
-      { id: "1" } as User
+      { id: "1" } as User,
+      null
     );
 
     const foundRoom = await redisRoomRepository.joinRoom(roomEntity);

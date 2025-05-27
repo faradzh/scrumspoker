@@ -42,15 +42,10 @@ export const fetchIssues = async () => {
 
 export const updateIssue = async (issueId: string, value: number) => {
   const roomId = location.pathname.split("/").pop();
-  try {
-    await apiClient(
-      "PUT",
-      `/issues/${issueId}?roomId=${roomId}`,
-      { value },
-      { credentials: "include" }
-    );
-    ToastService.showToast("Estimation saved!");
-  } catch (error) {
-    // no-op
-  }
+  await apiClient(
+    "PUT",
+    `/issues/${issueId}?roomId=${roomId}`,
+    { value },
+    { credentials: "include" }
+  );
 };

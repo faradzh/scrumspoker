@@ -12,6 +12,7 @@ class ApiRoomPresenter implements RoomPresenter {
       link: `/rooms/${room?.id}`,
       moderatorId: room?.moderator?.id ?? "",
       estimates: room.estimates,
+      revealedIssues: room.revealedIssues ?? [],
       estimatedIssues: room.estimatedIssues ?? [],
       currentIssue: room.currentIssue,
     } as RoomResponse;
