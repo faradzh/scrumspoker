@@ -3,6 +3,7 @@
   import { updateIssue } from "../services/roomService";
   import { currentIssueId, isModerator, issuesStore, totalEstimate } from "../store";
   import ToastService from "../services/toastService";
+  import { Check } from "@lucide/svelte";
 
   function saveHandler() {
     $query.mutate();
@@ -47,6 +48,8 @@
           <button disabled={saveIsDisabled} onclick={saveHandler} class="flex items-center justify-center gap-x-2 px-4 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition w-full">
             {#if $query.isPending}
               <span class="loading loading-spinner h-4 w-4"></span>
+            {:else if $query.isSuccess || issuesIsEstimated}
+              <Check class="h-4 w-4" />
             {/if}
             {issuesIsEstimated ? "Saved" : "Save"}
           </button>

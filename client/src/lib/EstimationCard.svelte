@@ -38,7 +38,7 @@
 
 </script>
 
-<div class="relative cursor-pointer ">
+<div class="relative cursor-pointer">
   <div class="poker-card--selected" bind:this={cardElement}>
     <div class="front h-32">
       <BaseCard card={{value: shouldBeOpen() ? card.value : undefined, link: shouldBeOpen() ? card.link : "/cover.png"} as Card} />

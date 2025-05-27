@@ -33,7 +33,7 @@
   })
 
   function selectIssueHandler(issue: Issue) {
-    if (!$isModerator) {
+    if (!$isModerator || issue.id === $currentIssueId) {
       return;
     }
     setCurrentIssue(issue);
