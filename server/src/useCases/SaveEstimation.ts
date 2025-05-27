@@ -1,5 +1,8 @@
 import { Integration } from "../entities/Integration";
+import JiraOauthIntegration from "../entities/JiraOauthIntegration";
+import { IntegrationDocument } from "../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import MongoIntegrationRepository from "../interfaceAdapters/repositories/MongoIntegrationRepository";
+import { OAUTH2INTEGRATION_CLASSES } from "./constants";
 
 class SaveEstimation {
   private integrationRepository: MongoIntegrationRepository;
@@ -23,10 +26,40 @@ class SaveEstimation {
       "Content-Type": "application/json",
     };
 
-    await fetch(integration.getUpdateIssueUrl(issueId), {
+    const res = await fetch(integration.getUpdateIssueUrl(issueId), {
       method: "PUT",
       headers,
       body: integration.getUpdateIssueBody(value),
+    });
+
+    console.log("Result", res);
+  }
+
+  /**
+   * Creates an integration instance from a document
+   */
+  private createIntegrationFromDocument(
+    integrationDoc: IntegrationDocument | null
+  ): JiraOauthIntegration {
+    if (!integrationDoc) {
+      throw new Error("Integration document not found");
+    }
+
+    const integrationType =
+      integrationDoc.type as keyof typeof OAUTH2INTEGRATION_CLASSES;
+    const IntegrationClass = OAUTH2INTEGRATION_CLASSES[integrationType];
+
+    if (!IntegrationClass) {
+      throw new Error(`Unsupported integration type: ${integrationType}`);
+    }
+
+    return new IntegrationClass({
+      accessToken: integrationDoc.accessToken ?? "",
+      refreshToken: integrationDoc.refreshToken ?? "",
+      filterLabel: integrationDoc.filterLabel ?? "",
+      projectName: integrationDoc.projectName,
+      domainUrl: integrationDoc.domainUrl,
+      cloudId: integrationDoc.cloudId,
     });
   }
 
@@ -36,7 +69,9 @@ class SaveEstimation {
     if (!integrationDoc) {
       throw new Error("Integration not found");
     }
-    await this.saveEstimation(integrationDoc, issueId, value);
+
+    const integration = this.createIntegrationFromDocument(integrationDoc);
+    await this.saveEstimation(integration, issueId, value);
   }
 }
 

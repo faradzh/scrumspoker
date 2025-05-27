@@ -55,6 +55,10 @@ api.use("/issues", issuesRouter);
 
 api.use("/admin", checkLoggedIn);
 
+api.get("/admin", (_, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
+});
+
 api.use(express.static(path.join(__dirname, "..", "public")));
 
 api.get("/login", (_, res) => {
@@ -93,10 +97,6 @@ api.post("/logout", (req, res) => {
     res.status(200).json({ message: "Logged out successfully" });
   });
   req.session = null;
-});
-
-api.get("/admin", (_, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
 });
 
 api.get("/api/current-user", (req, res) => {

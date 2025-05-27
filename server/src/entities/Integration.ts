@@ -5,6 +5,7 @@ export interface Integration {
   projectName: string;
   filterLabel: string;
   domainUrl: string;
+  cloudId?: string;
   email?: string;
   apiToken?: string;
   accessToken?: string;

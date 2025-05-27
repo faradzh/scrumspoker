@@ -28,6 +28,7 @@
       } else {
         setCurrentIssue(issues[0]);
       }
+      $issuesStore.domainUrl = $query.data?.domainUrl || "";
     }
   })
 

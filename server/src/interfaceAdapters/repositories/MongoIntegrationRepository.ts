@@ -12,6 +12,7 @@ class MongoIntegrationRepository implements IntegrationRepository {
       projectName: data.projectName,
       filterLabel: data.filterLabel,
       domainUrl: data.domainUrl,
+      cloudId: data.cloudId,
       accessToken: data.accessToken,
       refreshToken: data.refreshToken,
     });
@@ -34,6 +35,7 @@ class MongoIntegrationRepository implements IntegrationRepository {
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
         domainUrl: data.domainUrl,
+        cloudId: data.cloudId,
       },
       { new: true, runValidators: true }
     );
