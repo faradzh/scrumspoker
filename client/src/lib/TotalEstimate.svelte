@@ -4,6 +4,9 @@
   import { currentIssueId, isModerator, issuesStore, totalEstimate } from "../store";
   import ToastService from "../services/toastService";
   import { Check } from "@lucide/svelte";
+  import { onMount } from "svelte";
+  import { socket } from "../sockets";
+  import { resetEstimation, resetEstimationHandler } from "./utils";
 
   function saveHandler() {
     $query.mutate();
@@ -31,6 +34,10 @@
     }
   });
 
+  onMount(() => {
+    socket.on('resetEstimation', ({issueId}) => resetEstimationHandler(issueId));
+  });
+
   const issuesIsEstimated = $derived(!!($currentIssueId && $issuesStore.estimated.includes($currentIssueId)));
   const saveIsDisabled = $derived($query.isPending || issuesIsEstimated);
 </script>
@@ -53,7 +60,7 @@
             {/if}
             {issuesIsEstimated ? "Saved" : "Save"}
           </button>
-          <button class="px-4 py-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] rounded-md transition w-full">Reestimate</button>
+          <button onclick={resetEstimation} class="px-4 py-1 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] rounded-md transition w-full">Reestimate</button>
         </div>
         {/if}
     </div> 

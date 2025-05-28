@@ -155,12 +155,27 @@ class RedisRoomRepository implements RoomRepository {
     );
   }
 
+  async removeEstimationByIssue(
+    roomId: string,
+    estimation: Estimation
+  ): Promise<void> {
+    await this.client.del(`estimations:${roomId}:${estimation.issueId}`);
+  }
+
   async revealEstimation(roomId: string, issueId: string): Promise<void> {
     await this.client.sadd(`room:${roomId}:revealedIssues`, issueId);
   }
 
+  async hideEstimation(roomId: string, issueId: string): Promise<void> {
+    await this.client.srem(`room:${roomId}:revealedIssues`, issueId);
+  }
+
   async addEstimatedIssue(roomId: string, issueId: string): Promise<void> {
     await this.client.sadd(`room:${roomId}:estimatedIssues`, issueId);
+  }
+
+  async removeEstimatedIssue(roomId: string, issueId: string): Promise<void> {
+    await this.client.srem(`room:${roomId}:estimatedIssues`, issueId);
   }
 
   async setCurrentIssue(roomId: string, issueId: string): Promise<void> {

@@ -2,6 +2,7 @@ import RedisClient from "../../infrastructure/redis/RedisClient";
 import EstimateTask from "../../useCases/EstimateTask";
 import GetAllIssues from "../../useCases/GetAllIssues";
 import LeaveRoom from "../../useCases/LeaveRoom";
+import ResetEstimation from "../../useCases/ResetEstimation";
 import Session from "../../useCases/Session";
 import TestIntegration from "../../useCases/TestIntegration";
 import ApiRoomPresenter from "../presenters/ApiRoomPresenter";
@@ -22,7 +23,7 @@ export const mongoRoomRepository = new MongoRoomRepository(
 
 export const testIntegrationUseCase = new TestIntegration(mongoUserRepository);
 
-export const getAllIssuesUseCase = new GetAllIssues(
+export const getAllIssues = new GetAllIssues(
   mongoIntegrationRepository,
   redisRoomRepository,
   testIntegrationUseCase
@@ -41,3 +42,4 @@ export const leaveRoom = new LeaveRoom(
   redisRoomRepository
 );
 export const session = new Session(redisRoomRepository);
+export const resetEstimation = new ResetEstimation(redisRoomRepository);

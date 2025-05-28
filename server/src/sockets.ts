@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import {
   estimateTask,
   leaveRoom,
+  resetEstimation,
   session,
 } from "./interfaceAdapters/controllers/constants";
 
@@ -52,6 +53,17 @@ export function listen(io: Server) {
         session.revealEstimation(roomId, issueId);
         socket.to(roomId).emit("reveal");
         callback({ status: "success", message: "The estimation was revealed" });
+      } catch (error: unknown) {
+        // @ts-ignore
+        callback({ status: "error", message: error.message });
+      }
+    });
+
+    socket.on("resetEstimation", ({ issueId }, callback) => {
+      try {
+        resetEstimation.execute(roomId, issueId);
+        socket.to(roomId).emit("resetEstimation", { issueId });
+        callback({ status: "success", message: "The estimation was reset" });
       } catch (error: unknown) {
         // @ts-ignore
         callback({ status: "error", message: error.message });

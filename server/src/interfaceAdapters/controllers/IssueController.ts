@@ -2,19 +2,19 @@ import { Request, Response } from "express";
 
 import ApiIssuePresenter from "../presenters/ApiIssuePresenter";
 import {
-  getAllIssuesUseCase,
+  getAllIssues,
   mongoIntegrationRepository,
   redisRoomRepository,
 } from "./constants";
 import SaveEstimation from "../../useCases/SaveEstimation";
 
 class IssueController<I> {
-  private getAllIssuesUseCase;
-  private saveEstimationUseCase;
+  private getAllIssues;
+  private saveEstimation;
 
   public constructor(private apiIssuePresenter: ApiIssuePresenter) {
-    this.getAllIssuesUseCase = getAllIssuesUseCase;
-    this.saveEstimationUseCase = new SaveEstimation(
+    this.getAllIssues = getAllIssues;
+    this.saveEstimation = new SaveEstimation(
       mongoIntegrationRepository,
       redisRoomRepository
     );
@@ -25,7 +25,7 @@ class IssueController<I> {
     try {
       const roomId = req.query.roomId!.toString();
 
-      const issues = await this.getAllIssuesUseCase.execute(roomId);
+      const issues = await this.getAllIssues.execute(roomId);
       const list = issues.data.map((issue) =>
         this.apiIssuePresenter.presentIssue(issue)
       );
@@ -49,11 +49,7 @@ class IssueController<I> {
       const issueId = req.params.issueId;
       const estimationValue = req.body.value;
 
-      await this.saveEstimationUseCase.execute(
-        roomId,
-        issueId,
-        estimationValue
-      );
+      await this.saveEstimation.execute(roomId, issueId, estimationValue);
 
       res.status(200).json({ message: "Estimation saved" });
     } catch (error) {

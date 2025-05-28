@@ -6,6 +6,7 @@ import {
   cardRefsStore,
   currentIssueId,
   currentUser,
+  issuesStore,
   participants,
   selectedCards,
   sessionInfo,
@@ -13,6 +14,7 @@ import {
 } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
+import { resetTimer } from "../state.svelte";
 
 export function compareLinks(a: Card, b: Card): number {
   if (a.link < b.link) {
@@ -33,13 +35,6 @@ export function flipHandler(targets: HTMLDivElement[], onComplete: () => void) {
     duration: 400,
     complete: onComplete,
   });
-}
-
-export function reEstimateHandler() {
-  // selectedCards.update(() => []);
-  // cardRefsStore.update(() => []);
-  // resetTimer();
-  // totalEstimate.set(0);
 }
 
 export function revealCards() {
@@ -212,4 +207,45 @@ export function getAbbreviation(name?: string) {
     return parts[0][0] + parts[1][0];
   }
   return parts[0][0];
+}
+
+export function resetEstimation() {
+  socket.emit(
+    "resetEstimation",
+    {
+      issueId: get(currentIssueId),
+    },
+    ({ status, message }: { status: string; message: string }) => {
+      if (status === "success") {
+        resetEstimationHandler(get(currentIssueId)!);
+      } else {
+        console.error(message);
+      }
+    }
+  );
+}
+
+export function resetEstimationHandler(issueId: string) {
+  selectedCards.update((cards) => {
+    if (cards[issueId]) {
+      delete cards[issueId];
+    }
+    return cards;
+  });
+  // figure this out
+  cardRefsStore.update((refs) => {
+    return refs.filter((ref) => ref.dataset.issueId !== issueId);
+  });
+  resetTimer();
+  totalEstimate.set(0);
+  sessionInfo.update((info) => {
+    if (issueId) {
+      delete info[issueId];
+    }
+    return info;
+  });
+  issuesStore.update((s) => {
+    s.estimated = s.estimated.filter((id) => id !== issueId);
+    return s;
+  });
 }

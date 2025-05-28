@@ -3,13 +3,7 @@
 
   import { revealCards } from "./utils";
   import { TIMER_INIT } from "../constants";
-  import { timerState } from "../state.svelte";
-
-    function resetTimer(){
-        clearInterval(timerState.interval);
-        timerState.value = TIMER_INIT;
-        timerState.isActive = false;
-    }
+  import { resetTimer, timerState } from "../state.svelte";
 
     $effect(() => {
         if (timerState.value <= 0) {

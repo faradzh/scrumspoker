@@ -36,9 +36,10 @@ export function onStartEstimation() {
   updateTimer();
 }
 
-function resetTimer() {
-  timerState.value = TIMER_INIT;
+export function resetTimer() {
   clearInterval(timerState.interval);
+  timerState.value = TIMER_INIT;
+  timerState.isActive = false;
 }
 
 export type Toast = {

@@ -5,11 +5,11 @@ import { issueController } from "../interfaceAdapters/controllers/IssueControlle
 const issuesRouter = express.Router();
 
 issuesRouter.get("/", async (req, res) => {
-    issueController.getIssuesHandler(req, res);
+  issueController.getIssuesHandler(req, res);
 });
 
 issuesRouter.put("/:issueId", async (req, res) => {
-    issueController.updateIssueHandler(req, res);
+  issueController.updateIssueHandler(req, res);
 });
 
 export default issuesRouter;
