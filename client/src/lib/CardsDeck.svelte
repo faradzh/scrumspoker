@@ -1,8 +1,21 @@
 <script lang="ts">
   import { POKER_CARDS } from "../constants";
   import { socket } from "../sockets";
+  import { currentIssueId, currentUser, selectedCards, sessionInfo } from "../store";
   import BaseCard from "./BaseCard.svelte";
+  import type { Card } from "./types";
   import { selectCard } from "./utils";
+  
+  function onSelect(pokerCard: Card) {
+    if (votingIsDisabled || $currentIssueId && $selectedCards?.[$currentIssueId]?.[$currentUser.id]?.value === pokerCard.value) {
+      return;
+    }
+    selectCard(socket, pokerCard);
+  }
+
+  const votingIsDisabled = $derived($currentIssueId && $sessionInfo[$currentIssueId]);
+
+  const hoverClass = "transition-transform duration-200 ease-in-out hover:-translate-y-2 hover:scale-105 hover:shadow-lg will-change-transform backface-hidden";
 </script>
 
 <section class="relative">
@@ -11,7 +24,7 @@
       <h2 class="text-xl font-semibold text-gray-950">Your Estimation</h2>
       <div class="flex overflow-x-auto pt-4 justify-center">
         {#each POKER_CARDS as pokerCard}
-          <BaseCard card={pokerCard} onSelect={() => selectCard(socket, pokerCard)} class="relative cursor-pointer mr-4 h-32 transition-transform duration-200 ease-in-out hover:-translate-y-2 hover:scale-105 hover:shadow-lg will-change-transform backface-hidden" />
+          <BaseCard card={pokerCard} onSelect={() => onSelect(pokerCard)} class={`relative cursor-pointer mr-4 h-32 ${!votingIsDisabled ? hoverClass : ''}`} />
         {/each}
       </div>
     </div>
