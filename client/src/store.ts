@@ -14,14 +14,24 @@ export const issuesStore = writable<{
   domainUrl: string;
   expandedIssue: Issue | null;
   estimated: string[];
+  totalEstimationPerIssue: Record<string, number>;
   initialColumnWidth: number;
 }>({
   current: null,
   domainUrl: "",
   expandedIssue: null,
   estimated: [],
+  totalEstimationPerIssue: {},
   initialColumnWidth: 0,
 });
+
+export const totalEstimation = derived(
+  issuesStore,
+  ($issuesStore) =>
+    ($issuesStore.current &&
+      $issuesStore.totalEstimationPerIssue[$issuesStore.current?.id]) ||
+    0
+);
 
 export const currentIssueId = derived(
   issuesStore,
@@ -74,7 +84,5 @@ export let formErrors = writable({});
 export const rooms = writable<Room[]>([]);
 
 export const sessionInfo = writable<any>({});
-
-export const totalEstimate = writable<number>(0);
 
 export const participants = writable<User[]>([]);

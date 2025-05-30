@@ -1,6 +1,9 @@
+import { get } from "svelte/store";
 import { POKER_CARDS } from "./constants";
 import type { Card } from "./lib/types";
+import { calculateAverage } from "./lib/utils";
 import {
+  currentIssueId,
   currentUser,
   issuesStore,
   participants,
@@ -61,4 +64,21 @@ export async function initRoom(data: any) {
   }
 
   participants.set(data.participants);
+
+  issuesStore.update((state) => ({
+    ...state,
+    totalEstimationPerIssue: getActualTotalEstimationPerIssue(data),
+  }));
+}
+
+function getActualTotalEstimationPerIssue(data: any) {
+  const totalEstimationPerIssue: Record<string, number> = {};
+
+  for (let revealedIssueId of data.revealedIssues) {
+    totalEstimationPerIssue[revealedIssueId] =
+      data.totalEstimationPerIssue[revealedIssueId] ||
+      calculateAverage(get(selectedCards)[revealedIssueId]);
+  }
+
+  return totalEstimationPerIssue;
 }

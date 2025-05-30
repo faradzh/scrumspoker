@@ -77,6 +77,11 @@ class SaveEstimation {
     const response = await this.saveEstimation(integration, issueId, value);
     if (response.status === 204) {
       await this.roomRepository.addEstimatedIssue?.(roomId, issueId);
+      await this.roomRepository.addIssueTotalEstimation?.(
+        roomId,
+        issueId,
+        value
+      );
     }
   }
 }

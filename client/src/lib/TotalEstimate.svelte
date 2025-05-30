@@ -1,9 +1,9 @@
 <script lang="ts">
   import { createMutation } from "@tanstack/svelte-query";
   import { updateIssue } from "../services/roomService";
-  import { currentIssueId, isModerator, issuesStore, totalEstimate } from "../store";
+  import { currentIssueId, isModerator, issuesStore, totalEstimation } from "../store";
   import ToastService from "../services/toastService";
-  import { Check } from "@lucide/svelte";
+  import { Check, Pencil } from "@lucide/svelte";
   import { onMount } from "svelte";
   import { socket } from "../sockets";
   import { resetEstimation, resetEstimationHandler } from "./utils";
@@ -16,7 +16,7 @@
     mutationKey: ["saveEstimate", $currentIssueId],
     mutationFn: async () => {
       if (!$currentIssueId) return;
-      await updateIssue($currentIssueId, $totalEstimate);
+      await updateIssue($currentIssueId, $totalEstimation);
     },
     onSuccess: () => {
       if ($currentIssueId) {
@@ -40,14 +40,58 @@
 
   const issuesIsEstimated = $derived(!!($currentIssueId && $issuesStore.estimated.includes($currentIssueId)));
   const saveIsDisabled = $derived($query.isPending || issuesIsEstimated);
+
+  function onTotalEdit(e: any) {
+    const target = e.target as HTMLDivElement;
+
+    try {
+      const newValue = parseFloat(target.textContent || "0");
+      if (isNaN(newValue)) {
+        target.textContent = $totalEstimation.toString();
+        return;
+      }
+      issuesStore.update((s) => {
+        if (!$currentIssueId) return s;
+        s.totalEstimationPerIssue[$currentIssueId] = newValue;
+        return s;
+      });
+      placeCaretAtEnd(target);
+    } catch (error) {
+      console.error("Error parsing total estimate:", error);
+      target.textContent = $totalEstimation.toString();
+    }
+  }
+
+  let editableEstimation: HTMLDivElement | null = null;
+
+  function placeCaretAtEnd(el: HTMLDivElement) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false); // Move to end
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+  }
+
+  function focusEditableEstimation() {
+    if (editableEstimation) {
+      editableEstimation.focus();
+      placeCaretAtEnd(editableEstimation);
+    }
+  }
 </script>
 
 <div class="flex justify-center items-center space-x-2 mt-auto">
     <div class="flex flex-row items-center space-x-2">   
         <div class="stats shadow rounded-lg mb-2">
-            <div class="stat">
+            <div class="stat relative">
                 <div class="stat-title">Total Estimate</div>
-                <div class="stat-value text-center">{$totalEstimate}</div>
+                <div bind:this={editableEstimation} class="stat-value text-center" contenteditable={$isModerator && !saveIsDisabled} oninput={onTotalEdit}>{$totalEstimation}</div>
+                {#if $isModerator && !saveIsDisabled}
+                  <button class="absolute right-2 bottom-2" onclick={focusEditableEstimation}>
+                    <Pencil class="h-4 w-4 text-gray-500 cursor-pointer hover:text-violet-600" />
+                  </button>
+                {/if}
             </div>
         </div>
         {#if $isModerator}
@@ -64,5 +108,4 @@
         </div>
         {/if}
     </div> 
-   
 </div>

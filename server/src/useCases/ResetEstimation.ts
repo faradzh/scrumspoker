@@ -14,6 +14,7 @@ class ResetEstimation {
     } as Estimation);
     await this.roomRepository.hideEstimation?.(roomId, issueId);
     await this.roomRepository.removeEstimatedIssue?.(roomId, issueId);
+    await this.roomRepository.removeIssueTotalEstimation?.(roomId, issueId);
   }
 }
 

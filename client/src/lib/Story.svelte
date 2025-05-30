@@ -37,7 +37,7 @@
 
   const totalEstimate = $derived.by(() => {
     if ($issuesStore.estimated.includes(story.id)) {
-      return $selectedCards[story.id] ? calculateAverage($selectedCards[story.id]) : 0;
+      return $issuesStore.totalEstimationPerIssue[story.id];
     }
   });
 </script>

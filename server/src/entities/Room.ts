@@ -13,6 +13,7 @@ class Room {
   public revealedIssues: string[];
   public currentIssue: string | null;
   public integration: Integration | null;
+  public totalEstimationPerIssue: Record<string, string> = {};
 
   constructor(
     id: string,

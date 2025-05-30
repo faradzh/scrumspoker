@@ -98,6 +98,10 @@ class RedisRoomRepository implements RoomRepository {
       `room:${id}:estimatedIssues`
     );
 
+    const totalEstimationPerIssue = await this.client.hgetall(
+      `totalEstimationPerIssue:${id}`
+    );
+
     const currentIssue = await this.client.get(`room:${id}:currentIssue`);
 
     // Room does not exist
@@ -117,6 +121,7 @@ class RedisRoomRepository implements RoomRepository {
     );
 
     room.estimates = estimates;
+    room.totalEstimationPerIssue = totalEstimationPerIssue;
 
     if (revealedIssues.length) {
       revealedIssues?.forEach((issueId) => {
@@ -176,6 +181,21 @@ class RedisRoomRepository implements RoomRepository {
 
   async removeEstimatedIssue(roomId: string, issueId: string): Promise<void> {
     await this.client.srem(`room:${roomId}:estimatedIssues`, issueId);
+  }
+
+  async addIssueTotalEstimation(
+    roomId: string,
+    issueId: string,
+    value: number
+  ): Promise<void> {
+    await this.client.hset(`totalEstimationPerIssue:${roomId}`, issueId, value);
+  }
+
+  async removeIssueTotalEstimation(
+    roomId: string,
+    issueId: string
+  ): Promise<void> {
+    await this.client.hdel(`totalEstimationPerIssue:${roomId}`, issueId);
   }
 
   async setCurrentIssue(roomId: string, issueId: string): Promise<void> {

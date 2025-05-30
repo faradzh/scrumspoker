@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentIssueId, isModerator, issuesStore, selectedCards, sessionInfo, totalEstimate } from "../store";
+  import { currentIssueId, isModerator, issuesStore, selectedCards, sessionInfo } from "../store";
   import ActionButtons from "./ActionButtons.svelte";
   import CurrentEstimates from "./CurrentEstimates.svelte";
   import Timer from "./Timer.svelte";
@@ -14,13 +14,13 @@
     return total > 0 && $sessionInfo[$currentIssueId]?.cardsAreFlipped;
   });
 
-  $effect(() => {
-    if (!$currentIssueId) {
-      return;
-    }
-    const total = calculateAverage($selectedCards[$currentIssueId]) || 0;
-    $totalEstimate = total;
-  });
+  // $effect(() => {
+  //   if (!$currentIssueId) {
+  //     return;
+  //   }
+  //   const total = calculateAverage($selectedCards[$currentIssueId]) || 0;
+  //   $totalEstimation = total;
+  // });
 
   const currentStoryText = $derived($issuesStore.current ? ( $issuesStore.current?.key + ": " + $issuesStore.current?.summary) : '');
 </script>

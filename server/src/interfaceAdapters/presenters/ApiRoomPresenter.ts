@@ -14,6 +14,7 @@ class ApiRoomPresenter implements RoomPresenter {
       estimates: room.estimates,
       revealedIssues: room.revealedIssues ?? [],
       estimatedIssues: room.estimatedIssues ?? [],
+      totalEstimationPerIssue: room.totalEstimationPerIssue ?? {},
       currentIssue: room.currentIssue,
     } as RoomResponse;
 

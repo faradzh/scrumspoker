@@ -10,7 +10,7 @@ import {
   participants,
   selectedCards,
   sessionInfo,
-  totalEstimate,
+  totalEstimation,
 } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
@@ -98,7 +98,11 @@ export function revealHandler() {
     });
 
     const total = calculateAverage(get(selectedCards)[issueId]) || 0;
-    totalEstimate.set(total);
+
+    issuesStore.update((s) => {
+      s.totalEstimationPerIssue[issueId] = total;
+      return s;
+    });
   });
 }
 
@@ -237,7 +241,7 @@ export function resetEstimationHandler(issueId: string) {
     return refs.filter((ref) => ref.dataset.issueId !== issueId);
   });
   resetTimer();
-  totalEstimate.set(0);
+
   sessionInfo.update((info) => {
     if (issueId) {
       delete info[issueId];
@@ -246,6 +250,7 @@ export function resetEstimationHandler(issueId: string) {
   });
   issuesStore.update((s) => {
     s.estimated = s.estimated.filter((id) => id !== issueId);
+    delete s.totalEstimationPerIssue[issueId];
     return s;
   });
 }

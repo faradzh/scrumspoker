@@ -15,6 +15,7 @@ export type RoomResponse = {
   estimates?: Estimates;
   revealedIssues?: string[];
   estimatedIssues?: string[];
+  totalEstimationPerIssue?: Record<string, string>;
   currentIssue: null | string;
   integration: Integration | null;
 };

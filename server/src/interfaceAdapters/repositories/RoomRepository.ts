@@ -25,6 +25,12 @@ export interface RoomRepository {
   ): Promise<void>;
   addEstimatedIssue?(roomId: string, issueId: string): Promise<void>;
   removeEstimatedIssue?(roomId: string, issueId: string): Promise<void>;
+  addIssueTotalEstimation?(
+    roomId: string,
+    issueId: string,
+    value: number
+  ): Promise<void>;
+  removeIssueTotalEstimation?(roomId: string, issueId: string): Promise<void>;
   revealEstimation?(roomId: string, issueId: string): Promise<void>;
   hideEstimation?(roomId: string, issueId: string): Promise<void>;
   setCurrentIssue?(roomId: string, issueId: string): Promise<void>;
