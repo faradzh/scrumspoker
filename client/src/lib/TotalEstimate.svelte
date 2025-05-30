@@ -27,6 +27,10 @@
           };
         });
       };
+      socket.emit('estimationSaved', {
+        issueId: $currentIssueId,
+        value: $totalEstimation
+      });
       ToastService.showToast("Estimation saved!");
     },
     onError: () => {
@@ -36,6 +40,20 @@
 
   onMount(() => {
     socket.on('resetEstimation', ({issueId}) => resetEstimationHandler(issueId));
+    socket.on("estimationSaved", ({issueId, value}) => {
+      if (issueId === $currentIssueId) {
+        issuesStore.update((state) => {
+          return {
+            ...state,
+            estimated: [...state.estimated, issueId],
+            totalEstimationPerIssue: {
+              ...state.totalEstimationPerIssue,
+              [issueId]: value
+            }
+          };
+        });
+      }
+    });
   });
 
   const issuesIsEstimated = $derived(!!($currentIssueId && $issuesStore.estimated.includes($currentIssueId)));

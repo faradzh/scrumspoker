@@ -70,6 +70,10 @@ export function listen(io: Server) {
       }
     });
 
+    socket.on("estimationSaved", ({ issueId, value }) => {
+      socket.to(roomId).emit("estimationSaved", { issueId, value });
+    });
+
     socket.on("disconnect", () => {
       console.log("The user has left the room!");
     });
