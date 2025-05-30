@@ -6,6 +6,7 @@
   import { socket } from "../sockets";
   import { revealHandler } from "./utils";
   import Avatar from "./Avatar.svelte";
+  import PokerCard from "./PokerCard.svelte";
 
     onMount(() => {
         socket.on('reveal', revealHandler);
@@ -21,12 +22,34 @@
         }
         return participant.name?.trim()?.split(' ')?.[0] ?? '';
     }
+
+    let scrollContainer: HTMLDivElement | null = null;
+
+    function checkScrollbar() {
+        const isScrollable = scrollContainer?.scrollWidth! > scrollContainer?.clientWidth!;
+        if (isScrollable) {
+            scrollContainer?.classList.remove('justify-center');
+        } else {
+            scrollContainer?.classList.add('justify-center');
+        }
+    }
+
+  onMount(() => {
+    checkScrollbar();
+
+    const mutationObserver = new MutationObserver(checkScrollbar);
+    mutationObserver.observe(scrollContainer!, { childList: true, subtree: true });
+
+    return () => {
+      mutationObserver.disconnect();
+    };
+  });
 </script>
 
-<div class="mb-4">
-    <div class="flex justify-center space-x-4">
+<div class="mb-4 overflow-hidden">
+    <div bind:this={scrollContainer} class="flex justify-center gap-4 whitespace-nowrap overflow-x-auto">
         {#each $participants as participant, index}
-            <div class="text-center min-w-[80px]">
+            <div class="text-center min-w-[80px] flex-none">
                 <Avatar participant={participant} index={index} />
                 <h2 class="block mx-auto mb-2 font-semibold min-h-6 w-20 overflow-hidden whitespace-nowrap text-ellipsis">
                     {getFirstName(participant)}
