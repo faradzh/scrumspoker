@@ -14,21 +14,9 @@
   import { fetchRoomData } from "./services/roomService";
   import ToastWrapper from "./lib/ToastWrapper.svelte";
   import { onStartEstimation } from "./state.svelte";
-  import { QueryClientProvider } from "@tanstack/svelte-query";
-  import queryClient from "./admin/queryClient";
+  import { createQuery } from "@tanstack/svelte-query";
   
-
   onMount(() => {
-    Promise.all([fetchCurrentUser(), fetchRoomData()]).then((values) => {
-      const [user, roomData] = values;
-
-      currentUser.set(user);
-    
-      socket.emit('joinRoom', {user: {...user, online: true}});
-      
-      initRoom(roomData);
-    });
-
     socket.on('joinRoom', onRoomJoin)
     socket.on('startEstimation', onStartEstimation);
     socket.on('estimation', estimationHandler);
@@ -57,19 +45,40 @@
     });
   });
 
+  const userQuery = createQuery({
+    queryKey: ['currentUser'],
+    queryFn: fetchCurrentUser,
+    refetchOnWindowFocus: false
+  });
 
+  const roomDataQuery = createQuery({
+    queryKey: ['roomData'],
+    queryFn: fetchRoomData,
+    refetchOnWindowFocus: false,
+    enabled: $userQuery.data 
+  });
+
+  $effect(() => {
+    if ($userQuery.data && $roomDataQuery.data) {
+      const user = $userQuery.data;
+      currentUser.set(user);
+
+      const roomData = $roomDataQuery.data;
+      initRoom(roomData);
+      
+      socket.emit('joinRoom', {user: {...user, online: true}});
+    }
+  });
 </script>
 
 <Navbar />
-<QueryClientProvider client={queryClient}>
-  <main class="bg-gray-50 h-screen overflow-y-hidden">
-    <div class="mx-auto px-8 max-w-screen-2xl h-screen">
-      <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[auto_200px] h-screen">
-        <Stories />
-        <Session />
-        <CardsDeck />
-      </div>
+<main class="bg-gray-50 h-screen overflow-y-hidden">
+  <div class="mx-auto px-8 max-w-screen-2xl h-screen">
+    <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[auto_200px] h-screen">
+      <Stories />
+      <Session />
+      <CardsDeck />
     </div>
-  </main>
-</QueryClientProvider>
+  </div>
+</main>
 <ToastWrapper />

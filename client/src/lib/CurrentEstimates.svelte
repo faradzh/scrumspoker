@@ -6,7 +6,6 @@
   import { socket } from "../sockets";
   import { revealHandler } from "./utils";
   import Avatar from "./Avatar.svelte";
-  import PokerCard from "./PokerCard.svelte";
 
     onMount(() => {
         socket.on('reveal', revealHandler);
@@ -46,10 +45,10 @@
   });
 </script>
 
-<div class="mb-4 overflow-hidden">
-    <div bind:this={scrollContainer} class="flex justify-center gap-4 whitespace-nowrap overflow-x-auto">
+<div class="mb-4">
+    <div bind:this={scrollContainer} class="flex justify-center gap-4 whitespace-nowrap overflow-x-auto pb-8">
         {#each $participants as participant, index}
-            <div class="text-center min-w-[80px] flex-none">
+            <div class="text-center min-w-[92px] flex-none">
                 <Avatar participant={participant} index={index} />
                 <h2 class="block mx-auto mb-2 font-semibold min-h-6 w-20 overflow-hidden whitespace-nowrap text-ellipsis">
                     {getFirstName(participant)}

@@ -3,7 +3,6 @@ import { POKER_CARDS } from "./constants";
 import type { Card } from "./lib/types";
 import { calculateAverage } from "./lib/utils";
 import {
-  currentIssueId,
   currentUser,
   issuesStore,
   participants,
