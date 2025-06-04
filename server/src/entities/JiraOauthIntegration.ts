@@ -1,9 +1,10 @@
+import { fetchIntegrationData } from "../useCases/shared";
 import JiraIntegration from "./JiraIntegration";
 
 interface JiraOauthArgs {
   filterLabel: string;
   accessToken: string;
-  refreshToken?: string;
+  id?: string;
   projectName?: string;
   domainUrl?: string;
   cloudId?: string;
@@ -13,19 +14,17 @@ class JiraOauthIntegration extends JiraIntegration {
   public accessToken: string;
   public baseUrl: string = "https://api.atlassian.com";
   public cloudId: string = "";
-  public refreshToken?: string;
 
   public constructor({
+    id,
     accessToken,
-    refreshToken,
     filterLabel,
     projectName,
     domainUrl = "",
     cloudId,
   }: JiraOauthArgs) {
-    super({ email: "", domainUrl, apiToken: "", filterLabel, projectName });
+    super({ id, email: "", domainUrl, apiToken: "", filterLabel, projectName });
     this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
     this.cloudId = cloudId ?? "";
   }
 
@@ -37,23 +36,15 @@ class JiraOauthIntegration extends JiraIntegration {
     }
   }
 
-  public async fetchAvailableResources(): Promise<any> {
-    const response = await fetch(
-      `${this.baseUrl}/oauth/token/accessible-resources`,
-      {
-        headers: {
-          Authorization: this.getAuthorizationHeader(),
-          Accept: "application/json",
-        },
-      }
-    );
-
-    const resources = await response.json();
+  public async fetchAvailableResources(user: any): Promise<any> {
+    const resources = await fetchIntegrationData(this, user, {
+      authHeader: this.getAuthorizationHeader(),
+      url: `${this.baseUrl}/oauth/token/accessible-resources`,
+    });
 
     console.log("Resources:", resources);
 
     if (resources.length === 1) {
-      console.log("DomainUrl:", resources[0].url);
       this.cloudId = resources[0].id;
       this.domainUrl = resources[0].url;
     } else if (resources.length > 1) {

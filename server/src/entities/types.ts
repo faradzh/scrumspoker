@@ -9,6 +9,7 @@ export interface User extends Profile {
   estimate?: number;
   picture?: string;
   online?: boolean;
+  accessToken?: string;
 }
 
 export type Estimates = Record<string, Record<string, string>>;
@@ -25,12 +26,18 @@ export interface Issue {
   // story points field, e.g. 1, 2, 3, 5, 8, 13
   customfield_10016: number;
   summary: string;
-  description: string;
+  description: {
+    content: {
+      content: {
+        text: string;
+      }[];
+    }[];
+  };
   status: string;
   assignee: string;
   reporter: string;
   issuetype: string;
-  comment: any[];
+  comment: any;
 }
 
 export interface JiraIssue {
@@ -76,6 +83,7 @@ export interface JiraIssue {
 
 export interface JiraIssueResponse {
   issues: JiraIssue[];
+  code?: number;
 }
 
 interface AsanaIssue {

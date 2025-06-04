@@ -6,10 +6,11 @@ export interface JiraArgs {
   apiToken: string;
   filterLabel: string;
   domainUrl: string;
+  id?: string;
   projectName?: string;
 }
 class JiraIntegration implements Integration {
-  public id = IntegrationTypeEnum.JIRA;
+  public type = IntegrationTypeEnum.JIRA;
   public name: string = INTEGRATIONS[IntegrationTypeEnum.JIRA].name;
   public domainUrl = "";
   public apiUrl: string = "rest/api/3";
@@ -20,8 +21,10 @@ class JiraIntegration implements Integration {
   public apiToken;
   public projectName;
   public filterLabel;
+  public id: string;
 
   public constructor({
+    id,
     email,
     domainUrl,
     apiToken,
@@ -31,6 +34,7 @@ class JiraIntegration implements Integration {
     this.email = email;
     this.domainUrl = domainUrl;
     this.apiToken = apiToken;
+    this.id = id ?? "";
     this.projectName = projectName ?? "";
     this.filterLabel = filterLabel ?? "";
   }

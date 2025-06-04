@@ -1,10 +1,11 @@
 import { IntegrationTypeEnum } from "../useCases/constants";
 
 export interface Integration {
-  id: IntegrationTypeEnum;
-  projectName: string;
+  type: IntegrationTypeEnum;
   filterLabel: string;
   domainUrl: string;
+  projectName?: string;
+  id?: string;
   cloudId?: string;
   email?: string;
   apiToken?: string;

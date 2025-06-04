@@ -8,6 +8,7 @@
   
   function onSelect(pokerCard: Card) {
     if (votingIsDisabled || $currentIssueId && $selectedCards?.[$currentIssueId]?.[$currentUser.id]?.value === pokerCard.value) {
+      console.log("Card already selected or voting is disabled", votingIsDisabled);
       return;
     }
     selectCard(socket, pokerCard);

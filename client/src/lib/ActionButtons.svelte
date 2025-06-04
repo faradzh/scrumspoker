@@ -1,11 +1,12 @@
 <script lang="ts">
   import { startEstimation, timerState } from "../state.svelte";
-  import { currentIssueId, sessionInfo } from "../store";
+  import { cardRefsStore, currentIssueId, sessionInfo } from "../store";
   import { revealCards } from "./utils";
 
   const timerText = $derived(timerState.isActive ? "Stop" : "Start");
   const issueIsRevealed = $derived($currentIssueId && $sessionInfo[$currentIssueId]);
+  const estimationIsEmpty = $derived($cardRefsStore.length === 0);
 </script>
 
-<button disabled={issueIsRevealed} onclick={startEstimation} class="px-4 py-2 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] rounded-md transition">{timerText} Estimation</button>
-<button disabled={issueIsRevealed} onclick={revealCards} class="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-md transition">Reveal Cards</button>
+<button disabled={estimationIsEmpty || issueIsRevealed} onclick={startEstimation} class="px-4 py-2 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] rounded-md transition">{timerText} Estimation</button>
+<button disabled={estimationIsEmpty || issueIsRevealed} onclick={revealCards} class="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-md transition">Reveal Cards</button>
