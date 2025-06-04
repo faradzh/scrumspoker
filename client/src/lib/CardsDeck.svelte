@@ -1,7 +1,7 @@
 <script lang="ts">
   import { POKER_CARDS } from "../constants";
   import { socket } from "../sockets";
-  import { currentIssueId, currentUser, selectedCards, sessionInfo } from "../store";
+  import { currentIssueId, currentUser, issuesStore, selectedCards, sessionInfo } from "../store";
   import BaseCard from "./BaseCard.svelte";
   import type { Card } from "./types";
   import { selectCard } from "./utils";
@@ -23,10 +23,10 @@
   <div class="bg-white w-full h-full lg:rounded-t-[calc(theme(borderRadius.lg)+1px)]">
     <div class="p-4">
       <h2 class="text-xl font-semibold text-gray-950">Your Estimation</h2>
-      <div class="flex overflow-x-auto pt-4 justify-center">
-        {#each POKER_CARDS as pokerCard}
-          <BaseCard card={pokerCard} onSelect={() => onSelect(pokerCard)} class={`relative cursor-pointer mr-4 h-32 ${!votingIsDisabled ? hoverClass : ''}`} />
-        {/each}
+      <div class={`flex overflow-x-scroll scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200 whitespace-nowrap pt-4 ${!$issuesStore.expandedIssue ? 'justify-center' : ''}`}>
+            {#each POKER_CARDS as pokerCard}
+              <BaseCard card={pokerCard} onSelect={() => onSelect(pokerCard)} class={`relative flex-shrink-0 cursor-pointer mr-4 h-32 ${!votingIsDisabled ? hoverClass : ''}`} />
+            {/each}
       </div>
     </div>
   </div>
