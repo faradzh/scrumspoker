@@ -34,6 +34,8 @@ describe("ApiRoomPresenter", () => {
       link: `/rooms/${roomData.id}`,
       estimatedIssues: [],
       currentIssue: null,
+      revealedIssues: [],
+      totalEstimationPerIssue: {},
     });
   });
 });
