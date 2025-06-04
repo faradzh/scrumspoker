@@ -40,9 +40,8 @@ class JiraOauthIntegration extends JiraIntegration {
     const resources = await fetchIntegrationData(this, user, {
       authHeader: this.getAuthorizationHeader(),
       url: `${this.baseUrl}/oauth/token/accessible-resources`,
+      method: "GET",
     });
-
-    console.log("Resources:", resources);
 
     if (resources.length === 1) {
       this.cloudId = resources[0].id;
