@@ -1,53 +1,19 @@
-import { Integration } from "../entities/Integration";
-import JiraOauthIntegration from "../entities/JiraOauthIntegration";
-import { Issue, IssueResponse, User } from "../entities/types";
+import { Issue, IssueResponse, JiraIssueResponse } from "../entities/types";
 import { RequestUser } from "../infrastructure/auth/types";
-import { IntegrationDocument } from "../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import MongoIntegrationRepository from "../interfaceAdapters/repositories/MongoIntegrationRepository";
 import RedisRoomRepository from "../interfaceAdapters/repositories/RedisRoomRepository";
-import {
-  IntegrationTypeEnum,
-  ISSUE_TRANSFORMERS,
-  OAUTH2INTEGRATION_CLASSES,
-} from "./constants";
+import { RoomRepository } from "../interfaceAdapters/repositories/RoomRepository";
+import { IntegrationTypeEnum, ISSUE_TRANSFORMERS } from "./constants";
 import { fetchIssues } from "./shared";
-import TestIntegration from "./TestIntegration";
 
 class GetIntegrationIssues {
   constructor(
     private integrationRepository: MongoIntegrationRepository,
-    private roomRepository: RedisRoomRepository,
-    private testIntegration: TestIntegration
+    private tempRoomRepository: RedisRoomRepository,
+    private persistedRoomRepository: RoomRepository
   ) {
     this.integrationRepository = integrationRepository;
-    this.roomRepository = roomRepository;
-    this.testIntegration = testIntegration;
-  }
-
-  /**
-   * Creates an integration instance from a document
-   */
-  private createIntegrationFromDocument(
-    integrationDoc: IntegrationDocument | null
-  ): JiraOauthIntegration {
-    if (!integrationDoc) {
-      throw new Error("Integration document not found");
-    }
-
-    const integrationType =
-      integrationDoc.type as keyof typeof OAUTH2INTEGRATION_CLASSES;
-    const IntegrationClass = OAUTH2INTEGRATION_CLASSES[integrationType];
-
-    if (!IntegrationClass) {
-      throw new Error(`Unsupported integration type: ${integrationType}`);
-    }
-
-    return new IntegrationClass({
-      accessToken: integrationDoc.accessToken ?? "",
-      refreshToken: integrationDoc.refreshToken ?? "",
-      filterLabel: integrationDoc.filterLabel ?? "",
-      projectName: integrationDoc.projectName,
-    });
+    this.tempRoomRepository = tempRoomRepository;
   }
 
   /**
@@ -66,62 +32,40 @@ class GetIntegrationIssues {
     }
 
     const issueTransformer = new TransformerClass();
-    // @ts-ignore
-    return issueTransformer.transform(fetchedData);
+    return issueTransformer.transform(fetchedData as JiraIssueResponse);
   }
 
   /**
    * Main execution method to fetch and process issues for a room
    */
-  public async execute(roomId: string): Promise<{
+  public async execute(
+    roomId: string,
+    user: RequestUser
+  ): Promise<{
     data: Issue[];
     domainUrl: string;
     currentIssue?: string | null;
   }> {
-    // Fetch integration document
-    const integrationDoc = await this.integrationRepository.findById(roomId);
-
-    // Create and initialize integration
-    const integration = this.createIntegrationFromDocument(integrationDoc);
-
-    await this.testIntegration.updateResourceAttributes(
-      { accessToken: integration.accessToken } as RequestUser,
-      integration
-    );
-
-    await this.integrationRepository.update({
-      id: integrationDoc?._id,
-      accessToken: integration.accessToken,
-      refreshToken: integration.refreshToken,
-    } as Integration);
-
-    // Check for cached issues first
-    const cachedIssues = await this.roomRepository.findIntegrationIssues(
-      roomId
-    );
-
-    const currentIssue = await this.roomRepository.getCurrentIssue(roomId);
-
-    if (cachedIssues.length > 0) {
-      return {
-        data: cachedIssues,
-        domainUrl: integration.domainUrl,
-        currentIssue,
-      };
+    const room = await this.persistedRoomRepository.findRoomById?.(roomId);
+    const integration = await this.integrationRepository.findById(roomId);
+    if (room?.moderator?.accessToken) {
+      // Ensure integration has the latest access token
+      integration.accessToken = room?.moderator?.accessToken;
     }
+    const currentIssue = await this.tempRoomRepository.getCurrentIssue(roomId);
 
-    // Fetch new issues if cache is empty
-    const fetchedData = await fetchIssues<typeof integration.id>(integration);
+    const fetchedData = (await fetchIssues<typeof integration.type>(
+      integration,
+      user
+    )) as JiraIssueResponse;
 
     // Transform response data into standardized issues
-    const issues = this.transformIssues(fetchedData, integration.id);
-
-    // Cache the issues for future use
-    await this.roomRepository.saveIntegrationIssues(roomId, issues);
+    const issues = this.transformIssues(fetchedData, integration.type);
 
     return {
       data: issues,
       domainUrl: integration.domainUrl,
+      currentIssue,
     };
   }
 }

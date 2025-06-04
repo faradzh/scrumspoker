@@ -4,26 +4,48 @@ import { IntegrationDocument } from "../../infrastructure/database/mongodb/schem
 import RoomModel from "../../infrastructure/database/mongodb/schemas/RoomSchema";
 import IntegrationModel from "../../infrastructure/database/mongodb/schemas/IntegrationSchema";
 import { IntegrationRepository } from "./IntegrationRepository";
+import { OAUTH2INTEGRATION_CLASSES } from "../../useCases/constants";
 
 class MongoIntegrationRepository implements IntegrationRepository {
   public async save(data: Integration): Promise<IntegrationDocument> {
     return await IntegrationModel.create({
-      type: data.id,
+      type: data.type,
       projectName: data.projectName,
       filterLabel: data.filterLabel,
       domainUrl: data.domainUrl,
       cloudId: data.cloudId,
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
     });
   }
 
-  public async findById(roomId: string): Promise<IntegrationDocument | null> {
-    const room = await RoomModel.findOne({ id: roomId }).populate(
-      "integration"
-    );
+  public async findById(
+    roomId: string
+  ): Promise<
+    InstanceType<
+      (typeof OAUTH2INTEGRATION_CLASSES)[keyof typeof OAUTH2INTEGRATION_CLASSES]
+    >
+  > {
+    const room = await RoomModel.findOne({ id: roomId }).populate<{
+      integration: IntegrationDocument;
+    }>("integration");
 
-    return room?.integration as IntegrationDocument | null;
+    const integration = room?.integration as IntegrationDocument;
+
+    const integrationType =
+      integration?.type as keyof typeof OAUTH2INTEGRATION_CLASSES;
+    const IntegrationClass = OAUTH2INTEGRATION_CLASSES[integrationType];
+
+    if (!IntegrationClass) {
+      throw new Error(`Unsupported integration type: ${integrationType}`);
+    }
+
+    return new IntegrationClass({
+      id: integration._id,
+      accessToken: "",
+      filterLabel: integration.filterLabel ?? "",
+      projectName: integration.projectName ?? "",
+      domainUrl: integration.domainUrl ?? "",
+      cloudId: integration.cloudId ?? "",
+    });
   }
 
   public async update(data: Integration): Promise<IntegrationDocument | null> {
@@ -32,8 +54,6 @@ class MongoIntegrationRepository implements IntegrationRepository {
       {
         filterLabel: data.filterLabel,
         projectName: data.projectName,
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
         domainUrl: data.domainUrl,
         cloudId: data.cloudId,
       },

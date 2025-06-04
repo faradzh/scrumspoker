@@ -5,6 +5,7 @@ export const UserSchema = new Schema(
     id: { type: String, required: true, unique: true },
     isModerator: { type: Boolean, default: false },
     name: String,
+    accessToken: String,
     refreshToken: String,
   },
   {

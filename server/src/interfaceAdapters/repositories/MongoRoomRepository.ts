@@ -1,11 +1,10 @@
 import Room from "../../entities/Room";
 import { RoomRepository } from "./RoomRepository";
 import RoomModel from "../../infrastructure/database/mongodb/schemas/RoomSchema";
-import { EstimationMethod, User } from "../../entities/types";
+import { EstimationMethod } from "../../entities/types";
 import { RoomData } from "../../types";
 import mongoose from "mongoose";
 import { IntegrationRepository } from "./IntegrationRepository";
-import UserModel from "../../infrastructure/database/mongodb/schemas/UserSchema";
 
 export class MongoRoomRepository implements RoomRepository {
   private integrationRepository;
@@ -94,9 +93,10 @@ export class MongoRoomRepository implements RoomRepository {
   }
 
   public async findRoomById(roomId: string): Promise<Room | undefined> {
-    const doc = await RoomModel.findOne<Room>({ id: roomId })
-      .populate("moderator")
-      .lean();
+    const doc = await RoomModel.findOne<Room>({ id: roomId }).populate(
+      "moderator"
+    );
+
     if (!doc) return;
 
     return new Room(
@@ -107,7 +107,6 @@ export class MongoRoomRepository implements RoomRepository {
       [],
       [],
       null,
-      // @ts-ignore
       doc.moderator
     );
   }

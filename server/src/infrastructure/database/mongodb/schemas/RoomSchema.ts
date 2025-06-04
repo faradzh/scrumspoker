@@ -13,6 +13,7 @@ const RoomSchema = new Schema(
     integration: {
       ref: "Integration",
       type: Schema.Types.ObjectId,
+      required: true,
     },
   },
   {

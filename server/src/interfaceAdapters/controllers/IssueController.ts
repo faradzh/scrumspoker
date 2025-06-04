@@ -4,9 +4,11 @@ import ApiIssuePresenter from "../presenters/ApiIssuePresenter";
 import {
   getAllIssues,
   mongoIntegrationRepository,
+  mongoRoomRepository,
   redisRoomRepository,
 } from "./constants";
 import SaveEstimation from "../../useCases/SaveEstimation";
+import { RequestUser } from "../../infrastructure/auth/types";
 
 class IssueController<I> {
   private getAllIssues;
@@ -16,7 +18,8 @@ class IssueController<I> {
     this.getAllIssues = getAllIssues;
     this.saveEstimation = new SaveEstimation(
       mongoIntegrationRepository,
-      redisRoomRepository
+      redisRoomRepository,
+      mongoRoomRepository
     );
     this.apiIssuePresenter = apiIssuePresenter;
   }
@@ -24,8 +27,9 @@ class IssueController<I> {
   public async getIssuesHandler(req: Request, res: Response) {
     try {
       const roomId = req.query.roomId!.toString();
+      const user = req.user as RequestUser;
 
-      const issues = await this.getAllIssues.execute(roomId);
+      const issues = await this.getAllIssues.execute(roomId, user);
       const list = issues.data.map((issue) =>
         this.apiIssuePresenter.presentIssue(issue)
       );
@@ -48,8 +52,9 @@ class IssueController<I> {
       const roomId = req.query.roomId!.toString();
       const issueId = req.params.issueId;
       const estimationValue = req.body.value;
+      const user = req.user as RequestUser;
 
-      await this.saveEstimation.execute(roomId, issueId, estimationValue);
+      await this.saveEstimation.execute(roomId, issueId, estimationValue, user);
 
       res.status(200).json({ message: "Estimation saved" });
     } catch (error) {

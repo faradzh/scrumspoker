@@ -11,8 +11,6 @@ export interface IntegrationDocument extends Document {
   cloudId: string;
   email?: string;
   apiToken?: string;
-  accessToken?: string;
-  refreshToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,8 +28,6 @@ const IntegrationSchema = new Schema<IntegrationDocument>(
     cloudId: { type: String, required: true },
     email: { type: String },
     apiToken: { type: String },
-    accessToken: { type: String },
-    refreshToken: { type: String },
   },
   { timestamps: true }
 );

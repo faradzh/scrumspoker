@@ -11,41 +11,29 @@ import JiraOauthIntegration from "../entities/JiraOauthIntegration";
 class CreateRoom {
   private roomRepository;
   private integrationRepository;
-  private userRepository;
   private testIntegration;
 
   constructor(
     roomRepository: RoomRepository,
     integrationRepository: IntegrationRepository,
-    userRepository: any,
     testIntegration: TestIntegration
   ) {
     this.roomRepository = roomRepository;
     this.integrationRepository = integrationRepository;
-    this.userRepository = userRepository;
     this.testIntegration = testIntegration;
   }
 
   public async execute(data: RoomData, user: RequestUser): Promise<any> {
     const roomId = uuidv4();
-    const { integration } = data;
 
-    const refreshToken = await this.userRepository.findRefreshToken?.(user);
-
-    const integrationInstance = (await this.testIntegration.buildIntegration({
-      ...integration,
+    const integration = (await this.testIntegration.buildIntegration({
+      ...data.integration,
       accessToken: user.accessToken,
-      refreshToken,
     })) as JiraOauthIntegration;
 
-    await this.testIntegration.updateResourceAttributes(
-      user,
-      integrationInstance
-    );
+    await this.testIntegration.addIntegrationAttributes(user, integration);
 
-    const integrationDoc = await this.integrationRepository.save(
-      integrationInstance
-    );
+    const integrationDoc = await this.integrationRepository.save(integration);
 
     const newRoom = this.createRoomInstance(roomId, {
       ...data,

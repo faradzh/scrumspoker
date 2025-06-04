@@ -1,15 +1,26 @@
-import refresh from "passport-oauth2-refresh";
-
 import { RequestUser } from "../../infrastructure/auth/types";
 import UserModel from "../../infrastructure/database/mongodb/schemas/UserSchema";
 
 class MongoUserRepository {
-  public async findOrSaveUser(user: { id: string; refreshToken: string }) {
-    const existingUser = await UserModel.findOne({ id: user.id });
+  public async findOrSaveUser(user: {
+    id: string;
+    accessToken: string;
+    refreshToken: string;
+  }) {
+    const existingUser = await UserModel.findOneAndUpdate(
+      { id: user.id },
+      {
+        $set: {
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+        },
+      }
+    );
 
     if (!existingUser) {
       await UserModel.create({
         id: user.id,
+        accessToken: user.accessToken,
         refreshToken: user.refreshToken,
       });
     } else {
@@ -17,34 +28,15 @@ class MongoUserRepository {
     }
   }
 
-  public async updateRefreshToken(user: RequestUser, refreshToken: string) {
+  public async updateTokens(
+    user: RequestUser,
+    accessToken: string,
+    refreshToken: string
+  ) {
     await UserModel.findOneAndUpdate(
       { id: user.profile.id },
-      { $set: { refreshToken } }
+      { $set: { accessToken, refreshToken } }
     );
-  }
-
-  public async updateAccessToken(user: RequestUser, accessToken: string) {
-    await UserModel.findOneAndUpdate(
-      { id: user.profile.id },
-      { $set: { accessToken } }
-    );
-  }
-
-  public async requestNewAccessToken(refreshToken: string) {
-    return new Promise((resolve, reject) => {
-      refresh.requestNewAccessToken(
-        "atlassian",
-        refreshToken,
-        async (err, accessToken, refreshToken) => {
-          if (err) {
-            console.error("Refresh failed:", err);
-            reject(err);
-          }
-          resolve({ accessToken, refreshToken });
-        }
-      );
-    });
   }
 
   public findRefreshToken(

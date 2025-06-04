@@ -40,8 +40,9 @@ async function verifyCallback(
 
     const userProfile = await response.json();
 
-    mongoUserRepository.findOrSaveUser({
+    await mongoUserRepository.findOrSaveUser({
       id: userProfile.account_id,
+      accessToken,
       refreshToken,
     });
 

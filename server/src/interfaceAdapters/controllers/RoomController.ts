@@ -7,7 +7,6 @@ import JoinRoom from "../../useCases/JoinRoom";
 import GetAllRooms from "../../useCases/GetAllRooms";
 import {
   mongoIntegrationRepository,
-  mongoUserRepository,
   redisRoomRepository,
   testIntegrationUseCase,
 } from "./constants";
@@ -31,7 +30,6 @@ class RoomController {
     this.createRoomUseCase = new CreateRoom(
       roomRepository,
       mongoIntegrationRepository,
-      mongoUserRepository,
       testIntegrationUseCase
     );
     this.getAllRoomsUseCase = new GetAllRooms(roomRepository);
