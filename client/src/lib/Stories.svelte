@@ -15,7 +15,7 @@
   const query = createQuery({
     queryKey: ["issues"],
     queryFn: fetchIssues,
-    refetchInterval: Infinity,
+    refetchOnWindowFocus: false,
   });
 
   const issues: Issue[] = $derived($query.data?.data ?? []);
@@ -70,7 +70,7 @@
                 <h2 class="text-xl font-semibold text-gray-950">User Stories</h2>
                 <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-sm">{issues.length} stories</span>
             </div>
-              <div bind:this={storiesList} id="stories-list" class="transition-name space-y-2 max-h-[700px] scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+              <div bind:this={storiesList} id="stories-list" class="transition-name space-y-2 max-h-[80vh] scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                 {#if $query.isLoading}
                   <StorySkeleton />
                   <StorySkeleton />

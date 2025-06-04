@@ -15,10 +15,10 @@ class JiraIssueTransformer {
       assignee: issue.fields.assignee,
       reporter: issue.fields.reporter.displayName,
       issuetype: issue.fields.issuetype.name,
-      comment: issue.fields.comment.comments,
+      comment: issue.fields.comment,
       customfield_10016: issue.fields.customfield_10016,
       summary: issue.fields.summary,
-      description: issue.fields.description?.content[0].content[0].text ?? null,
+      description: issue.fields.description,
     };
   }
 }
