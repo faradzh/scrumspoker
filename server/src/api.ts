@@ -65,6 +65,10 @@ api.get("/login", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "login.html"));
 });
 
+api.get("/admin-login", (_, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "admin-login.html"));
+});
+
 api.post("/login", (req, res) => {
   let name = req.body.name?.trim();
   const guestUserId = crypto.randomUUID();

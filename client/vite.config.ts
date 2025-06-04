@@ -11,6 +11,7 @@ export default defineConfig({
         client: "./room.html",
         admin: "./admin.html",
         login: "./login.html",
+        "admin-login": "./admin-login.html",
       },
     },
     outDir: "../server/public",

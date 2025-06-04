@@ -1,9 +1,9 @@
 import { mount } from "svelte";
 
 import "./app.css";
-import LoginPage from "./LoginPage.svelte";
+import AdminLoginPage from "./AdminLoginPage.svelte";
 
-const app = mount(LoginPage, {
+const app = mount(AdminLoginPage, {
   target: document.getElementById("app")!,
 });
 
