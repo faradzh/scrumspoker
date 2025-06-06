@@ -68,6 +68,7 @@ export async function fetchIntegrationData(
         authHeader: integration.getAuthorizationHeader(),
         url,
         body,
+        method,
       });
     }
   }
