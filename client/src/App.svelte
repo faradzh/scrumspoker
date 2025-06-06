@@ -74,7 +74,7 @@
 <Navbar />
 <main class="bg-gray-50 h-screen overflow-y-hidden">
   <div class="mx-auto px-8 max-w-screen-2xl h-screen">
-    <div class="pb-20 grid gap-4 sm:mt-16 lg:grid-cols-[1fr_4fr] lg:grid-rows-[auto_200px] h-screen">
+    <div class="pb-20 grid gap-4 mt-16 grid-cols-[1fr_4fr] grid-rows-[4fr_1fr] h-screen">
       <Stories />
       <Session />
       <CardsDeck />

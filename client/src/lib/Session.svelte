@@ -26,32 +26,31 @@
   });
 </script>
 
-<section class="relative text-black overflow-x-hidden">
-    <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem]"></div>
-    <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
+<section class="relative text-black overflow-hidden row-span-1">
+    <div class="absolute inset-px rounded-lg bg-white"></div>
+    <div class="relative flex h-full flex-col rounded-[calc(theme(borderRadius.lg)+1px)]">
         <div class="p-4 h-full flex flex-col">
+          <div class="overflow-y-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200">
             <div class="mb-6">
-                <div class="flex justify-between">
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-950">Current Estimation</h2>
-                        <p class="text-gray-600">{currentStoryText}</p>
-                    </div>
-                    <div class="flex items-center space-x-4 mt-4 md:mt-0">
-                        <Timer />
-                        {#if $isModerator}
-                          <ActionButtons />
-                        {/if}
-                    </div>
-                </div>
+              <div class="flex justify-between gap-x-4">
+                <!-- <div>
+                    <h2 class="text-xl font-semibold text-gray-950">Current Estimation</h2>
+                    <p class="text-gray-600">{currentStoryText}</p>
+                </div> -->
+                {#if $isModerator}
+                  <ActionButtons />
+                {/if}
+                {#if isEnabled}
+                  <TotalEstimate />
+                {/if}
+              </div>
             </div>
             {#if $isUserFetching || $isRoomDataFetching}
                 <ParticipantsSkeleton />
             {:else}
               <CurrentEstimates />
-              {#if isEnabled}
-                  <TotalEstimate />
-              {/if}
             {/if}
+          </div>
         </div>
     </div>
     <div class="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5"></div>

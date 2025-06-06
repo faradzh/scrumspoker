@@ -99,7 +99,7 @@
   }
 </script>
 
-<div class="flex justify-center items-center space-x-2 mt-auto">
+<div class="flex justify-center items-center space-x-2 mt-auto ml-auto">
     <div class="flex flex-row items-center space-x-2">   
         <div class="stats shadow rounded-lg mb-2">
             <div class="stat relative">

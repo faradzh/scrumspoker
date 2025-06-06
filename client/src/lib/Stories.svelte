@@ -63,14 +63,14 @@
 </script>
 
 <section class="relative row-span-2">
-    <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem]"></div>
-    <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
+    <div class="absolute inset-px rounded-lg bg-white"></div>
+    <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
         <div class="p-4 h-full">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-950">User Stories</h2>
                 <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-sm">{issues.length} stories</span>
             </div>
-              <div bind:this={storiesList} id="stories-list" class="transition-name space-y-2 max-h-[80vh] scrollbar-visible overflow-y-scroll scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+              <div bind:this={storiesList} id="stories-list" class="transition-name space-y-2 pb-8 h-full overflow-y-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200">
                 {#if $query.isLoading}
                   <StorySkeleton />
                   <StorySkeleton />
