@@ -17,6 +17,8 @@ export const fetchIssues = async <T extends keyof IssueResponse>(
   });
 };
 
+let refreshInProgress: Promise<any> | null = null;
+
 export async function fetchIntegrationData(
   integration: JiraOauthIntegration,
   user: RequestUser,
@@ -56,20 +58,31 @@ export async function fetchIntegrationData(
   const data = await response.json();
 
   if (data.code === 401) {
-    console.error("Access token expired, refreshing tokens...");
-    const { accessToken } = await refreshTokens.execute(user);
-    if (accessToken) {
-      // Update integration access token
-      integration.accessToken = accessToken;
-      // Update user access token
-      user.accessToken = accessToken;
-      // Retry fetching data with the new access token
-      return fetchIntegrationData(integration, user, {
-        authHeader: integration.getAuthorizationHeader(),
-        url,
-        body,
-        method,
-      });
+    if (refreshInProgress) {
+      console.log("Waiting for ongoing token refresh to complete...");
+      await refreshInProgress;
+    } else {
+      console.error("Access token expired, refreshing tokens...");
+      refreshInProgress = refreshTokens.execute(user);
+      const { accessToken } = await refreshInProgress;
+      refreshInProgress = null;
+
+      if (accessToken) {
+        // Update integration access token
+        integration.accessToken = accessToken;
+
+        if (user.profile) {
+          // Update access token if authenticated user
+          user.accessToken = accessToken;
+        }
+        // Retry fetching data with the new access token
+        return fetchIntegrationData(integration, user, {
+          authHeader: integration.getAuthorizationHeader(),
+          url,
+          body,
+          method,
+        });
+      }
     }
   }
 

@@ -48,15 +48,24 @@ class GetIntegrationIssues {
   }> {
     const room = await this.persistedRoomRepository.findRoomById?.(roomId);
     const integration = await this.integrationRepository.findById(roomId);
-    if (room?.moderator?.accessToken) {
+    const roomModerator = {
+      profile: {
+        id: room?.moderator?.id,
+      },
+      accessToken: room?.moderator?.accessToken,
+      // @ts-ignore
+      refreshToken: room?.moderator?.refreshToken,
+    } as RequestUser;
+
+    if (roomModerator.accessToken) {
       // Ensure integration has the latest access token
-      integration.accessToken = room?.moderator?.accessToken;
+      integration.accessToken = roomModerator?.accessToken;
     }
     const currentIssue = await this.tempRoomRepository.getCurrentIssue(roomId);
 
     const fetchedData = (await fetchIssues<typeof integration.type>(
       integration,
-      user
+      roomModerator
     )) as JiraIssueResponse;
 
     // Transform response data into standardized issues
