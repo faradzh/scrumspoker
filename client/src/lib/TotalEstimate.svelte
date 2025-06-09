@@ -99,11 +99,11 @@
   }
 </script>
 
-<div class="flex justify-center items-center space-x-2 mt-auto ml-auto">
+<div class={`flex justify-center items-center space-x-2 mt-auto ${$isModerator ? 'ml-auto' : ''}`}>
     <div class="flex flex-row items-center space-x-2">   
         <div class="stats shadow rounded-lg mb-2">
             <div class="stat relative">
-                <div class="stat-title">Total Estimate</div>
+                <div class="stat-title font-bold">Final Estimate</div>
                 <div bind:this={editableEstimation} class="stat-value text-center" contenteditable={$isModerator && !saveIsDisabled} oninput={onTotalEdit}>{$totalEstimation}</div>
                 {#if $isModerator && !saveIsDisabled}
                   <button class="absolute right-2 bottom-2" onclick={focusEditableEstimation}>

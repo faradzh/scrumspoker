@@ -37,8 +37,8 @@
         {#if $currentUser?.picture}
               <img class="size-8 rounded-full" src={$currentUser.picture} alt="profile avatar"/>
         {:else}
-            <div class="bg-gray-800 text-neutral-content size-8 rounded-full items-center">
-                <span class="text-2xl">{getAbbreviation($currentUser?.name)}</span>
+            <div class="flex bg-gray-800 text-neutral-content size-8 rounded-full items-center justify-center">
+                <span class="text-xl">{getAbbreviation($currentUser?.name)}</span>
             </div>
         {/if}
     </button>

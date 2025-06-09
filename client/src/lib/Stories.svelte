@@ -70,7 +70,7 @@
                 <h2 class="text-xl font-semibold text-gray-950">User Stories</h2>
                 <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-md text-sm">{issues.length} stories</span>
             </div>
-              <div bind:this={storiesList} id="stories-list" class="transition-name space-y-2 pb-8 h-full overflow-y-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+              <div bind:this={storiesList} id="stories-list" class="transition-name space-y-2 pb-8 h-full overflow-y-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200 [scrollbar-gutter:stable] pr-2">
                 {#if $query.isLoading}
                   <StorySkeleton />
                   <StorySkeleton />

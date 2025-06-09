@@ -45,18 +45,16 @@
   });
 </script>
 
-<div class="">
-    <div bind:this={scrollContainer} class="flex justify-center gap-4 whitespace-nowrap overflow-y-hidden overflow-x-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200 pb-8">
-        {#each $participants as participant, index}
-            <div class="text-center flex-none">
-                <Avatar participant={participant} index={index} />
-                <h2 class="block mx-auto mb-2 font-semibold min-h-6 w-20 overflow-hidden whitespace-nowrap text-ellipsis">
-                    {getFirstName(participant)}
-                </h2>
-                {#if $currentIssueId && $selectedCards[$currentIssueId]?.[participant.id]}
-                    <Card card={$selectedCards[$currentIssueId][participant.id]} />
-                {/if}
-            </div>
-        {/each}
-    </div>
+<div bind:this={scrollContainer} class="flex justify-center gap-4 whitespace-nowrap overflow-y-hidden overflow-x-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200 pb-8">
+    {#each $participants as participant, index}
+        <div class="text-center flex-none">
+            <Avatar participant={participant} index={index} />
+            <h2 class="block mx-auto mb-2 font-semibold min-h-6 w-20 overflow-hidden whitespace-nowrap text-ellipsis">
+                {getFirstName(participant)}
+            </h2>
+            {#if $currentIssueId && $selectedCards[$currentIssueId]?.[participant.id]}
+                <Card card={$selectedCards[$currentIssueId][participant.id]} />
+            {/if}
+        </div>
+    {/each}
 </div>

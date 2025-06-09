@@ -31,8 +31,8 @@
     <div class="relative flex h-full flex-col rounded-[calc(theme(borderRadius.lg)+1px)]">
         <div class="p-4 h-full flex flex-col">
           <div class="overflow-y-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-            <div class="mb-6">
-              <div class="flex justify-between gap-x-4">
+            <div class="mb-14">
+              <div class="flex justify-center gap-x-4 min-h-[104px]">
                 <!-- <div>
                     <h2 class="text-xl font-semibold text-gray-950">Current Estimation</h2>
                     <p class="text-gray-600">{currentStoryText}</p>
