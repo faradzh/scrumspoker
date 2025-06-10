@@ -1,0 +1,63 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/container.astro";
+import Sectionhead from "@components/sectionhead.astro";
+import PricingCard from "@components/pricing.astro";
+
+const pricing = [
+  {
+    name: "Launch",
+    price: "Free",
+    popular: false,
+    features: [
+      "3 rooms",
+      "Up to 8 Participants",
+      "Incognito Participants",
+      "Unlimited Stories",
+      "Unlimited Estimations",
+      "Possibility to edit final estimation",
+    ],
+    button: {
+      text: "Get Started",
+      link: "https://scrumspoker.com/admin",
+    },
+  },
+  {
+    name: "Expand",
+    price: {
+      monthly: "€19",
+      // annual: "$16",
+      // discount: "10%",
+      // original: "$24",
+    },
+    popular: true,
+    features: [
+      "Unlimited rooms",
+      "Unlimited Participants",
+      "Incognito Participants",
+      "Unlimited Stories",
+      "Unlimited Estimations",
+      "Possibility to edit final estimation",
+    ],
+    button: {
+      text: "Get Started",
+      link: "https://scrumspoker.com/admin",
+    },
+  },
+];
+---
+
+<Layout title="Pricing">
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title">Pricing</Fragment>
+      <Fragment slot="desc">
+        Simple & Predictable pricing. No Surprises.
+      </Fragment>
+    </Sectionhead>
+
+    <div class="grid md:grid-cols-2 gap-10 mx-auto max-w-screen-sm mt-12">
+      {pricing.map((item) => <PricingCard plan={item} />)}
+    </div>
+  </Container>
+</Layout>

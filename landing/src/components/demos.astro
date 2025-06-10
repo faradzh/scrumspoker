@@ -1,0 +1,75 @@
+---
+import step1 from "assets/demos/step1.webm";
+import step2 from "assets/demos/step2.webm";
+import step3 from "assets/demos/step3.webm";
+import step4 from "assets/demos/step4.webm";
+import board from "assets/demos/board.webm";
+---
+
+<section class="px-4 py-12 bg-white">
+  <h2 class="text-3xl font-semibold text-center mb-10">See It in Action</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-6xl mx-auto">
+    <div class="rounded-xl overflow-hidden shadow-lg">
+      <video
+        src={step1}
+        autoplay
+        muted
+        loop
+        playsinline
+        class="w-full h-auto"
+      ></video>
+      <div class="p-4">
+        <h3 class="text-lg font-medium text-gray-800 text-center">Pre-select tickets for estimation</h3>
+      </div>
+    </div>
+    <div class="rounded-xl overflow-hidden shadow-lg">
+      <video
+        src={step2}
+        autoplay
+        muted
+        loop
+        playsinline
+        class="w-full h-auto"
+      ></video>
+      <div class="p-4">
+        <h3 class="text-lg font-medium text-gray-800 text-center">Create a room with the label selected</h3>
+      </div>
+    </div>
+    <div class="rounded-xl overflow-hidden shadow-lg col-span-2">
+      <video
+        src={board}
+        autoplay
+        muted
+        loop
+        playsinline
+        class="w-full h-auto"
+      ></video>
+    </div>
+    <div class="rounded-xl overflow-hidden shadow-lg">
+      <video
+        src={step3}
+        autoplay
+        muted
+        loop
+        playsinline
+        class="w-full h-auto"
+      ></video>
+      <div class="p-4">
+        <h3 class="text-lg font-medium text-gray-800 text-center">Reach team consensus</h3>
+      </div>
+    </div>
+    <div class="rounded-xl overflow-hidden shadow-lg">
+      <video
+        src={step4}
+        autoplay
+        muted
+        loop
+        playsinline
+        class="w-full h-auto"
+      ></video>
+      <div class="p-4">
+        <h3 class="text-lg font-medium text-gray-800 text-center">The number is saved back to Jira</h3>
+      </div>
+    </div>
+  </div>
+</section>

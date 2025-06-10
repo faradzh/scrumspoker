@@ -55,11 +55,16 @@ api.use("/issues", issuesRouter);
 
 api.use("/admin", checkLoggedIn);
 
+api.get("/", (_, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "landing", "index.html"));
+});
+
 api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
 });
 
 api.use(express.static(path.join(__dirname, "..", "public")));
+api.use(express.static(path.join(__dirname, "..", "public", "landing")));
 
 api.get("/login", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "login.html"));

@@ -1,0 +1,40 @@
+---
+import { Picture } from "astro:assets";
+import heroImage from "assets/illustration3.png";
+import Link from "@components/ui/link.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<main
+  class="grid lg:grid-cols-2 place-items-center pt-16 pb-8 md:pt-12 md:pb-24">
+  <div class="py-6 md:order-1 hidden md:block">
+    <Picture
+      src={heroImage}
+      alt="Astronaut in the air"
+      widths={[1024, 1024, 1024]}
+      sizes="(max-width: 800px) 100vw, 620px"
+      loading="eager"
+      format="avif"
+    />
+  </div>
+  <div>
+    <h1
+      class="text-5xl lg:text-6xl xl:text-7xl font-bold lg:tracking-tight xl:tracking-tighter">
+      Play Your Way to Perfect Estimates.
+    </h1>
+    <p class="text-lg mt-4 text-slate-600 max-w-xl">
+      Collaborative estimation sessions that actually work - <br /> play interactive cards, reach team consensus, and update <span class="text-[#1870EB] text-3xl">JIRA</span> stories in real-time.
+    </p>
+    <div class="mt-6 flex flex-col sm:flex-row gap-3">
+      <Link
+        href="#"
+        href="https://scrumspoker.com/admin"
+        target="_blank"
+        class="flex gap-1 items-center justify-center"
+        rel="noopener">
+        <Icon class="text-white w-5 h-5" name="bx:bxs-magic-wand" />
+         Start for Free
+      </Link>
+    </div>
+  </div>
+</main>

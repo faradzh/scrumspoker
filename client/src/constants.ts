@@ -6,7 +6,7 @@ export const POKER_CARDS: Card[] = [
   {
     id: 1,
     value: 1,
-    link: "/cards/main-card.webp",
+    link: "/cards/main-card2.png",
   },
   {
     id: 2,

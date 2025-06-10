@@ -1,0 +1,68 @@
+---
+// @ts-ignore
+import { Icon } from "astro-icon/components";
+
+const features = [
+  {
+    title: "One-Click JIRA Login - No Setup",
+    description:
+      "Sign in with your existing Atlassian account and instantly access your JIRA projects and stories. Your team is ready to estimate in under 30 seconds.",
+    icon: "bx:bxs-log-in-circle",
+  },
+  {
+    title: "Curated Estimation Sessions",
+    description:
+      "Let your session moderator pre-select exactly which JIRA stories need estimation before the meeting starts by adding a pre-defined label.",
+    icon: "bx:bxs-group",
+  },
+  {
+    title: "True Real-Time Collaboration",
+    description:
+      "Watch votes appear instantly as team members play their cards - no waiting, no delays, no 'can you see my screen?' moments.",
+    icon: "bx:bxs-upvote",
+  },
+  {
+    title: "Reach Consensus Without the Drama",
+    description:
+      "When estimates don't align, edit and refine them together in real-time. No more endless Slack threads or follow-up meetings.",
+    icon: "bx:bxs-timer",
+  },
+  {
+    title: "One-Click Story Point Updates",
+    description:
+      "Once your team agrees on the estimate, push it directly back to the JIRA ticket with a single button press. No manual copying.",
+    icon: "bx:joystick-button",
+  },
+  {
+    title: "Asyncronous Mode",
+    description:
+      "Team member can’t join live? Share the link ahead of time — they can still submit their estimate earlier or later.",
+    icon: "bx:bxs-alarm-snooze",
+  },
+];
+---
+
+<div class="mt-16 md:mt-0">
+  <h2 class="text-4xl lg:text-5xl font-bold lg:tracking-tight">
+    Everything you need to know to start estimation
+  </h2>
+  <p class="text-lg mt-4 text-slate-600">
+    No boring tools. No manual work. No CSV imports/exports. No context switching. Just real-time collaboration that works and fun.
+  </p>
+</div>
+
+<div class="grid sm:grid-cols-2 md:grid-cols-3 mt-16 gap-16">
+  {
+    features.map((item) => (
+      <div class="flex gap-4 items-start">
+        <div class="mt-1 bg-black rounded-full  p-2 w-8 h-8 shrink-0">
+          <Icon class="text-white" name={item.icon} />
+        </div>
+        <div>
+          <h3 class="font-semibold text-lg">{item.title}</h3>{" "}
+          <p class="text-slate-500 mt-2 leading-relaxed">{item.description}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>
