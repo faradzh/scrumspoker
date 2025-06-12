@@ -32,7 +32,7 @@
       <h2 class="text-xl font-semibold text-gray-950">Your Estimation</h2>
       <div bind:this={scrollContainer} class={`flex overflow-x-auto scrollbar scrollbar-thumb-gray-400 scrollbar-track-gray-200 pt-4 whitespace-nowrap ${!isScrollable ? 'justify-center' : ''}`}>
             {#each POKER_CARDS as pokerCard}
-              <BaseCard card={pokerCard} onSelect={() => onSelect(pokerCard)} class={`relative flex-shrink-0 cursor-pointer mr-4 h-28 ${!votingIsDisabled ? hoverClass : ''}`} />
+              <BaseCard card={pokerCard} onSelect={() => onSelect(pokerCard)} class={`relative flex-shrink-0 cursor-pointer mr-4 h-28 max-w-20 ${!votingIsDisabled ? hoverClass : ''}`} />
             {/each}
       </div>
     </div>
