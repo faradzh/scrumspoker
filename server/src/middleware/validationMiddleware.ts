@@ -64,7 +64,7 @@ export const checkLoggedIn = (
 
   if (!isLoggedIn) {
     req.session!.returnTo = req.originalUrl;
-    return res.redirect("/admin-login");
+    return res.redirect("/login");
   }
   next();
 };

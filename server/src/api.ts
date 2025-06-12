@@ -61,12 +61,12 @@ api.get("/admin", (_, res) => {
 
 api.use("/app", express.static(path.join(__dirname, "..", "public")));
 
-api.get("/login", (_, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "login.html"));
-});
-
-api.get("/admin-login", (_, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "admin-login.html"));
+api.get("/login", (req, res) => {
+  if (req.session!.returnTo === "/admin") {
+    res.sendFile(path.join(__dirname, "..", "public", "admin-login.html"));
+  } else {
+    res.sendFile(path.join(__dirname, "..", "public", "login.html"));
+  }
 });
 
 api.post("/login", (req, res) => {
