@@ -22,4 +22,4 @@ USER node
 
 CMD ["npm", "start", "--prefix", "server"]
 
-EXPOSE 443
+EXPOSE 3000
