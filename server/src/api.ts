@@ -59,7 +59,7 @@ api.get("/admin", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "admin.html"));
 });
 
-api.use(express.static(path.join(__dirname, "..", "public")));
+api.use("/app", express.static(path.join(__dirname, "..", "public")));
 
 api.get("/login", (_, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "login.html"));

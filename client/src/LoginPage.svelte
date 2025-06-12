@@ -1,7 +1,7 @@
 <div class="max-w-screen-xl mx-auto p-24">
     <main class="mx-auto flex">
         <section class="h-[700px] bg-white pl-20 pt-24 w-3/6 rounded-tl-lg rounded-bl-lg">
-            <img class="m-auto" src="/login-face.webp" alt="">
+            <img class="m-auto" src="/app/login-face.webp" alt="">
         </section>
         <section class="h-[700px] bg-white w-3/6 px-20 py-36 rounded-tr-lg rounded-br-lg">
             <div class="mb-10">
