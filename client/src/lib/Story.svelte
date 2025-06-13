@@ -18,7 +18,7 @@
     container.style.width = '600px';
 
     // Wait for expansion animation
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 100));
   
     $issuesStore.expandedIssue = story;
   }
@@ -40,8 +40,6 @@
       return $issuesStore.totalEstimationPerIssue[story.id];
     }
   });
-
-  console.log('Comment:', story.comment);
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->

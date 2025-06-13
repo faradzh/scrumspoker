@@ -62,7 +62,7 @@
 
 </script>
 
-<section class="relative row-span-2 max-w-72">
+<section class="relative row-span-2">
     <div class="absolute inset-px rounded-lg bg-white"></div>
     <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
         <div class="p-4 h-full">
