@@ -54,10 +54,13 @@
   });
 
   onMount(() => {
-    // Lock width
-    const rect = storiesList.getBoundingClientRect();
-    storiesList.style.width = rect.width + "px";
-    $issuesStore.initialColumnWidth = rect.width;
+    // Wait for expansion animation
+    new Promise(resolve => setTimeout(resolve, 100)).then(() => {
+       // Lock width
+      const rect = storiesList.getBoundingClientRect();
+      storiesList.style.width = rect.width + "px";
+      $issuesStore.initialColumnWidth = rect.width;
+    });
   });
 
 </script>
