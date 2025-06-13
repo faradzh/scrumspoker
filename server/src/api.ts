@@ -125,4 +125,8 @@ api.get("/api/current-user", (req, res) => {
   }
 });
 
+api.use((_, res) => {
+  res.status(404).sendFile(path.join(__dirname, "..", "public", "404.html"));
+});
+
 export default api;

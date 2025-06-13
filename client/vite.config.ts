@@ -13,6 +13,7 @@ export default defineConfig({
         admin: "./admin.html",
         login: "./login.html",
         "admin-login": "./admin-login.html",
+        "404": "./404.html",
       },
     },
     outDir: "../server/public",
