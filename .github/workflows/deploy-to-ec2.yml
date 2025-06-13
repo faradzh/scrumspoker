@@ -42,5 +42,6 @@ jobs:
             docker pull faradzh/thescrumpoker:latest
             docker stop $(docker ps -q) || true
             docker rm $(docker ps -aq) || true
+            docker system prune -a -f --volumes || true
             nohup docker run -d --env-file .env -p 3000:3000 faradzh/thescrumpoker > /dev/null 2>&1 &
             exit
