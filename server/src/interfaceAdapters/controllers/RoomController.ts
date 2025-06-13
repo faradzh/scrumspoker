@@ -35,7 +35,10 @@ class RoomController {
     this.getAllRoomsUseCase = new GetAllRooms(roomRepository);
     this.joinRoomUseCase = new JoinRoom(roomRepository, redisRoomRepository);
     this.updateRoomUseCase = new UpdateRoom(roomRepository);
-    this.deleteRoomUseCase = new DeleteRoom(roomRepository);
+    this.deleteRoomUseCase = new DeleteRoom(
+      roomRepository,
+      redisRoomRepository
+    );
     this.roomPresenter = roomPresenter;
   }
 

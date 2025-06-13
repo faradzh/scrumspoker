@@ -8,10 +8,13 @@ class Session {
     this.temporaryRepository = temporaryRepository;
   }
 
-  async revealEstimation(roomId: string, issueId: string): Promise<Room> {
+  async revealEstimation(
+    roomId: string,
+    issueId: string
+  ): Promise<Room | undefined> {
     const room = await this.temporaryRepository.findRoomById?.(roomId);
     if (!room) {
-      throw new Error("Room was not found");
+      return;
     }
 
     room.setRevealedIssue(issueId);
@@ -20,10 +23,13 @@ class Session {
     return room;
   }
 
-  async setCurrentIssue(roomId: string, issueId: string): Promise<Room> {
+  async setCurrentIssue(
+    roomId: string,
+    issueId: string
+  ): Promise<Room | undefined> {
     const room = await this.temporaryRepository.findRoomById?.(roomId);
     if (!room) {
-      throw new Error("Room was not found");
+      return;
     }
 
     await this.temporaryRepository.setCurrentIssue?.(roomId, issueId);

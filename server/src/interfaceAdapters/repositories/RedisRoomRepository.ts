@@ -233,6 +233,35 @@ class RedisRoomRepository implements RoomRepository {
 
     return issues.find((issue) => issue.id === issueId);
   }
+
+  async deleteRoom(id: string): Promise<void> {
+    const pipeline = this.client.pipeline();
+
+    pipeline.del(`room:${id}`);
+    pipeline.del(`room:${id}:participants`);
+    pipeline.del(`room:${id}:revealedIssues`);
+    pipeline.del(`room:${id}:estimatedIssues`);
+    pipeline.del(`totalEstimationPerIssue:${id}`);
+    pipeline.del(`room:${id}:currentIssue`);
+    pipeline.del(`estimations:${id}:*`);
+    pipeline.del(`room:${id}:integrationIssues`);
+
+    // Delete all online participants
+    const participantKeys = await this.client.keys(
+      `room:${id}:participant:*:online`
+    );
+    if (participantKeys.length > 0) {
+      await pipeline.del(...participantKeys);
+    }
+
+    // Delete all estimations for the room
+    const estimationKeys = await this.client.keys(`estimations:${id}:*`);
+    if (estimationKeys.length > 0) {
+      await this.client.del(...estimationKeys);
+    }
+
+    await pipeline.exec();
+  }
 }
 
 export default RedisRoomRepository;
