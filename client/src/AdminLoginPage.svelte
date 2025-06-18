@@ -1,6 +1,6 @@
-<div class="max-w-screen-xl mx-auto p-20">
-    <main class="flex justify-center">
-        <section class="bg-white px-24 py-16 w-[600px] rounded-tl-lg rounded-bl-lg">
+<div class="flex h-screen items-center overflow-y-auto justify-center p-4 bg-gray-100">
+    <main class="flex justify-center rounded-lg shadow-lg">
+        <section class="bg-white px-24 py-16 w-[600px] rounded-lg">
             <div class="mb-10 text-center">
                 <h1 class="text-3xl text-slate-800 font-bold mb-2">Welcome to Scrumspoker.</h1>
                 <p class="text-md text-slate-500">Login as a moderator to create your first session room.</p>
