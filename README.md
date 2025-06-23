@@ -1,26 +1,54 @@
-🔮 Agile Estimator – Real-Time Scrum Poker Tool
-A real-time Scrum planning poker tool built with Svelte (CSR), Express, and Socket.IO. Designed to streamline story point estimation for Agile teams with seamless JIRA SSO integration, Google login, and incognito participation.
+# 🔮 Scrumspoker – Real-Time Agile Estimation Tool
 
-🚀 Tech Stack
-Frontend: Svelte (Client-Side Rendering)
+[https://scrumspoker.com](https://scrumspoker.com)
 
-Backend: Node.js + Express
+**Scrumspoker** is a blazing-fast, real-time planning poker app designed for Agile teams. Built with Svelte, Express, and Socket.IO, it makes story point estimation effortless and collaborative – whether you're logged in via Google, JIRA, or joining anonymously.
 
-Realtime Engine: Socket.IO
+Seamlessly integrated with JIRA, Scrumspoker empowers teams to estimate tickets with clarity, speed, and precision.
 
-Authentication: JIRA SSO (moderators), Google OAuth2, Incognito mode
+---
 
-Bundler: Vite (if applicable)
+## 🚀 Tech Stack
 
-✨ Features
-🔐 JIRA SSO for Moderators: Secure login for room creators using their Atlassian credentials.
+- **Frontend:** Svelte (Client-Side Rendering)
+- **Backend:** Node.js + Express
+- **Realtime:** Socket.IO
+- **Authentication:** Atlassian JIRA SSO, Google OAuth2, Incognito
 
-🧑‍🤝‍🧑 Join as Guest or with Google: Participants can join rooms either via Google or incognito mode.
+---
 
-🔗 Shareable Room Links: Easily create and distribute unique room URLs for team collaboration.
+## ✨ Key Features
 
-📋 JIRA Issue Import: Select and filter JIRA issues for estimation directly from your project.
+🔐 **JIRA SSO for Moderators**  
+Secure Atlassian login for team leads and scrum masters to manage estimation sessions.
 
-🗳️ Real-Time Voting: Participate in story point estimation with instant updates and consensus calculation.
+🧑‍🤝‍🧑 **Flexible Participation**  
+Team members can join rooms using Google or as anonymous guests – no barriers, just collaboration.
 
-📊 Automatic JIRA Sync: Optionally sync the final estimation back to the JIRA issue.
+🔗 **One-Click Room Sharing**  
+Generate unique links for each estimation session and invite your team in seconds.
+
+📋 **JIRA Issue Import**  
+Browse, search, and filter JIRA issues directly within the app – no copy-pasting needed.
+
+🗳️ **Real-Time Voting**  
+Cast votes with live updates and automatic consensus calculation. No refreshes, no delays.
+
+📊 **Automatic JIRA Sync**  
+Send the agreed-upon story points back to the JIRA ticket with a single click.
+
+---
+
+## 🌐 Visit the Landing Page
+
+👉 [scrumspoker.com](https://scrumspoker.com) – explore the product, see screenshots, and get started instantly.
+
+---
+
+## 💬 Why Scrumspoker?
+
+Whether you're a distributed team or co-located, Scrumspoker brings transparency, speed, and fun to sprint planning. No plugins. No setup. Just estimation done right.
+
+---
+
+Built with ❤️ for Agile teams.
