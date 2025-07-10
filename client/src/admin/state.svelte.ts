@@ -20,6 +20,6 @@ export const INITIAL_FORM_DATA: FormDataType = {
   },
 };
 
-export let formData = $state<FormDataType>(INITIAL_FORM_DATA);
-export let formStateSinceLastTest = $state({ modified: true });
-export let connectionState = $state<any>({});
+export const formData = $state<FormDataType>(INITIAL_FORM_DATA);
+export const formStateSinceLastTest = $state({ modified: true });
+export const connectionState = $state<any>({});

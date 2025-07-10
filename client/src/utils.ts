@@ -23,12 +23,12 @@ export async function initRoom(data: any) {
 
   const initialSelectedCards: IssueEstimates = {};
 
-  for (let issueId in data.estimates) {
+  for (const issueId in data.estimates) {
     const estimate = data.estimates[issueId];
     const userIds = Object.keys(estimate);
     const userEstimate: UserEstimate = {};
 
-    for (let userId of userIds) {
+    for (const userId of userIds) {
       const card = getCardByValue(Number(estimate[userId]))!;
       userEstimate[userId] = {
         ...card,
@@ -42,7 +42,7 @@ export async function initRoom(data: any) {
   selectedCards.set(initialSelectedCards);
 
   if (data.revealedIssues?.length) {
-    for (let revealedIssueId of data.revealedIssues) {
+    for (const revealedIssueId of data.revealedIssues) {
       sessionInfo.update((prevSession) => {
         return {
           ...prevSession,
@@ -73,7 +73,7 @@ export async function initRoom(data: any) {
 function getActualTotalEstimationPerIssue(data: any) {
   const totalEstimationPerIssue: Record<string, number> = {};
 
-  for (let revealedIssueId of data.revealedIssues) {
+  for (const revealedIssueId of data.revealedIssues) {
     totalEstimationPerIssue[revealedIssueId] =
       data.totalEstimationPerIssue[revealedIssueId] ||
       calculateAverage(get(selectedCards)[revealedIssueId]);

@@ -79,7 +79,7 @@ export const modalStore = writable<ModalStore>({
   key: 0,
 });
 
-export let formErrors = writable({});
+export const formErrors = writable({});
 
 export const rooms = writable<Room[]>([]);
 
