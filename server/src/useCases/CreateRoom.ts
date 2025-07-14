@@ -31,8 +31,6 @@ class CreateRoom {
       accessToken: user.accessToken,
     })) as JiraOauthIntegration;
 
-    await this.testIntegration.addIntegrationAttributes(user, integration);
-
     const integrationDoc = await this.integrationRepository.save(integration);
 
     const newRoom = this.createRoomInstance(roomId, {

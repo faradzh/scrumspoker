@@ -50,6 +50,7 @@ class RoomController {
     const user = req.user as RequestUser;
 
     try {
+      console.log("Creating room with data:", formData);
       const room = await this.createRoomUseCase.execute(formData, user);
       const roomResponse = this.roomPresenter.presentRoom(room);
       res.status(201).json(roomResponse);

@@ -1,12 +1,14 @@
 <script lang="ts">
   import { Plus } from "@lucide/svelte";
+  import { createMutation, createQuery, useQueryClient } from "@tanstack/svelte-query";
+
   import { modalStore } from "../store";
   import FormWrapper from "./FormWrapper.svelte";
-  import { connectionState, formData, INITIAL_FORM_DATA } from "./state.svelte";
+  import { addCloudId, connectionState, formData, formSelectData, INITIAL_FORM_DATA } from "./state.svelte";
   import { formService } from "./constants";
-  import { createMutation, useQueryClient } from "@tanstack/svelte-query";
   import { createRoom } from "../services/roomService";
   import ToastService from "../services/toastService";
+  import { fetchIntegrationConfig } from "../services/integrationService";
 
   const queryClient = useQueryClient();
 
@@ -38,6 +40,13 @@
     },
   });
 
+  const integrationConfigQuery = createQuery({
+      queryKey: ['integrationConfig'],
+      queryFn: () => fetchIntegrationConfig({id: formData.integration?.id}),
+      staleTime: Infinity,
+      enabled: false,
+  });
+
   function resetFormData() {
     formData.name = INITIAL_FORM_DATA.name;
     formData.estimationMethod = INITIAL_FORM_DATA.estimationMethod;
@@ -45,6 +54,7 @@
   }
 
   async function onSubmit() {
+    addCloudId();
     $createRoomMutation.mutate();
   };
 
@@ -54,7 +64,19 @@
     formService.setCurrentPageIdx(0);
     resetFormData();
     modalStore.set({isOpen: true, Content: FormWrapper, props: {onSubmit}, key: Date.now() });
+
+    $integrationConfigQuery.refetch();
   }
+
+  $effect(() => {
+    const {resources = [], fields = []} = $integrationConfigQuery.data || {};
+
+    if (resources[0]) formData.integration.resourceUrl = $integrationConfigQuery.data.resources[0].url;
+    if (fields[0]) formData.integration.fieldId = $integrationConfigQuery.data.fields[0].id;
+
+    if (resources.length > 1) formSelectData.resources = $integrationConfigQuery.data.resources
+    if (fields.length > 1) formSelectData.fields = $integrationConfigQuery.data.fields;
+  });
 </script>
 
 <div class="pb-6">

@@ -48,8 +48,6 @@ class SaveEstimation {
 
     const data = await this.saveEstimation(integration, user, issueId, value);
 
-    console.log("SaveEstimation data", data);
-
     if (data.status === 204) {
       await this.tempRoomRepository.addEstimatedIssue?.(roomId, issueId);
       await this.tempRoomRepository.addIssueTotalEstimation?.(

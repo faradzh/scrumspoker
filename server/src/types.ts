@@ -8,6 +8,7 @@ import GetAllIssues from "./useCases/GetAllIssues";
 import TestIntegration from "./useCases/TestIntegration";
 import { IntegrationTypeEnum } from "./useCases/constants";
 import { EstimationMethod } from "./entities/types";
+import ConfigIntegration from "./useCases/ConfigIntegration";
 
 export interface RoomData {
   id?: string;
@@ -21,6 +22,9 @@ export interface IntegrationRequestData {
   id: IntegrationTypeEnum;
   filterLabel: string;
   projectName: string;
+  resourceId?: string;
+  resourceUrl?: string;
+  fieldId?: string;
 }
 
 export const EstimationMethodEnum = z.enum([
@@ -31,7 +35,7 @@ export const EstimationMethodEnum = z.enum([
 
 export type RoomUseCase = CreateRoom | JoinRoom | GetAllRooms;
 
-export type IntegrationUseCase = TestIntegration;
+export type IntegrationUseCase = TestIntegration | ConfigIntegration;
 
 export type IssueUseCase = GetAllIssues;
 

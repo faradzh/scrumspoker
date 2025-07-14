@@ -12,6 +12,8 @@ const AtlassianIntegration = z.object({
   id: z.string(),
   projectName: z.string(),
   filterLabel: z.string(),
+  resourceId: z.string(),
+  resourceUrl: z.string(),
 });
 
 const GoogleIntegraion = z.object({

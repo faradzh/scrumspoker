@@ -2,7 +2,7 @@
     import { createQuery } from '@tanstack/svelte-query';
     import { Cable, CircleX } from '@lucide/svelte';
     import { testIntegration } from '../services/integrationService';
-    import { formData, formStateSinceLastTest } from './state.svelte';
+    import { addCloudId, formData, formStateSinceLastTest } from './state.svelte';
     import { FORM_BUTTONS, formService, INTEGRATION_NAMES } from './constants';
     import { modalStore, formErrors } from '../store';
 
@@ -15,7 +15,9 @@
         queryFn: () => testIntegration({
             id: formData.integration?.id,
             filterLabel: formData.integration?.filterLabel,
-            projectName: formData.integration?.projectName
+            projectName: formData.integration?.projectName,
+            resourceId: formData.integration?.resourceId,
+            resourceUrl: formData.integration?.resourceUrl,
         }).then((response) => {
             formStateSinceLastTest.modified = false;
             return response;
@@ -46,6 +48,7 @@
     const testConnection = (e: MouseEvent) => {
       e.preventDefault();
       formErrors.set({}); // Clear previous errors
+      addCloudId();
       $query.refetch();
     };
 

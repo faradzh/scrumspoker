@@ -1,5 +1,4 @@
 import { apiClient } from "./apiClient";
-import ToastService from "./toastService";
 
 export const createRoom = async (data: any) => {
   return apiClient("POST", `/rooms`, data, {

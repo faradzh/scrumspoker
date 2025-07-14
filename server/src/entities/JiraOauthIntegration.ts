@@ -36,21 +36,20 @@ class JiraOauthIntegration extends JiraIntegration {
     }
   }
 
-  public async fetchAvailableResources(user: any): Promise<any> {
-    const resources = await fetchIntegrationData(this, user, {
+  public async fetchAccessibleResources(user: any): Promise<any> {
+    return fetchIntegrationData(this, user, {
       authHeader: this.getAuthorizationHeader(),
       url: `${this.baseUrl}/oauth/token/accessible-resources`,
       method: "GET",
     });
+  }
 
-    if (resources.length === 1) {
-      this.cloudId = resources[0].id;
-      this.domainUrl = resources[0].url;
-    } else if (resources.length > 1) {
-      throw new Error("Multiple cloud IDs found");
-    }
-
-    return resources;
+  public async fetchFields(user: any): Promise<any> {
+    return fetchIntegrationData(this, user, {
+      authHeader: this.getAuthorizationHeader(),
+      url: `${this.baseUrl}/ex/jira/${this.cloudId}/${this.apiUrl}/field`,
+      method: "GET",
+    });
   }
 
   public getMyselfUrl(): string {

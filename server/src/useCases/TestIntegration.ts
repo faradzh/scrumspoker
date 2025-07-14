@@ -10,17 +10,11 @@ class TestIntegration {
   public async execute(
     data: IntegrationRequestData,
     user: RequestUser
-  ): Promise<{ issues: Issue[]; integration: Integration }> {
+  ): Promise<{ issues: Issue[] }> {
     const integration = this.buildIntegration({
       accessToken: user.accessToken,
       ...data,
     });
-
-    // update integration properties, e.g. cloudId, domainUrl and accessToken
-    await this.addIntegrationAttributes(
-      user,
-      integration as JiraOauthIntegration
-    );
 
     const response = await fetchIssues(
       integration as JiraOauthIntegration,
@@ -30,20 +24,28 @@ class TestIntegration {
     return {
       // @ts-ignore
       issues: response.issues,
-      integration,
     };
   }
 
   public buildIntegration(
     data: IntegrationRequestData & { accessToken: string }
   ): Integration {
-    const { id, accessToken, filterLabel, projectName } = data;
+    const {
+      id,
+      accessToken,
+      filterLabel,
+      projectName,
+      resourceId,
+      resourceUrl,
+    } = data;
     const integration = new OAUTH2INTEGRATION_CLASSES[
       id as IntegrationTypeEnum
     ]({
       accessToken,
       filterLabel,
       projectName,
+      cloudId: resourceId,
+      domainUrl: resourceUrl,
     });
     return integration;
   }
@@ -52,7 +54,7 @@ class TestIntegration {
     user: RequestUser,
     integration: JiraOauthIntegration
   ): Promise<JiraOauthIntegration> {
-    await integration.fetchAvailableResources(user);
+    await integration.fetchAccessibleResources(user);
     return integration;
   }
 }

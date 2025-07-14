@@ -50,7 +50,7 @@ api.use(compression());
 api.use("/auth", authRouter);
 api.use("/rooms", roomsRouter);
 api.use("/join", joinRouter);
-api.use("/integration", integrationRouter);
+api.use("/integrations", integrationRouter);
 api.use("/issues", issuesRouter);
 
 api.use("/admin", checkLoggedIn);

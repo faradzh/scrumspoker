@@ -1,4 +1,5 @@
 import RedisClient from "../../infrastructure/redis/RedisClient";
+import ConfigIntegration from "../../useCases/ConfigIntegration";
 import EstimateTask from "../../useCases/EstimateTask";
 import GetAllIssues from "../../useCases/GetAllIssues";
 import LeaveRoom from "../../useCases/LeaveRoom";
@@ -25,6 +26,7 @@ export const mongoRoomRepository = new MongoRoomRepository(
 export const refreshTokens = new RefreshTokens(mongoUserRepository);
 
 export const testIntegrationUseCase = new TestIntegration();
+export const configIntegrationUseCase = new ConfigIntegration();
 
 export const getAllIssues = new GetAllIssues(
   mongoIntegrationRepository,
