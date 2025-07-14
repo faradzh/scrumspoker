@@ -9,6 +9,7 @@ export interface IntegrationDocument extends Document {
   filterLabel: string;
   domainUrl: string;
   cloudId: string;
+  storyPointsFieldId?: string;
   email?: string;
   apiToken?: string;
   createdAt: Date;
@@ -26,6 +27,7 @@ const IntegrationSchema = new Schema<IntegrationDocument>(
     filterLabel: { type: String, required: true },
     domainUrl: { type: String, required: true },
     cloudId: { type: String, required: true },
+    storyPointsFieldId: { type: String, required: true },
     email: { type: String },
     apiToken: { type: String },
   },

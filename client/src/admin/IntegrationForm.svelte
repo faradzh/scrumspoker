@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
 
   import Input from "./Input.svelte";
-  import { connectionState, formData, formSelectData, formStateSinceLastTest } from "./state.svelte";
+  import { connectionState, formSelectData, formStateSinceLastTest } from "./state.svelte";
   import queryClient from "./queryClient";
   
   let {formRef = $bindable(), values, errors, onSubmit} = $props();

@@ -7,6 +7,7 @@ export interface Integration {
   projectName?: string;
   id?: string;
   cloudId?: string;
+  storyPointsFieldId?: string;
   email?: string;
   apiToken?: string;
   accessToken?: string;

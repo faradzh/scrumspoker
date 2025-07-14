@@ -8,6 +8,7 @@ interface JiraOauthArgs {
   projectName?: string;
   domainUrl?: string;
   cloudId?: string;
+  storyPointsFieldId?: string;
 }
 
 class JiraOauthIntegration extends JiraIntegration {
@@ -22,8 +23,17 @@ class JiraOauthIntegration extends JiraIntegration {
     projectName,
     domainUrl = "",
     cloudId,
+    storyPointsFieldId,
   }: JiraOauthArgs) {
-    super({ id, email: "", domainUrl, apiToken: "", filterLabel, projectName });
+    super({
+      id,
+      email: "",
+      domainUrl,
+      apiToken: "",
+      filterLabel,
+      projectName,
+      storyPointsFieldId,
+    });
     this.accessToken = accessToken;
     this.cloudId = cloudId ?? "";
   }

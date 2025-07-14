@@ -14,6 +14,7 @@ class MongoIntegrationRepository implements IntegrationRepository {
       filterLabel: data.filterLabel,
       domainUrl: data.domainUrl,
       cloudId: data.cloudId,
+      storyPointsFieldId: data.storyPointsFieldId,
     });
   }
 
@@ -45,6 +46,7 @@ class MongoIntegrationRepository implements IntegrationRepository {
       projectName: integration.projectName ?? "",
       domainUrl: integration.domainUrl ?? "",
       cloudId: integration.cloudId ?? "",
+      storyPointsFieldId: integration.storyPointsFieldId ?? "",
     });
   }
 

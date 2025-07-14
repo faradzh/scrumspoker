@@ -31,7 +31,7 @@ class IntegrationController {
     try {
       const config = await this.configItegration.execute(req.body, user);
 
-      res.status(200).json({ ...config });
+      res.status(200).json(config);
     } catch (error) {
       // @ts-ignore
       res.status(400).json({ message: error.message });

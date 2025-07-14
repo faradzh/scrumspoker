@@ -69,13 +69,19 @@
   }
 
   $effect(() => {
-    const {resources = [], fields = []} = $integrationConfigQuery.data || {};
+    const {resources = []} = $integrationConfigQuery.data || {};
 
-    if (resources[0]) formData.integration.resourceUrl = $integrationConfigQuery.data.resources[0].url;
-    if (fields[0]) formData.integration.fieldId = $integrationConfigQuery.data.fields[0].id;
+    if (resources[0] && !formData.integration.resourceUrl) formData.integration.resourceUrl = resources[0].url;
 
-    if (resources.length > 1) formSelectData.resources = $integrationConfigQuery.data.resources
-    if (fields.length > 1) formSelectData.fields = $integrationConfigQuery.data.fields;
+    const selectedResourceFields = formData.integration.resourceUrl ? resources.find((r: any) => r.url === formData.integration.resourceUrl)?.fields : [];
+    if (selectedResourceFields[0]) formData.integration.fieldId = selectedResourceFields[0].id;
+
+    if (resources.length > 1 && !formSelectData.resources.length) formSelectData.resources = resources.map((r: any) => ({
+      id: r.id,
+      url: r.url,
+    }));
+    
+    if (selectedResourceFields.length > 1 && !formSelectData.fields.length) formSelectData.fields = selectedResourceFields;
   });
 </script>
 

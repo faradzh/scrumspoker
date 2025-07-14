@@ -7,7 +7,7 @@ class ConfigIntegration {
   public async execute(
     data: IntegrationRequestData,
     user: RequestUser
-  ): Promise<{ resources: any[]; fields: any[] }> {
+  ): Promise<{ resources: { id: string; url: string; fields: any[] }[] }> {
     const integration = this.buildIntegration({
       accessToken: user.accessToken,
       ...data,
@@ -15,25 +15,29 @@ class ConfigIntegration {
 
     const resources = await integration.fetchAccessibleResources(user);
 
-    integration.cloudId = resources[0].id;
-    integration.domainUrl = resources[0].url;
+    const resourcesWithFields = [];
 
-    const fields = await integration.fetchFields(user);
+    for (const resource of resources) {
+      integration.cloudId = resource.id;
+      integration.domainUrl = resource.url;
 
-    const customNumberFields = fields
-      .filter((field: any) => field.custom && field.schema?.type === "number")
-      .map((field: any) => ({
-        id: field.id,
-        name: field.name,
-      }));
+      const fields = await integration.fetchFields(user);
 
-    return {
-      resources: resources.map((resource: any) => ({
+      const customNumberFields = fields
+        .filter((field: any) => field.custom && field.schema?.type === "number")
+        .map((field: any) => ({
+          id: field.id,
+          name: field.name,
+        }));
+
+      resourcesWithFields.push({
         id: resource.id,
         url: resource.url,
-      })),
-      fields: customNumberFields,
-    };
+        fields: customNumberFields,
+      });
+    }
+
+    return { resources: resourcesWithFields };
   }
 
   public buildIntegration(

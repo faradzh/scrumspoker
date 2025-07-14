@@ -37,6 +37,7 @@ class TestIntegration {
       projectName,
       resourceId,
       resourceUrl,
+      fieldId,
     } = data;
     const integration = new OAUTH2INTEGRATION_CLASSES[
       id as IntegrationTypeEnum
@@ -46,6 +47,7 @@ class TestIntegration {
       projectName,
       cloudId: resourceId,
       domainUrl: resourceUrl,
+      storyPointsFieldId: fieldId,
     });
     return integration;
   }

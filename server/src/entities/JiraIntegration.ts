@@ -8,6 +8,7 @@ export interface JiraArgs {
   domainUrl: string;
   id?: string;
   projectName?: string;
+  storyPointsFieldId?: string;
 }
 class JiraIntegration implements Integration {
   public type = IntegrationTypeEnum.JIRA;
@@ -30,6 +31,7 @@ class JiraIntegration implements Integration {
     apiToken,
     projectName,
     filterLabel,
+    storyPointsFieldId,
   }: JiraArgs) {
     this.email = email;
     this.domainUrl = domainUrl;
@@ -37,6 +39,7 @@ class JiraIntegration implements Integration {
     this.id = id ?? "";
     this.projectName = projectName ?? "";
     this.filterLabel = filterLabel ?? "";
+    this.storyPointsFieldId = storyPointsFieldId ?? this.storyPointsFieldId;
   }
 
   public getAuthorizationHeader(): string {
