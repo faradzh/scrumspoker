@@ -10,7 +10,6 @@ import {
   participants,
   selectedCards,
   sessionInfo,
-  totalEstimation,
 } from "../store";
 import { socket } from "../sockets";
 import type { Socket } from "socket.io-client";
@@ -107,14 +106,15 @@ export function revealHandler() {
 }
 
 export function calculateAverage(selectedCards: SelectedCards): number {
-  if (!selectedCards) {
-    return 0;
-  }
+  if (!selectedCards) return 0;
 
   const cards = Object.values(selectedCards);
+  if (cards.length === 0) return 0;
 
-  const sum = cards.reduce((acc, card) => acc + card.value, 0);
-  return sum / cards.length;
+  const sum = cards.reduce((acc, card) => acc + (card.value ?? 0), 0);
+  const average = sum / cards.length;
+
+  return parseFloat(average.toFixed(2));
 }
 
 export const addCardRef = (cardRef: HTMLDivElement) => {

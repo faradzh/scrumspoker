@@ -1,6 +1,6 @@
 <script lang="ts">
   import { startEstimation, timerState } from "../state.svelte";
-  import { cardRefsStore, currentIssueId, sessionInfo } from "../store";
+  import { cardRefsStore, currentIssueId, isModerator, sessionInfo } from "../store";
   import Timer from "./Timer.svelte";
   import { revealCards } from "./utils";
 
@@ -10,7 +10,11 @@
 </script>
 
 <div class="flex items-center space-x-4 mr-auto">
-  <button disabled={estimationIsEmpty || issueIsRevealed} onclick={startEstimation} class="px-4 py-2 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] rounded-md transition">{timerText} Estimation</button>
+  {#if $isModerator}
+    <button disabled={estimationIsEmpty || issueIsRevealed} onclick={startEstimation} class="px-4 py-2 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] rounded-md transition">{timerText} Estimation</button>
+  {/if}
   <Timer />
-  <button disabled={estimationIsEmpty || issueIsRevealed} onclick={revealCards} class="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-md transition">Reveal Cards</button>
+  {#if $isModerator}
+    <button disabled={estimationIsEmpty || issueIsRevealed} onclick={revealCards} class="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-md transition">Reveal Cards</button>
+  {/if}
 </div>

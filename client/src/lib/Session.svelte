@@ -1,9 +1,8 @@
 <script lang="ts">
   import { useIsFetching } from "@tanstack/svelte-query";
-  import { currentIssueId, isModerator, issuesStore, selectedCards, sessionInfo } from "../store";
+  import { currentIssueId, issuesStore, selectedCards, sessionInfo } from "../store";
   import ActionButtons from "./ActionButtons.svelte";
   import CurrentEstimates from "./CurrentEstimates.svelte";
-  import Timer from "./Timer.svelte";
   import TotalEstimate from "./TotalEstimate.svelte";
   import { calculateAverage } from "./utils";
   import ParticipantsSkeleton from "./ParticipantsSkeleton.svelte";
@@ -16,7 +15,7 @@
     return total > 0 && $sessionInfo[$currentIssueId]?.cardsAreFlipped;
   });
 
-  const currentStoryText = $derived($issuesStore.current ? ( $issuesStore.current?.key + ": " + $issuesStore.current?.summary) : '');
+  // const currentStoryText = $derived($issuesStore.current ? ( $issuesStore.current?.key + ": " + $issuesStore.current?.summary) : '');
 
   const isUserFetching = useIsFetching({
     queryKey: ['currentUser'],
@@ -37,9 +36,7 @@
                     <h2 class="text-xl font-semibold text-gray-950">Current Estimation</h2>
                     <p class="text-gray-600">{currentStoryText}</p>
                 </div> -->
-                {#if $isModerator}
-                  <ActionButtons />
-                {/if}
+                <ActionButtons />
                 {#if isEnabled}
                   <TotalEstimate />
                 {/if}
