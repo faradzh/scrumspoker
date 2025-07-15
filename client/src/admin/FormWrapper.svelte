@@ -34,7 +34,7 @@
         formErrors.set(parsed.error.format());
         return;
       }
-      props.onSubmit(formData);
+      props?.onSubmit(formData);
     };
 
     function closeModal() {

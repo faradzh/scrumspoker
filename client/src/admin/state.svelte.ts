@@ -35,7 +35,13 @@ export const formSelectData = $state<FormSelectData>({
 export const formStateSinceLastTest = $state({ modified: true });
 export const connectionState = $state<any>({});
 
-export function addCloudId() {
+export function resetFormData() {
+  formData.name = INITIAL_FORM_DATA.name;
+  formData.estimationMethod = INITIAL_FORM_DATA.estimationMethod;
+  formData.integration = INITIAL_FORM_DATA.integration;
+}
+
+export function addResourceId() {
   if (formData.integration?.resourceUrl) {
     formData.integration.resourceId = formSelectData.resources.find(
       (resource) => resource.url === formData.integration?.resourceUrl

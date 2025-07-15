@@ -1,8 +1,24 @@
 <script lang="ts">
-    import { INTEGRATION_NAMES } from "./constants";
-    import Input from "./Input.svelte";
-    // import Select from "./Select.svelte";
-    let {formRef = $bindable(), values, errors, onSubmit, onIntegrationInput} = $props<{onIntegrationInput?: any}>();
+  import { useQueryClient } from "@tanstack/svelte-query";
+  import { onMount } from "svelte";
+
+  import { INTEGRATION_NAMES } from "./constants";
+  import Input from "./Input.svelte";
+  import { formData, formSelectData} from "./state.svelte";
+  import { createIntegrationConfigQuery } from "./queries";
+
+  let {formRef = $bindable(), values, errors, onSubmit, onIntegrationInput} = $props<{onIntegrationInput?: any}>();
+
+  const integrationConfigQuery = createIntegrationConfigQuery();
+
+  onMount(() => {
+    const queryClient = useQueryClient();
+    const integrationConfig = queryClient.getQueryData(['integrationConfig']);
+
+    if (!integrationConfig) {
+      $integrationConfigQuery.refetch();
+    }
+  })
 </script>
 
 <form onsubmit={onSubmit} bind:this={formRef} class="form-control text-black w-full">

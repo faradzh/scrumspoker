@@ -5,14 +5,14 @@
   import FormWrapper from "./FormWrapper.svelte";
   import { formService } from "./constants";
   import DeleteRoomDialog from "./DeleteRoomDialog.svelte";
-  import { updateRoom } from "../services/roomService";
-  import ToastService from "../services/toastService";
-  import { createMutation, useMutationState, useQueryClient } from "@tanstack/svelte-query";
-  import type { Room } from "../lib/types";
+  import { useMutationState, useQueryClient } from "@tanstack/svelte-query";
   import RoomCardSkeleton from "./RoomCardSkeleton.svelte";
+  import {createEditRoomMutation} from "./queries";
 
     let { room } = $props();
     let copiedToClipboard = $state(false);
+
+    const editRoomMutation = createEditRoomMutation();
 
     const origin = window.location.origin;
     const roomLink = `${origin}/join/${room.id}`;
@@ -32,47 +32,22 @@
         formData.integration = {
             id: room.integration.id,
             filterLabel: room.integration.filterLabel,
-            projectName: room.integration.projectName
+            projectName: room.integration.projectName,
+            resourceId: room.integration.cloudId,
+            resourceUrl: room.integration.domainUrl,
+            fieldId: room.integration.storyPointsFieldId,
         }
+        console.log('prepopulateFormData', formData);
     }
 
     const queryClient = useQueryClient();
-
-    const query = createMutation({
-        mutationKey: ['editRoom'],
-        mutationFn: (roomData: any) => updateRoom(roomData),
-        onMutate: async () => {
-            queryClient.cancelQueries({ queryKey: ['rooms'] });
-        },
-
-        onSuccess: (updatedRoom: Room) => {
-            ToastService.showToast("The room was updated.", {type: "success"});
-
-            queryClient.setQueryData(['rooms'], (old: Room[]) => {
-                const oldRooms = [...old];
-                const index = oldRooms.findIndex(r => r.id === updatedRoom.id);
-                if (index !== -1) {
-                    oldRooms[index] = updatedRoom;
-                }
-                return oldRooms;
-            });
-        },
-
-        onError: () => {
-            ToastService.showToast("Error updating the room.", {type: "error"});
-        },
-
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ['rooms'] });
-        },
-    });
 
     const mutationState = useMutationState<any>({filters: {mutationKey: ['editRoom']}});
 
     const isMutationPending = $derived($mutationState[0]?.status === 'pending' && $mutationState[0]?.variables?.id === room.id);
 
     async function onSubmit(formData: FormData) {
-        $query.mutate({id: room.id, ...formData});
+        $editRoomMutation.mutate({id: room.id, ...formData});
     };
 
     function openEditDialog() {

@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { createQuery } from '@tanstack/svelte-query';
+    import { createQuery, useIsFetching } from '@tanstack/svelte-query';
     import { Cable, CircleX } from '@lucide/svelte';
     import { testIntegration } from '../services/integrationService';
-    import { addCloudId, formData, formStateSinceLastTest } from './state.svelte';
+    import { addResourceId, formData, formStateSinceLastTest } from './state.svelte';
     import { FORM_BUTTONS, formService, INTEGRATION_NAMES } from './constants';
     import { modalStore, formErrors } from '../store';
 
@@ -48,7 +48,7 @@
     const testConnection = (e: MouseEvent) => {
       e.preventDefault();
       formErrors.set({}); // Clear previous errors
-      addCloudId();
+      addResourceId();
       $query.refetch();
     };
 
@@ -80,6 +80,11 @@
         }
         return false;
     });
+
+    const isIntegrationConfigFetching = useIsFetching({
+      queryKey: ['integrationConfig'],
+    });
+
 </script>
 
 {#if shouldShowTestButton}
@@ -98,5 +103,10 @@
         </span>
     </button>
 {:else}
-    <button class="btn btn-primary min-h-10 h-10" onclick={onClick}>{buttonLabel}</button>
+    <button class="btn btn-primary min-h-10 h-10" onclick={onClick} disabled={!!$isIntegrationConfigFetching}>
+      {#if $isIntegrationConfigFetching}
+        <span class="loading loading-spinner h-4 w-4"></span>
+      {/if}
+      {buttonLabel}
+    </button>
 {/if}

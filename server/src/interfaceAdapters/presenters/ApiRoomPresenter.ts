@@ -24,6 +24,9 @@ class ApiRoomPresenter implements RoomPresenter {
         id: room.integration?.type ?? "",
         filterLabel: room.integration?.filterLabel ?? "",
         projectName: room.integration?.projectName ?? "",
+        cloudId: room.integration?.cloudId ?? "",
+        domainUrl: room.integration?.domainUrl ?? "",
+        storyPointsFieldId: room.integration?.storyPointsFieldId ?? "",
       } as Integration;
     }
 

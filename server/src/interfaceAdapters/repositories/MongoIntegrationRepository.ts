@@ -50,14 +50,15 @@ class MongoIntegrationRepository implements IntegrationRepository {
     });
   }
 
-  public async update(data: Integration): Promise<IntegrationDocument | null> {
+  public async update(data: any): Promise<IntegrationDocument | null> {
     return await IntegrationModel.findByIdAndUpdate(
       data.id,
       {
         filterLabel: data.filterLabel,
         projectName: data.projectName,
-        domainUrl: data.domainUrl,
-        cloudId: data.cloudId,
+        domainUrl: data.resourceUrl,
+        cloudId: data.resourceId,
+        storyPointsFieldId: data.fieldId,
       },
       { new: true, runValidators: true }
     );

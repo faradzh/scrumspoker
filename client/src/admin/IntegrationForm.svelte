@@ -1,11 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
+  import { connectionState, formData, formSelectData, formStateSinceLastTest } from "./state.svelte";
   import Input from "./Input.svelte";
-  import { connectionState, formSelectData, formStateSinceLastTest } from "./state.svelte";
-  import queryClient from "./queryClient";
   
   let {formRef = $bindable(), values, errors, onSubmit} = $props();
+
+  const queryClient = useQueryClient();
 
   onMount(() => {
     const unsubscribe = queryClient.getQueryCache().subscribe(event => {
@@ -13,7 +15,7 @@
             Object.assign(connectionState, event.query.state);
         }
     });
-    
+
     return unsubscribe;
   });
 
@@ -26,6 +28,23 @@
   function onTestConnection() {
     formStateSinceLastTest.modified = true;
   }
+
+    $effect(() => {
+      // @ts-ignore
+      const {resources = []} = queryClient.getQueryData(['integrationConfig']) || {};
+      
+      if (resources[0] && !formData.integration.resourceUrl) formData.integration.resourceUrl = resources[0].url;
+      const selectedResourceFields = formData.integration.resourceUrl ? resources.find((r: any) => r.url === formData.integration.resourceUrl)?.fields : [];
+      if (selectedResourceFields?.[0] && !formData.integration.fieldId) formData.integration.fieldId = selectedResourceFields[0].id;
+
+      if (resources.length > 1) formSelectData.resources = resources.map((r: any) => ({
+        id: r.id,
+        url: r.url,
+      }));
+      
+      if (selectedResourceFields?.length > 1) formSelectData.fields = selectedResourceFields;
+      else formSelectData.fields = [];
+    });
 </script>
 
 <form onsubmit={onSubmit} oninput={onTestConnection} bind:this={formRef} class="form-control text-black w-full">
