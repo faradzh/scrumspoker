@@ -37,7 +37,7 @@
       const selectedResourceFields = formData.integration.resourceUrl ? resources.find((r: any) => r.url === formData.integration.resourceUrl)?.fields : [];
       if (selectedResourceFields?.[0] && !formData.integration.fieldId) formData.integration.fieldId = selectedResourceFields[0].id;
 
-      if (resources.length > 1) formSelectData.resources = resources.map((r: any) => ({
+      if (resources[0]) formSelectData.resources = resources.map((r: any) => ({
         id: r.id,
         url: r.url,
       }));
