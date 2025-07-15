@@ -103,7 +103,7 @@
         </span>
     </button>
 {:else}
-    <button class="btn btn-primary min-h-10 h-10" onclick={onClick} disabled={!!$isIntegrationConfigFetching}>
+    <button class="btn btn-primary min-h-10 h-10 disabled:border-[var(--color-bg)]" onclick={onClick} disabled={!!$isIntegrationConfigFetching}>
       {#if $isIntegrationConfigFetching}
         <span class="loading loading-spinner h-4 w-4"></span>
       {/if}
