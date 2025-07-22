@@ -12,6 +12,7 @@ Seamlessly integrated with JIRA, Scrumspoker empowers teams to estimate tickets 
 
 - **Frontend:** Svelte (Client-Side Rendering)
 - **Backend:** Node.js + Express
+- **Persistence** MongoDB, Redis
 - **Realtime:** Socket.IO
 - **Authentication:** Atlassian JIRA SSO, Google OAuth2, Incognito
 
